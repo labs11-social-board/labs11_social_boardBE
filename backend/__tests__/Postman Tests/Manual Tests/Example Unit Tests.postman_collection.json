@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "6d9adbc1-aca2-45a8-932f-a11818a600dc",
+		"name": "Example Unit Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get with URL Params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "33f5f1dd-7485-4790-b24f-628e25c96f75",
+						"exec": [
+							"pm.test(\"(Status Code) 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"console.log(jsonData)",
+							"",
+							"pm.test(\"(Boolean Chai Assertion): pm.expect(true).to.be.true\", function () {",
+							"    pm.expect(true).to.be.true;",
+							"});",
+							"",
+							"pm.test(\"(Boolean  Chai Assertion): pm.expect(true).to.not.be.false\", function () {",
+							"    pm.expect(true).to.not.be.false;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://httpbin.org/get?isGood=true&isBad=false",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "isGood",
+							"value": "true"
+						},
+						{
+							"key": "isBad",
+							"value": "false"
+						}
+					]
+				},
+				"description": "https://www.youtube.com/watch?v=Qlvbc6kIBOk"
+			},
+			"response": []
+		},
+		{
+			"name": "Post with JSON body",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0596f2d1-6d6d-47ff-bbf4-cf397fac50f7",
+						"exec": [
+							"let date = Date.now();",
+							"// console.log(date)",
+							"",
+							"pm.globals.set(\"currentDate\", date);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cab751da-9072-40ce-998d-b027bf4913f2",
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Check Global Variable Changes On Every Instantiation\", function () {",
+							"    // pm.expect(jsonData.json.currentDate).to.eql(1549743931215); // Fails because value changes all the time",
+							"    // pm.expect(jsonData.json.currentDate).to.eql({{currentDate}}); // Won't work because it's not part of the javascript language.",
+							"    pm.expect(jsonData.json.currentDate).to.eql(pm.globals.get(\"currentDate\")); // Use this instead",
+							"});",
+							"",
+							"console.log(typeof jsonData.json.permissions); // object",
+							"console.log(typeof \"Hello World\"); // string",
+							"console.log(typeof 1); // number",
+							"console.log(typeof true); // boolean",
+							"console.log(typeof []); // object (notice it's not an array, this is because of javascript)",
+							"console.log(typeof {}); // object",
+							"console.log(jsonData.json.permissions); // Array - and you can open it and see the elements",
+							"console.log(jsonData.json.permissions[0]); // 2000",
+							"console.log(jsonData.json.permissions[2]); // 4000",
+							"",
+							"pm.test(\"Check Global Variable Changes On Every Instantiation\", function () {",
+							"    pm.expect(jsonData.json.permissions[2]).to.eql(4000); // bad practice, an array may change with order of elements",
+							"      // pm.expect([2000, 3000, 3001, 4000]).to.eql(4000); // Example",
+							"    pm.expect(jsonData.json.permissions).to.include(4000); // use this instead",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"john\",\n\t\"permissions\": [2000,3000,4000],\n\t\"currentDate\": {{currentDate}}\n}"
+				},
+				"url": {
+					"raw": "http://httpbin.org/post",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"post"
+					]
+				},
+				"description": "https://www.youtube.com/watch?v=AgBg0CMknfI"
+			},
+			"response": []
+		},
+		{
+			"name": "Put with form data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "afc1f375-f061-44e7-85a4-facd3185c2f3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    // pm.response.to.have.header(\"Content-Type-Foo\"); Fails",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"    // pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/jsonx'); // Fails",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql('application/json'); // Should match what is in the response, not what is in the send",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "johndoe",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "john@example.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://httpbin.org/put",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "650442ab-3b0a-4bfe-8477-09a512b9e2bb",
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://httpbin.org/put",
+					"protocol": "http",
+					"host": [
+						"httpbin",
+						"org"
+					],
+					"path": [
+						"put"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
