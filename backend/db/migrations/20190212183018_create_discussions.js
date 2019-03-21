@@ -15,7 +15,13 @@ exports.up = function (knex, Promise) {
       .integer('category_id')
       .references('id')
       .inTable('categories')
-      .notNullable()
+      .onDelete('CASCADE');
+
+    //Foreign Key 'team_id'
+    tbl
+      .integer('team_id')
+      .references('id')
+      .inTable('teams')
       .onDelete('CASCADE');
 
     tbl.text('body', 512).notNullable();
