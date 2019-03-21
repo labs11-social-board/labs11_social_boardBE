@@ -11,5 +11,9 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropColumn('team_id');
+  if(knex.schema.hasColumn('discussions', 'team_id')){
+    return knex.schema.table('discussions', disc => {
+      disc.dropColumn('team_id');
+    })
+  }
 };
