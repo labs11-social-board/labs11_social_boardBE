@@ -41,6 +41,12 @@ const deleteTeamBoard = id => {
     .del();
 };
 
+//Gets the discussions that are associated with the Team Board based on the Teams id
+const getTeamDiscussions =  team_id => {
+  const discussions = db('discussions').where({ team_id });
+  
+};
+
 module.exports = {
   getTeams,
   getTeamByName,

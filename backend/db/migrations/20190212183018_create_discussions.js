@@ -17,13 +17,6 @@ exports.up = function (knex, Promise) {
       .inTable('categories')
       .onDelete('CASCADE');
 
-    //Foreign Key 'team_id'
-    tbl
-      .integer('team_id')
-      .references('id')
-      .inTable('teams')
-      .onDelete('CASCADE');
-
     tbl.text('body', 512).notNullable();
 
     // Date in milliseconds
