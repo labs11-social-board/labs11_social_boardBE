@@ -10,10 +10,11 @@ exports.up = function(knex, Promise) {
     team.text('wiki', 1000).notNullable();
 
     //wether the team board is private or not
-    team.boolean('isPrivate');
+    team.boolean('isPrivate').notNullable();
 
     //Date in seconds
-    team.timestamps(true);
+    team.timestamp('created_at').defaultTo(knex.fn.now());
+    team.timestamp('updated_at');
 
   });
 };
