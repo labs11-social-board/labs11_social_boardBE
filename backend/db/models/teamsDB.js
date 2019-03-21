@@ -1,13 +1,5 @@
 const db = require('../dbConfig.js');
 
-module.exports = {
-  getTeams,
-  getTeamByName,
-  addTeamBoard,
-  updateTeamBoard,
-  deleteTeamBoard
-};
-
 //returns all the Teams in the teams table in the database
 const getTeams = () => {
   return db('teams');
@@ -47,4 +39,12 @@ const deleteTeamBoard = id => {
   return db('teams')
     .where({ id })
     .del();
-}
+};
+
+module.exports = {
+  getTeams,
+  getTeamByName,
+  addTeamBoard,
+  updateTeamBoard,
+  deleteTeamBoard
+};
