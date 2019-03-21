@@ -33,13 +33,11 @@ const createUsersToFollow = (currentUserId) => {
 
 const createFollowList = () => {
   const completeFollowList = [];
-  let currentUserId = 1; 
-  let followId = 1; 
+  let currentUserId = 1;  
   while(currentUserId !== 500){
     const grabFollowers = createUsersToFollow(currentUserId);
     for(let followId of grabFollowers){
-      completeFollowList.push({id: followId, user_id: currentUserId, following_id: followId});
-      followId += 1;
+      completeFollowList.push({user_id: currentUserId, following_id: followId});
     }
     //Now increase the currentUserID 
     currentUserId += 1;
