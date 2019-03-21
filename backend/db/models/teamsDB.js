@@ -4,7 +4,8 @@ module.exports = {
   getTeams,
   getTeamByName,
   addTeamBoard,
-  updateTeamBoard
+  updateTeamBoard,
+  deleteTeamBoard
 };
 
 //returns all the Teams in the teams table in the database
@@ -39,4 +40,11 @@ const updateTeamBoard = (id, changes) => {
     .where({ id })
     .update(changes)
     .then(updated => (updated > 0 ? getTeamById(id) : null ));
+};
+
+//Delete the Team board from the database
+const deleteTeamBoard = id => {
+  return db('teams')
+    .where({ id })
+    .del();
 }
