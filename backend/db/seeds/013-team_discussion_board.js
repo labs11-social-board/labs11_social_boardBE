@@ -5,7 +5,7 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex('teams').insert([
-        {team_name: 'labs11', wiki: 'Labs 11 is the best labs group to date!', isPrivate: false },
+        { team_owner_id: 500, team_name: 'labs11', wiki: 'Labs 11 is the best labs group to date!', isPrivate: false },
       ]);
     });
 };
