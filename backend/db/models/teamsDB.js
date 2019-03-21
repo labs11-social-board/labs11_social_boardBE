@@ -45,7 +45,7 @@ const deleteTeamBoard = id => {
 const getTeamDiscussions =  async (team_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
   const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
-  console.log(discussions)
+  
   for(let i = 0; i < discussions.length; i++){
     let post_count = await db('posts').count({post_count: 'posts.id'}).where('discussion_id', discussions[i].id);
     discussions[i].post_count = post_count[0].post_count;
@@ -54,8 +54,14 @@ const getTeamDiscussions =  async (team_id, order, orderType) => {
   return discussions;
 };
 
-const getTeamDiscussionPosts = discussion_id => {
-  return db('posts').where({ discussion_id });
+//Get the posts for the discussion o
+const getTeamDiscussionPosts = async discussion_id => {
+  const discussion = await db('discussions').where({ discussion_id }).first();
+  const posts = await db('posts').where({ discussion_id });
+
+  discussion.posts = posts;
+
+  return discussion;
 };
 
 module.exports = {
