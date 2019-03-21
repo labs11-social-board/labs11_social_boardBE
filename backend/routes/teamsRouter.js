@@ -8,8 +8,11 @@ const { authenticate } = require('../config/middleware/authenticate.js');
 
 //get discussions for a Team
 router.get('/discussions/:team_id/:user_id', authenticate, async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
+  const { team_id } = req.body;
   try {
-    const discussions = await teamsDB.getTeamDiscussions(req.params.team_id);
+    const discussions = await teamsDB.getTeamDiscussions(team_id, order, orderType);
 
     res.status(200).json(discussions);
   } catch(err){

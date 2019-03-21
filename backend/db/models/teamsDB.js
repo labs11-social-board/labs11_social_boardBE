@@ -42,12 +42,13 @@ const deleteTeamBoard = id => {
 };
 
 //Gets the discussions that are associated with the Team Board based on the Teams id
-const getTeamDiscussions =  async team_id => {
-  const discussions = await db('discussions').where({ team_id });
-
+const getTeamDiscussions =  async (team_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
+  const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
+  console.log(discussions)
   for(let i = 0; i < discussions.length; i++){
     let post_count = await db('posts').count({post_count: 'posts.id'}).where('discussion_id', discussions[i].id);
-    discussions[i].post_count = post_count[i].post_count;
+    discussions[i].post_count = post_count[0].post_count;
   }
 
   return discussions;
