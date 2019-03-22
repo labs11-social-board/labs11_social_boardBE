@@ -399,7 +399,7 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
     });
 };
 
-//Gets the discussions that are associated with the Team Board based on the Teams id
+//Gets all of the discussions that are associated with the Team Board based on the Teams id
 const findByTeamId =  async (team_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
   const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
@@ -413,11 +413,35 @@ const findByTeamId =  async (team_id, order, orderType) => {
 };
 
 //Get the posts for the discussion within the Team
-const getTeamDiscussionPostsById = async id => {
-  const discussion = await db('discussions').where({ id }).first();
+const getTeamDiscussionPostsById = async (id, user_id) => {
+  // const discussion = await db('discussion_votes').count('type').where('discussion_id', id);
+  const discussion = await db('discussions as d')
+    .join('users as u', 'u.id', 'd.user_id')
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .join('teams as t', 't.id', 'd.team_id')
+    .join('discussion_votes as dv', 'dv.discussion_id', 'd.id')
+    .where('d.id', id)
+    .select(
+      'd.id', 
+      'd.user_id', 
+      'u.username', 
+      'd.team_id', 
+      't.team_name', 
+      'us.avatar', 
+      'us.signature', 
+      'd.body', 
+      'd.created_at', 
+      'd.last_edited_at', 
+      'd.views',
+      db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
+      db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
+      )
+    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', )
+    .first()
   const posts = await db('posts').where({ discussion_id: id });
-
-  discussion.posts = posts;
+  
+  discussion.post_count = posts.length;
+  // discussion.posts = posts;
 
   return discussion;
 };
