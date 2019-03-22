@@ -399,6 +399,29 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
     });
 };
 
+//Gets the discussions that are associated with the Team Board based on the Teams id
+const findByTeamId =  async (team_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
+  const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
+  
+  for(let i = 0; i < discussions.length; i++){
+    let post_count = await db('posts').count({post_count: 'posts.id'}).where('discussion_id', discussions[i].id);
+    discussions[i].post_count = post_count[0].post_count;
+  }
+
+  return discussions;
+};
+
+//Get the posts for the discussion within the Team
+const getTeamDiscussionPostsById = async id => {
+  const discussion = await db('discussions').where({ id }).first();
+  const posts = await db('posts').where({ discussion_id: id });
+
+  discussion.posts = posts;
+
+  return discussion;
+};
+
 const addViewToDiscussion = id => {
   return db('discussions')
     .increment('views', 1)
@@ -432,5 +455,7 @@ module.exports = {
   findByCategoryId,
   insert,
   update,
-  remove
+  remove,
+  findByTeamId,
+  getTeamDiscussionPostsById
 };

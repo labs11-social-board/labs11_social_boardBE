@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { teamsDB } = require('../db/models/index.js');
+const { discussionsDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get('/discussions/:team_id/:user_id', authenticate, async (req, res) => {
   const orderType = req.get('orderType');
   const { team_id } = req.body;
   try {
-    const discussions = await teamsDB.getTeamDiscussions(team_id, order, orderType);
+    const discussions = await discussionsDB.findByTeamId(team_id, order, orderType);
 
     res.status(200).json(discussions);
   } catch(err){
@@ -20,5 +20,18 @@ router.get('/discussions/:team_id/:user_id', authenticate, async (req, res) => {
     res.status(500).json({ error: 'Unable to get the discussions for the Team' });
   }
 });
+
+router.get('/discussion/:id/:user_id', authenticate, async (req,res) => {
+  const { id } = req.params;
+
+  try {
+    const discussion = await discussionsDB.getTeamDiscussionPostsById(id);
+
+    res.status(200).json(discussion);
+  } catch(err) {
+    console.log(err)
+    res.status(500).json({ error: 'Unable to get the discussion from the Team' });
+  }
+})
 
 module.exports = router;
