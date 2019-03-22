@@ -18,23 +18,35 @@ router.get('/:user_id', (req,res) => {
 router.post('/:user_id/:following_id', (req,res) => {
   const userId = req.params.user_id;
   const followingId = req.params.following_id; 
-  const following = new Array(userFollowersDB.getUserFollowers(userId));
+  const following = userFollowersDB.getUserFollowers(userId);
+  console.log(following);
   let alreadyFollowed = false; 
   /*Check if the user is already following the user they are attempting to follow */
-  for (let follow of following){
-    if (follow.following_id === followingId){
-      alreadyFollowed = true; 
-      break; 
-    }
-  }
-  if(alreadyFollowed === false){
-    return userFollowersDB
-      .followUser(userId, followingId)
-      .then(results => res.status(201).json(results))
-      .catch(err => res.status(500).json({error: `Failed to create a follow ${err}`}));
-  } else {
-    return res.status(200).json({message: "The use requesting to follow another is already following this user"});
-  }
+  // for (let follow of following){
+  //   if (follow.following_id === followingId){
+  //     alreadyFollowed = true; 
+  //     break; 
+  //   }
+  // }
+  // return res.status(200).json({message: `Type of === ${typeof following}`})
+  return res.status(200).send(following);
+  // if(alreadyFollowed === false){
+  //   return userFollowersDB
+  //     .followUser(userId, followingId)
+  //     .then(results => res.status(201).json(results))
+  //     .catch(err => res.status(500).json({error: `Failed to create a follow ${err}`}));
+  // } else {
+  //   return res.status(200).json({message: "The use requesting to follow another is already following this user"});
+  // }
+});
+
+router.delete('/:user_id/:following_id', (req,res) => {
+  const userId = req.params.user_id;
+  const followingId = req.params.following_id; 
+  return userFollowersDB
+    .removeFollow(userId, followingId)
+    .then(results => res.status(200).json(results))
+    .catch(err => res.status(500).json({error: `Failed to remove follow ${err}`}));
 });
 
 
