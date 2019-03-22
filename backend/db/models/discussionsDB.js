@@ -414,13 +414,16 @@ const findByTeamId =  async (team_id, order, orderType) => {
 
 //Get the posts for the discussion within the Team
 const getTeamDiscussionPostsById = async (id, user_id) => {
-  // const discussion = await db('discussion_votes').count('type').where('discussion_id', id);
+  // const discussion = await db('discussion_votes').where('discussion_id', id);
+  const votes = db('discussion_votes as dv').select(
+    db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
+    db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
+    'discussion_id'
+  ).groupBy('discussion_id');
+
+  const user_vote = db('discussion_votes as dv').where({ user_id });
+
   const discussion = await db('discussions as d')
-    .join('users as u', 'u.id', 'd.user_id')
-    .join('user_settings as us', 'us.user_id', 'u.id')
-    .join('teams as t', 't.id', 'd.team_id')
-    .join('discussion_votes as dv', 'dv.discussion_id', 'd.id')
-    .where('d.id', id)
     .select(
       'd.id', 
       'd.user_id', 
@@ -433,15 +436,28 @@ const getTeamDiscussionPostsById = async (id, user_id) => {
       'd.created_at', 
       'd.last_edited_at', 
       'd.views',
-      db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
-      db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
+      'dv.upvotes',
+      'dv.downvotes',
+      'uv.type as user_vote'
       )
-    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', )
-    .first()
+    .join('users as u', 'u.id', 'd.user_id')
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin(votes.as('dv'), function() {
+      this.on('dv.discussion_id', '=', 'd.id')
+    })
+    .leftOuterJoin(user_vote.as('uv'), function() {
+      this.on('uv.discussion_id', '=', 'd.id')
+    })
+    .where('d.id', id)
+    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type')
+    .first();
+    
   const posts = await db('posts').where({ discussion_id: id });
   
+  // discussion.user_vote = user_vote;
   discussion.post_count = posts.length;
-  // discussion.posts = posts;
+  discussion.posts = posts;
 
   return discussion;
 };
