@@ -412,9 +412,8 @@ const findByTeamId =  async (team_id, order, orderType) => {
   return discussions;
 };
 
-//Get the posts for the discussion within the Team
+//Get the posts and post replies for the discussion within the Team
 const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
-  // const discussion = await db('discussion_votes').where('discussion_id', id);
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
@@ -473,7 +472,8 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     'p.last_edited_at',
     'uv.type as user_vote',
     'pv.upvotes',
-    'pv.downvotes')
+    'pv.downvotes',
+    )
     .join('users as u', 'u.id', 'p.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .leftOuterJoin(postVotes.as('pv'), function(){
@@ -484,9 +484,18 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     })
     .where({ discussion_id: id })
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
-  
+
+  const replies = [];
+  const newPosts = posts.map(post => { return {...post, replies: [] }});
+
   discussion.post_count = posts.length;
-  discussion.posts = posts;
+  
+  for(let i = 0; i < newPosts.length; i++){
+    replies.push(await db('replies').where({ post_id: posts[i].id }));
+    newPosts[i].replies = replies[i];
+  }
+
+  discussion.posts = newPosts;
 
   return discussion;
 };
