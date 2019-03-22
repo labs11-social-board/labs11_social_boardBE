@@ -413,15 +413,15 @@ const findByTeamId =  async (team_id, order, orderType) => {
 };
 
 //Get the posts for the discussion within the Team
-const getTeamDiscussionPostsById = async (id, user_id) => {
+const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
   // const discussion = await db('discussion_votes').where('discussion_id', id);
-  const votes = db('discussion_votes as dv').select(
+  const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
     'discussion_id'
   ).groupBy('discussion_id');
 
-  const user_vote = db('discussion_votes as dv').where({ user_id });
+  const discussionUser_vote = db('discussion_votes as dv').where({ user_id });
 
   const discussion = await db('discussions as d')
     .select(
@@ -443,19 +443,48 @@ const getTeamDiscussionPostsById = async (id, user_id) => {
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
-    .leftOuterJoin(votes.as('dv'), function() {
+    .leftOuterJoin(discussionVotes.as('dv'), function() {
       this.on('dv.discussion_id', '=', 'd.id')
     })
-    .leftOuterJoin(user_vote.as('uv'), function() {
+    .leftOuterJoin(discussionUser_vote.as('uv'), function() {
       this.on('uv.discussion_id', '=', 'd.id')
     })
     .where('d.id', id)
     .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type')
     .first();
-    
-  const posts = await db('posts').where({ discussion_id: id });
   
-  // discussion.user_vote = user_vote;
+  const postVotes = db('post_votes').select(
+    db.raw('COUNT(CASE WHEN type = 1 THEN 1 END) AS upvotes'),
+    db.raw('COUNT(CASE WHEN type = -1 THEN 1 END) AS downvotes'),
+    'post_id',
+  ).groupBy('post_id');
+
+  const userPostVote = db('post_votes').where({ user_id });
+
+  const posts = await db('posts as p').select(
+    'p.id', 
+    'p.user_id', 
+    'u.username', 
+    'us.avatar', 
+    'us.signature', 
+    'p.discussion_id', 
+    'p.body', 
+    'p.created_at', 
+    'p.last_edited_at',
+    'uv.type as user_vote',
+    'pv.upvotes',
+    'pv.downvotes')
+    .join('users as u', 'u.id', 'p.user_id')
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin(postVotes.as('pv'), function(){
+      this.on('pv.post_id', '=', 'p.id')
+    })
+    .leftOuterJoin(userPostVote.as('uv'), function() {
+      this.on('uv.post_id', '=', 'p.id')
+    })
+    .where({ discussion_id: id })
+    .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
+  
   discussion.post_count = posts.length;
   discussion.posts = posts;
 
