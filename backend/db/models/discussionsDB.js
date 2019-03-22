@@ -485,13 +485,45 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     .where({ discussion_id: id })
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
 
+  discussion.post_count = posts.length;
+
   const replies = [];
   const newPosts = posts.map(post => { return {...post, replies: [] }});
+  const replyVotes = db('reply_votes').select(
+    db.raw('COUNT(CASE WHEN type = 1 THEN 1 END) AS upvotes'),
+    db.raw('COUNT(CASE WHEN type = -1 THEN 1 END) AS downvotes'),
+    'reply_id',
+  ).groupBy('reply_id');
 
-  discussion.post_count = posts.length;
+  const userReplyVote = db('reply_votes').where({ user_id });
+
   
   for(let i = 0; i < newPosts.length; i++){
-    replies.push(await db('replies').where({ post_id: posts[i].id }));
+    replies.push(await db('replies as r').select(
+      'r.id', 
+      'r.user_id', 
+      'r.post_id', 
+      'r.body', 
+      'r.created_at', 
+      'r.last_edited_at',
+      'u.username',
+      'us.avatar',
+      'us.signature',
+      'p.discussion_id',
+      'uv.type as user_vote',
+      'rv.upvotes',
+      'rv.downvotes'
+      )
+      .join('users as u', 'u.id', 'r.user_id')
+      .join('user_settings as us', 'us.user_id', 'u.id')
+      .leftOuterJoin('posts as p', 'p.id', 'r.post_id')
+      .join('discussions as d', 'd.id', 'p.discussion_id')
+      .leftOuterJoin(replyVotes.as('rv'), function() {
+        this.on('rv.reply_id', '=', 'r.id')
+      })
+      .leftOuterJoin(userReplyVote.as('uv'), function() {
+        this.on('uv.reply_id', '=', 'r.id')
+      }).where({ post_id: posts[i].id }));
     newPosts[i].replies = replies[i];
   }
 
