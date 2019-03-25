@@ -10,13 +10,13 @@ exports.up = function (knex, Promise) {
       .unique();
 
     // password
-    tbl.string('password', 128);
+    tbl.string('password', 128).notNullable();
 
     // email
     tbl.string('email', 128).unique();
 
     // inactive, active, and banned
-    tbl.string('status', 16).notNullable();
+    tbl.string('status', 16);
 
     // Date in milliseconds
     tbl.bigInteger('created_at').notNullable();
