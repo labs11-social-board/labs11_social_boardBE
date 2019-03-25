@@ -47,4 +47,5 @@ module.exports = {
   addTeamBoard,
   updateTeamBoard,
   deleteTeamBoard,
+  getTeamById
 };

@@ -6,7 +6,7 @@ require('dotenv').config();
 const express = require('express');
 // const base64Img = require('base64-img');
 // const stripe = require('stripe')(backendStripePkToken);
-const { discussionsDB } = require('../../db/models/index.js');
+const { discussionsDB, teamsDB } = require('../../db/models/index.js');
 
 const router = express.Router();
 

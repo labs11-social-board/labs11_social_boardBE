@@ -403,6 +403,8 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
 const findByTeamId =  async (team_id, user_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
 
+  const team = await db('teams').where({ id: team_id }).first();
+
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
@@ -411,14 +413,41 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
 
   const discussionUser_vote = db('discussion_votes as dv').where({ user_id });
   
-  const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
+  const discussions = await db('discussions as d')
+    .select(
+      'd.id',
+      'd.user_id',
+      'u.username',
+      'us.avatar',
+      'd.team_id',
+      't.team_name',
+      'd.body',
+      'd.created_at',
+      'd.last_edited_at',
+      'dv.upvotes',
+      'dv.downvotes',
+      'd.views',
+      'uv.type as user_vote'
+    )
+    .join('users as u', 'u.id', 'd.user_id')
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin(discussionVotes.as('dv'), function(){
+      this.on('dv.discussion_id', '=', 'd.id');
+    })
+    .leftOuterJoin(discussionUser_vote.as('uv'), function() {
+      this.on('uv.discussion_id', '=', 'd.id')
+    })
+    .where({ team_id })
+    .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   for(let i = 0; i < discussions.length; i++){
     let post_count = await db('posts').count({post_count: 'posts.id'}).where('discussion_id', discussions[i].id);
     discussions[i].post_count = post_count[0].post_count;
   }
 
-  return discussions;
+  const res = { team, discussions };
+  return res;
 };
 
 //Get the posts and post replies for the discussion within the Team
