@@ -16,28 +16,12 @@ router.get('/:user_id', (req,res) => {
 
 //add a follow for the user 
 router.post('/:user_id/:following_id', (req,res) => {
-  const userId = req.params.user_id;
-  const followingId = req.params.following_id; 
-  const following = userFollowersDB.getUserFollowers(userId);
-  console.log(following);
-  let alreadyFollowed = false; 
-  /*Check if the user is already following the user they are attempting to follow */
-  // for (let follow of following){
-  //   if (follow.following_id === followingId){
-  //     alreadyFollowed = true; 
-  //     break; 
-  //   }
-  // }
-  // return res.status(200).json({message: `Type of === ${typeof following}`})
-  return res.status(200).send(following);
-  // if(alreadyFollowed === false){
-  //   return userFollowersDB
-  //     .followUser(userId, followingId)
-  //     .then(results => res.status(201).json(results))
-  //     .catch(err => res.status(500).json({error: `Failed to create a follow ${err}`}));
-  // } else {
-  //   return res.status(200).json({message: "The use requesting to follow another is already following this user"});
-  // }
+  const userId = req.params.user_id; 
+  const followingId = req.params.following_id;
+   return userFollowersDB
+     .followUser(userId, followingId)
+     .then(results => res.status(201).json(results))
+     .catch(err => res.status(500).json({error: `Failed to make follow connection ${err}`}));
 });
 
 router.delete('/:user_id/:following_id', (req,res) => {
