@@ -172,9 +172,9 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     })
     .where({ discussion_id: id })
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
-
+  
   discussion.post_count = posts.length;
-
+  
   const replies = [];
   const newPosts = posts.map(post => { return {...post, replies: [] }}); //creates a new array from the posts sql query and adds a replies key to every post
   const replyVotes = db('reply_votes').select(
@@ -216,7 +216,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
   }
 
   discussion.posts = newPosts;
-
+  
   return discussion;
 };
 

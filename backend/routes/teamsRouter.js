@@ -16,7 +16,7 @@ const { authenticate } = require("../config/middleware/authenticate.js");
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
 
-router.post("/:user_id", authenticate, (req, res) => {
+router.post('/:user_id', authenticate, (req, res) => {
   const { new_team } = req.body;
   const { user_id } = req.params;
   return teamsDB
@@ -29,7 +29,7 @@ router.post("/:user_id", authenticate, (req, res) => {
     );
 });
 
-router.get("/:user_id/:team_name", authenticate, (req, res) => {
+router.get('/:user_id/:team_name', authenticate, (req, res) => {
   const { team_name } = req.params;
   return teamsDB
     .getTeamByName(team_name)
@@ -41,7 +41,7 @@ router.get("/:user_id/:team_name", authenticate, (req, res) => {
     );
 });
 
-router.get("/:user_id/:id", authenticate, (req, res) => {
+router.get('/:user_id/:id', authenticate, (req, res) => {
   const { id } = req.params;
   return teamsDB
     .getTeamById(id)
@@ -52,17 +52,48 @@ router.get("/:user_id/:id", authenticate, (req, res) => {
 });
 
 //Update Team information
-router.put("/:user_id/:id", authenticate, (req, res) => {
+router.put('/:user_id/:id', authenticate, (req, res) => {
   const { id, user_id } = req.params;
-  const { changes } = req.body;
+  const { Changes } = req.params;
   return teamsDB
-    .updateTeamBoard(id, user_id, changes)
+    .updateTeamBoard(id, Changes)
     .then(team => res.status(200).json({ id: team.id }))
     .catch(err =>
       res.status(500).json({
         error: `Failed to update team information: ${err}`
       })
     );
-})
+});
+
+//Get discussions for a Team by it's id
+router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
+  const { user_id, team_id } = req.params;
+  
+  try {
+    const discussions = await teamsDB.findByTeamId(team_id, user_id, order, orderType);
+
+    res.status(200).json(discussions);
+  } catch(err) {
+    res.status(500).json({ error: `unable to findByTeamId(): ${err}`});
+  }
+});
+
+//Get the posts for the discussion selected from the Team Board using the discussions ID
+router.get('/discussion/posts/:user_id/:id', authenticate, async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
+  const { id, user_id } =  req.params;
+  
+  try {
+    const posts = await teamsDB.getTeamDiscussionPostsById(id, user_id, order, orderType);
+
+    res.status(200).json(posts);
+
+  } catch(err) {
+    res.status(500).json({error: `Failed to getTeamDiscussionPostsById(): ${err}` });
+  }
+});
 
 module.exports = router;
