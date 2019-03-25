@@ -462,6 +462,27 @@ router.put('/twitter/:user_id', authenticate, async (req, res) => {
   }
 });
 
+//Update the users linkedin information
+router.put('/linkedin/:user_id', authenticate, async (req, res) => {
+  const { user_id } = req.params;
+  const { linkedin } = req.body;
+
+  if(!linkedin){
+    res.status(400).json({ error: 'Please provided a Linkedin link for the User' });
+  } else if(!isUrl(linkedin)) {
+    res.status(400).json({ error: 'The request body must be a URL '});
+  } else {
+    try {
+      
+      const userLinkedin = await usersDB.updateLinkedin(user_id, linkedin);
+      
+      res.status(200).json(userLinkedin);
+    } catch(err) {
+      res.status(500).json({ error: `Failed to updateLinkedin(): ${err}`});
+    }
+  }
+});
+
 // Update last login
 router.put('/last-login/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
