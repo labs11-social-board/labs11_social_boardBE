@@ -15,7 +15,6 @@ exports.up = function (knex, Promise) {
       .integer('category_id')
       .references('id')
       .inTable('categories')
-      .notNullable()
       .onDelete('CASCADE');
 
     tbl.text('body', 512).notNullable();

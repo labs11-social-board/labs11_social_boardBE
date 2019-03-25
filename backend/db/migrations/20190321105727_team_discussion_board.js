@@ -6,7 +6,7 @@ exports.up = function(knex, Promise) {
     //Team name
     team.string('team_name', 100).notNullable().unique();
 
-    //wiki 
+    //wiki page / description page
     team.text('wiki', 1000).notNullable();
 
     //wether the team board is private or not
