@@ -433,6 +433,4 @@ module.exports = {
   insert,
   update,
   remove,
-  findByTeamId,
-  getTeamDiscussionPostsById
 };
