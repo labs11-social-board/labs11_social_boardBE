@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const userFollowersDB = require('../db/models/UserFollowersDB.js');
 const router = express.Router(); 
+const {authenticate} = require('../config/middleware/authenticate.js');
 
 // get a list of users being followed by the user. 
 router.get('/:user_id', (req,res) => {
@@ -14,8 +15,8 @@ router.get('/:user_id', (req,res) => {
     .catch(err => res.status(500).json({error: `Failed to get follow list ${err}`}));
 });
 
-//add a follow for the user 
-router.post('/:user_id/:following_id', (req,res) => {
+//add a follow for the user. 
+router.post('/:user_id/:following_id', authenticate, (req,res) => {
   const userId = req.params.user_id; 
   const followingId = req.params.following_id;
    return userFollowersDB
@@ -24,7 +25,8 @@ router.post('/:user_id/:following_id', (req,res) => {
      .catch(err => res.status(500).json({error: `Failed to make follow connection ${err}`}));
 });
 
-router.delete('/:user_id/:following_id', (req,res) => {
+//User decides they do not wish to follow a user anymore. 
+router.delete('/:user_id/:following_id', authenticate, (req,res) => {
   const userId = req.params.user_id;
   const followingId = req.params.following_id; 
   return userFollowersDB
