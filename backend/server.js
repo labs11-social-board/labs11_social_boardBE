@@ -40,31 +40,34 @@ const {
   categoryFollowsRouter,
   userNotificationsRouter,
   replyVoteRouter,
-  teamsRouter
-} = require("./routes/index.js");
+  userFollowersRouter,
+  teamsRouter,
+} = require('./routes/index.js');
 
 //Auth Route
-server.use("/auth", authRouter);
+server.use('/auth', authRouter);
 //Categories Routes
-server.use("/categories", categoriesRouter);
-server.use("/category-follows", categoryFollowsRouter);
+server.use('/categories', categoriesRouter);
+server.use('/category-follows', categoryFollowsRouter);
 //Discussion Routes
-server.use("/discussions", discussionsRouter);
-server.use("/discussion-follows", discussionFollowsRouter);
-server.use("/discussion-votes", discussionVotesRouter);
+server.use('/discussions', discussionsRouter);
+server.use('/discussion-follows', discussionFollowsRouter);
+server.use('/discussion-votes', discussionVotesRouter);
 //Posts Routes
-server.use("/posts", postsRouter);
-server.use("/post-votes", postVoteRouter);
+server.use('/posts', postsRouter);
+server.use('/post-votes', postVoteRouter);
 //Reply Routes
-server.use("/reply-votes", replyVoteRouter);
-server.use("/replies", repliesRouter);
+server.use('/reply-votes', replyVoteRouter);
+server.use('/replies', repliesRouter);
 //Tests Routes
-server.use("/tests", testRouter);
+server.use('/tests', testRouter);
 //Users Routes
-server.use("/users", usersRouter);
-server.use("/user-notifications", userNotificationsRouter);
-
-server.use("/team", teamsRouter);
+server.use('/users', usersRouter);
+server.use('/user-notifications', userNotificationsRouter);
+//Users Follows 
+server.use('/followers', userFollowersRouter);
+//Team Board Route
+server.use('/team', teamsRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 
