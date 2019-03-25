@@ -4,6 +4,7 @@ const express = require('express');
 const userFollowersDB = require('../db/models/UserFollowersDB.js');
 const router = express.Router(); 
 const {authenticate} = require('../config/middleware/authenticate.js');
+const usersDB = require('../db/models/usersDB.js');
 
 // get a list of users being followed by the user. 
 router.get('/:user_id', (req,res) => {
