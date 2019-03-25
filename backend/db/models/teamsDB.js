@@ -29,8 +29,8 @@ const addTeamBoard = async (team) => {
 //Updates the Team Boards information and returns the updated Team from the database
 const updateTeamBoard = async (id, user_id, changes) => {
   const { team_owner_id } = await getTeamById(id);
-
-  if(user_id !== team_owner_id){
+  
+  if(Number(user_id) !== team_owner_id){
     return null;
   } else {
     return db('teams')

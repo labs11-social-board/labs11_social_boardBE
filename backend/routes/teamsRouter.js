@@ -17,10 +17,11 @@ const { authenticate } = require("../config/middleware/authenticate.js");
  **************************************************************************************************/
 
 router.post('/:user_id', authenticate, (req, res) => {
-  const { new_team } = req.body;
+  const team = req.body;
   const { user_id } = req.params;
+ 
   return teamsDB
-    .addTeamBoard(new_team)
+    .addTeamBoard(team)
     .then(team => res.status(200).json({ id: team.id }))
     .catch(err =>
       res.status(500).json({
@@ -52,17 +53,21 @@ router.get('/:user_id/:id', authenticate, (req, res) => {
 });
 
 //Update Team information
-router.put('/:user_id/:id', authenticate, (req, res) => {
+router.put('/:user_id/:id', authenticate, async (req, res) => {
   const { id, user_id } = req.params;
-  const { Changes } = req.params;
-  return teamsDB
-    .updateTeamBoard(id, Changes)
-    .then(team => res.status(200).json({ id: team.id }))
-    .catch(err =>
-      res.status(500).json({
-        error: `Failed to update team information: ${err}`
-      })
-    );
+  const changes = req.body;
+  
+  try {
+    const updated = await teamsDB.updateTeamBoard(id, user_id, changes);
+
+    if(updated === null){
+      res.status(400).json({ error: 'Only the Team Owner can update the Teams information' });
+    } else {
+      res.status(200).json(updated);
+    }
+  } catch (err) {
+    res.status(500).json({ error: `Unable to update the Team information: ${err}`});
+  }
 });
 
 //Get discussions for a Team by it's id
