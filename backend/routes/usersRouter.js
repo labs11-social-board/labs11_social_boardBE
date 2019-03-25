@@ -209,12 +209,19 @@ router.get('/search-all', (req, res) => {
 // updates a user
 router.put('/user/:user_id', async (req, res) => {
   const { user_id } = req.params;
-  const { username, oldPassword, newPassword, email, status } = req.body;
+  const { username, oldPassword, newPassword, email, status, bio, github, twitter, linkedin } = req.body;
   let newUser = {};
   let currentPW;
   newUser.status = status;
   if (username) newUser.username = username;
   if (email) newUser.email = email;
+
+  if(bio) newUser.bio = bio;
+
+  if(isUrl(github)) newUser.github = github;
+  if(isUrl(twitter)) newUser.twitter = twitter;
+  if(isUrl(linkedin)) newUser.linkedin = linkedin;
+
   if (oldPassword && (!newPassword || newPassword === '')) {
     return res.status(400).json({ error: 'New password must not be empty.' });
   }
