@@ -40,6 +40,7 @@ const {
   categoryFollowsRouter,
   userNotificationsRouter,
   replyVoteRouter,
+  userFollowersRouter,
 } = require('./routes/index.js');
 
 //Auth Route
@@ -62,6 +63,8 @@ server.use('/tests', testRouter);
 //Users Routes
 server.use('/users', usersRouter);
 server.use('/user-notifications', userNotificationsRouter);
+//Users Follows 
+server.use('/followers', userFollowersRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 

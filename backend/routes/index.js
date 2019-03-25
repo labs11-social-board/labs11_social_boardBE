@@ -11,7 +11,7 @@ const testRouter = require('./testRoutesWithMiddleware/testRouter.js');
 const discussionFollowsRouter = require('./discussionFollowsRouter.js');
 const categoryFollowsRouter = require('./categoryFollowsRouter.js');
 const userNotificationsRouter = require('./userNotificationsRouter.js');
-
+const userFollowersRouter = require('./userFollowersRouter.js');
 module.exports = {
   authRouter,
   categoriesRouter,
@@ -26,4 +26,5 @@ module.exports = {
   discussionFollowsRouter,
   categoryFollowsRouter,
   userNotificationsRouter,
+  userFollowersRouter,
 };
