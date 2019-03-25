@@ -6,6 +6,7 @@ require('dotenv').config();
 const express = require('express');
 // const base64Img = require('base64-img');
 // const stripe = require('stripe')(backendStripePkToken);
+const { discussionsDB } = require('../../db/models/index.js');
 
 const router = express.Router();
 
@@ -77,4 +78,35 @@ router.get('/', (req, res, next) => {
   })();
 })
 */
+
+router.get('/teams/discussion/:id/:user_id', async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
+  const { id, user_id } =  req.params;
+
+  try {
+    const posts = await discussionsDB.getTeamDiscussionPostsById(id, user_id, order, orderType);
+
+    res.status(200).json(posts);
+
+  } catch(err) {
+    res.status(500).json({error: `Failed to getTeamDiscussionPostsById(): ${err}` });
+  }
+});
+
+router.get('/teams/:team_id/:user_id', async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
+  const { team_id, user_id } = req.params;
+
+  try {
+    const discussions = await discussionsDB.findByTeamId(team_id, user_id, order, orderType);
+
+    res.status(200).json(discussions);
+  } catch(err) {
+    res.status(500).json({ error: `unable to findByTeamId(): ${err}`});
+  }
+
+});
+
 module.exports = router;

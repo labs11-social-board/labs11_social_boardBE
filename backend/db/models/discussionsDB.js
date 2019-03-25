@@ -400,8 +400,17 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
 };
 
 //Gets all of the discussions that are associated with the Team Board based on the Teams id
-const findByTeamId =  async (team_id, order, orderType) => {
+const findByTeamId =  async (team_id, user_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
+
+  const discussionVotes = db('discussion_votes as dv').select(
+    db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
+    db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
+    'discussion_id'
+  ).groupBy('discussion_id');
+
+  const discussionUser_vote = db('discussion_votes as dv').where({ user_id });
+  
   const discussions = await db('discussions').where({ team_id }).orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   for(let i = 0; i < discussions.length; i++){
@@ -414,6 +423,8 @@ const findByTeamId =  async (team_id, order, orderType) => {
 
 //Get the posts and post replies for the discussion within the Team
 const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
+  //grabs the upvotes and down votes for the discussion
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
@@ -488,7 +499,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
   discussion.post_count = posts.length;
 
   const replies = [];
-  const newPosts = posts.map(post => { return {...post, replies: [] }});
+  const newPosts = posts.map(post => { return {...post, replies: [] }}); //creates a new array from the posts sql query and adds a replies key to every post
   const replyVotes = db('reply_votes').select(
     db.raw('COUNT(CASE WHEN type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN type = -1 THEN 1 END) AS downvotes'),
@@ -497,7 +508,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
 
   const userReplyVote = db('reply_votes').where({ user_id });
 
-  
+  //loops through the newPosts array and adds the replies for the post into the empty replies Key from the map
   for(let i = 0; i < newPosts.length; i++){
     replies.push(await db('replies as r').select(
       'r.id', 

@@ -40,11 +40,7 @@ const {
   categoryFollowsRouter,
   userNotificationsRouter,
   replyVoteRouter,
-<<<<<<< HEAD
-  teamsRouter
-=======
   userFollowersRouter,
->>>>>>> be6ee80c394585225154713e7fcde853474acd21
 } = require('./routes/index.js');
 
 //Auth Route
@@ -67,13 +63,8 @@ server.use('/tests', testRouter);
 //Users Routes
 server.use('/users', usersRouter);
 server.use('/user-notifications', userNotificationsRouter);
-<<<<<<< HEAD
-//Teams Routes
-server.use('/teams', teamsRouter);
-=======
 //Users Follows 
 server.use('/followers', userFollowersRouter);
->>>>>>> be6ee80c394585225154713e7fcde853474acd21
 
 server.use(errorHandler); // This line needs to be after all routes
 
