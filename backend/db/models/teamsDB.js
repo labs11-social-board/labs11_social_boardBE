@@ -27,11 +27,17 @@ const addTeamBoard = async (team) => {
 };
 
 //Updates the Team Boards information and returns the updated Team from the database
-const updateTeamBoard = (id, changes) => {
-  return db('teams')
-    .where({ id })
-    .update(changes)
-    .then(updated => (updated > 0 ? getTeamById(id) : null ));
+const updateTeamBoard = async (id, user_id, changes) => {
+  const { team_owner_id } = await getTeamById(id);
+
+  if(user_id !== team_owner_id){
+    return null;
+  } else {
+    return db('teams')
+      .where({ id })
+      .update(changes)
+      .then(updated => (updated > 0 ? getTeamById(id) : null ));
+  }
 };
 
 //Delete the Team board from the database

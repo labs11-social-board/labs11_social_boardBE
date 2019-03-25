@@ -51,11 +51,12 @@ router.get("/:user_id/:id", authenticate, (req, res) => {
     );
 });
 
+//Update Team information
 router.put("/:user_id/:id", authenticate, (req, res) => {
   const { id, user_id } = req.params;
-  const { Changes } = req.params;
+  const { changes } = req.body;
   return teamsDB
-    .updateTeamBoard(id, Changes)
+    .updateTeamBoard(id, user_id, changes)
     .then(team => res.status(200).json({ id: team.id }))
     .catch(err =>
       res.status(500).json({
