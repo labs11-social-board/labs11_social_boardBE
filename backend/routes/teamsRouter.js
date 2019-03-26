@@ -11,7 +11,7 @@ const router = express.Router();
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require("../config/middleware/authenticate.js");
-const { checkIfInTeam } = require("../config/middleware/helpers.js");
+const { checkIfInTeam, checkRole } = require("../config/middleware/helpers.js");
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -169,18 +169,4 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
   }
 });
 
-//Middleware function used to check the role of a User of a Team Board
-async function checkRole (req, res, next) {
-  const { user_id, team_id } = req.params;
-
-  const member = await teamMembersDB.getTeamMember(user_id, team_id);
-
-  if(!member) res.status(401).json({ error: 'You are not a Member of this Team'});
-
-  if(member.role !== 'team_owner'){
-    res.status(401).json({ error: 'Only Team Owners can do this'});
-  } else {
-    next();
-  }
-}
 module.exports = router;
