@@ -134,6 +134,7 @@ router.post('/team_members/:user_id/:team_id', authenticate, async (req, res) =>
   }
 });
 
+//Delete a team member from a team
 router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
   const { user_id, team_id } = req.params;
 
