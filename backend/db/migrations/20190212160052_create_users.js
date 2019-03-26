@@ -18,6 +18,14 @@ exports.up = function (knex, Promise) {
     // inactive, active, and banned
     tbl.string('status', 16);
 
+    // Bio for user profile page
+    tbl.text('bio', 1000);
+
+    // Link fields for user to input their social information
+    tbl.text('github');
+    tbl.text('twitter');
+    tbl.text('linkedin');
+
     // Date in milliseconds
     tbl.bigInteger('created_at').notNullable();
 
