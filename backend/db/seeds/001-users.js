@@ -33,6 +33,8 @@ const generateSeeds = () => {
     email: 'james@example.com',
     status: 'active',
     uuid: uuidv4(),
+    bio: 'My name is james and im a pretty cool dude',
+    github: 'https://github.com/labs11-social-board',
     last_login: Date.now(),
     created_at: Date.parse(
       faker.date.between(
