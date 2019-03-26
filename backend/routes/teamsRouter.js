@@ -17,34 +17,38 @@ const { checkIfInTeam } = require("../config/middleware/helpers.js");
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
 
-router.post('/:user_id', authenticate, (req, res) => {
+//Add a Team to the Database
+router.post('/:user_id', authenticate, async (req, res) => {
   const team = req.body;
   const { user_id } = req.params;
- 
-  return teamsDB
-    .addTeamBoard(team)
-    .then(team => res.status(200).json({ id: team.id }))
-    .catch(err =>
-      res.status(500).json({
-        error: `Failed to get team information: ${err}`
-      })
-    );
+  const role = 'team_owner';
+
+  try {
+    const teamBoard = await teamsDB.addTeamBoard(team);
+    const assignTeamOwner = await teamMembersDB.addTeamMember(user_id, teamBoard.id, role);
+
+    res.status(201).json({ teamBoard, assignTeamOwner })
+  } catch(err) {
+    res.status(500).json({ error: `Unable to addTeamBoard(): ${err}`});
+  }
 });
 
-router.get('/:user_id/:team_name', authenticate, (req, res) => {
-  const { team_name } = req.params;
-  return teamsDB
-    .getTeamByName(team_name)
-    .then(team => res.status(200).json(team))
-    .catch(err =>
-      res.status(500).json({
-        error: `Failed to get team information: ${err}`
-      })
-    );
-});
+// router.get('/:user_id/:team_name', authenticate, (req, res) => {
+//   const { team_name } = req.params;
+//   return teamsDB
+//     .getTeamByName(team_name)
+//     .then(team => res.status(200).json(team))
+//     .catch(err =>
+//       res.status(500).json({
+//         error: `Failed to get team information: ${err}`
+//       })
+//     );
+// });
 
+//Get Team information by Id
 router.get('/:user_id/:id', authenticate, (req, res) => {
   const { id } = req.params;
+  
   return teamsDB
     .getTeamById(id)
     .then(team => res.status(200).json(team))
@@ -54,12 +58,12 @@ router.get('/:user_id/:id', authenticate, (req, res) => {
 });
 
 //Update Team information
-router.put('/:user_id/:id', authenticate, async (req, res) => {
-  const { id, user_id } = req.params;
+router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+  const { team_id, user_id } = req.params;
   const changes = req.body;
   
   try {
-    const updated = await teamsDB.updateTeamBoard(id, user_id, changes);
+    const updated = await teamsDB.updateTeamBoard(team_id, changes);
 
     if(updated === null){
       res.status(400).json({ error: 'Only the Team Owner can update the Teams information' });
@@ -152,11 +156,14 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
 
 });
 
+//Middleware function used to check the role of a User of a Team Board
 async function checkRole (req, res, next) {
   const { user_id, team_id } = req.params;
 
   const member = await teamMembersDB.getTeamMember(user_id, team_id);
-  
+
+  if(!member) res.status(401).json({ error: 'You are not a Member of this Team'});
+
   if(member.role !== 'team_owner'){
     res.status(401).json({ error: 'Only Team Owners can do this'});
   } else {
