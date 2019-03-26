@@ -1,7 +1,15 @@
 const db = require('../dbConfig.js');
 
 const getTeamMembers = team_id => {
-  return db('team_members')
+  return db('team_members as tm')
+    .select(
+      'tm.team_id',
+      't.team_name',
+      'tm.user_id',
+      'u.username',
+      'tm.role')
+    .join('users as u', 'u.id', 'tm.user_id')
+    .join('teams as t', 't.id', 'tm.team_id')
     .where({ team_id });
 };
 

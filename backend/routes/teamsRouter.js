@@ -25,9 +25,9 @@ router.post('/:user_id', authenticate, async (req, res) => {
 
   try {
     const teamBoard = await teamsDB.addTeamBoard(team);
-    const assignTeamOwner = await teamMembersDB.addTeamMember(user_id, teamBoard.id, role);
+    const teamOwner = await teamMembersDB.addTeamMember(user_id, teamBoard.id, role);
 
-    res.status(201).json({ teamBoard, assignTeamOwner })
+    res.status(201).json({ teamBoard, teamOwner })
   } catch(err) {
     res.status(500).json({ error: `Unable to addTeamBoard(): ${err}`});
   }
@@ -153,7 +153,20 @@ router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) 
 
 //Delete a Team member if you are the Team Owner
 router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+  const { team_id } = req.params;
+  const { team_member_id } = req.body;
 
+  if(!team_member_id){
+    res.status(400).json({ error: 'Please send a team_member_id to be removed from the Team'})
+  } else {
+    try {
+      const team_members = await teamMembersDB.deleteTeamMember(team_member_id, team_id);
+  
+      res.status(200).json({ message: 'Team Member Removed!', team_members });
+    } catch(err) {
+      res.status(500).json({ error: `Unable to deleteTeamMember(): ${err}`});
+    }
+  }
 });
 
 //Middleware function used to check the role of a User of a Team Board
