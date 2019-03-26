@@ -27,17 +27,21 @@ const addTeamBoard = async (team) => {
 };
 
 //Updates the Team Boards information and returns the updated Team from the database
-const updateTeamBoard = async (id, user_id, changes) => {
-  const { team_owner_id } = await getTeamById(id);
-  
-  if(Number(user_id) !== team_owner_id){
-    return null;
-  } else {
-    return db('teams')
+const updateTeamBoard = async (id, changes) => {
+  return db('teams')
       .where({ id })
       .update(changes)
       .then(updated => (updated > 0 ? getTeamById(id) : null ));
-  }
+  // const { team_owner_id } = await getTeamById(id);
+  
+  // if(Number(user_id) !== team_owner_id){
+  //   return null;
+  // } else {
+  //   return db('teams')
+  //     .where({ id })
+  //     .update(changes)
+  //     .then(updated => (updated > 0 ? getTeamById(id) : null ));
+  // }
 };
 
 //Delete the Team board from the database
@@ -172,7 +176,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     })
     .where({ discussion_id: id })
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
-  
+  console.log(posts)
   discussion.post_count = posts.length;
   
   const replies = [];
