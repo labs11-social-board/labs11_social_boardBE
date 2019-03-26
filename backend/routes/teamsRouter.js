@@ -11,6 +11,7 @@ const router = express.Router();
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require("../config/middleware/authenticate.js");
+const { checkIfInTeam } = require("../config/middleware/helpers.js");
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -111,5 +112,24 @@ router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => 
   } catch(err) {
     res.status(500).json({ error: `Unable to getTeamMembers(): ${err}`});
   }
-})
+});
+
+router.post('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
+  const { user_id, team_id } = req.params;
+  const role = 'member';
+  const team_members = await teamMembersDB.getTeamMembers(team_id);
+  
+  if(checkIfInTeam(team_id, user_id, team_members)){
+    res.status(400).json({ error: 'That User is already apart of that Team!' });
+  } else {
+    try {
+      const member = await teamMembersDB.addTeamMember(user_id, team_id, role);
+  
+      res.status(201).json(member);
+    } catch(err) {
+      res.status(500).json({ error: `Unable to addTeamMember(): ${err}`});
+    }
+  }
+});
+
 module.exports = router;

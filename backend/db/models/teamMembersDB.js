@@ -5,10 +5,11 @@ const getTeamMembers = team_id => {
     .where({ team_id });
 };
 
-const addTeamMember = (user_id, team_id, role) => {
+const addTeamMember = async (user_id, team_id, role) => {
   const member = { user_id, team_id, role };
-  return db('team_members')
-    .insert(member);
+  const newMem = await db('team_members').insert(member);
+
+  return getTeamMembers(team_id);
 }
 
 const deleteTeamMember = (user_id, team_id) => {
