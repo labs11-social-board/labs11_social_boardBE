@@ -46,11 +46,11 @@ router.post('/:user_id', authenticate, async (req, res) => {
 // });
 
 //Get Team information by Id
-router.get('/:user_id/:id', authenticate, (req, res) => {
-  const { id } = req.params;
+router.get('/:user_id/:team_id', authenticate, (req, res) => {
+  const { team_id } = req.params;
   
   return teamsDB
-    .getTeamById(id)
+    .getTeamById(team_id)
     .then(team => res.status(200).json(team))
     .catch(err =>
       res.status(500).json({ error: `Failed to get team information: ${err}` })
@@ -91,13 +91,13 @@ router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
 });
 
 //Get the posts for the discussion selected from the Team Board using the discussions ID
-router.get('/discussion/posts/:user_id/:id', authenticate, async (req, res) => {
+router.get('/discussion/posts/:user_id/:discussion_id', authenticate, async (req, res) => {
   const order = req.get('order');
   const orderType = req.get('orderType');
-  const { id, user_id } =  req.params;
+  const { discussion_id, user_id } =  req.params;
   
   try {
-    const posts = await teamsDB.getTeamDiscussionPostsById(id, user_id, order, orderType);
+    const posts = await teamsDB.getTeamDiscussionPostsById(discussion_id, user_id, order, orderType);
 
     res.status(200).json(posts);
 
