@@ -121,7 +121,7 @@ router.get('/discussion/posts/:user_id/:discussion_id', authenticate, async (req
 });
 
 //Get the team members of a Team
-router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
+router.get('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
   const { team_id } = req.params;
 
   try {
@@ -134,16 +134,18 @@ router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => 
 });
 
 //Add a team member to a team
-router.post('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
+router.post('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
   const { user_id, team_id } = req.params;
+  const { team_member_id } = req.body;
   const role = 'member';
+  let user = team_member_id ? team_member_id : user_id; 
   const team_members = await teamMembersDB.getTeamMembers(team_id);
-  
-  if(checkIfInTeam(team_id, user_id, team_members)){
+ 
+  if(checkIfInTeam(team_id, user, team_members)){
     res.status(400).json({ error: 'That User is already apart of that Team!' });
   } else {
     try {
-      const member = await teamMembersDB.addTeamMember(user_id, team_id, role);
+      const member = await teamMembersDB.addTeamMember(user, team_id, role);
   
       res.status(201).json(member);
     } catch(err) {
@@ -182,6 +184,26 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
     }
   }
 });
+
+// //Add a Team member if you are the Team Owner (can also be used if the team is set to private)
+// router.post('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+//   const { team_id } = req.params;
+//   const { team_member_id } = req.body;
+//   const role = 'member';
+//   const team_members = await teamMembersDB.getTeamMembers(team_id);
+  
+//   if(checkIfInTeam(team_id, team_member_id, team_members)){
+//     res.status(400).json({ error: 'That User is already apart of that Team!' });
+//   } else {
+//     try {
+//       const member = await teamMembersDB.addTeamMember(team_member_id, team_id, role);
+  
+//       res.status(201).json(member);
+//     } catch(err) {
+//       res.status(500).json({ error: `Unable to addTeamMember(): ${err}`});
+//     }
+//   }
+// });
 
 async function checkIfPrivate (req, res, next) {
   const { user_id, team_id } = req.params;
