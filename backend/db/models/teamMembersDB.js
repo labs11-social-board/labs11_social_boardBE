@@ -5,6 +5,12 @@ const getTeamMembers = team_id => {
     .where({ team_id });
 };
 
+const getTeamMember = (user_id, team_id) => {
+  return db('team_members')
+    .where({ user_id, team_id })
+    .first();
+}
+
 const addTeamMember = async (user_id, team_id, role) => {
   const member = { user_id, team_id, role };
   const newMem = await db('team_members').insert(member);
@@ -20,6 +26,7 @@ const deleteTeamMember = async (user_id, team_id) => {
 
 module.exports = {
   getTeamMembers,
+  getTeamMember,
   addTeamMember,
   deleteTeamMember,
 };

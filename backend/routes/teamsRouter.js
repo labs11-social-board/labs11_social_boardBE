@@ -147,4 +147,20 @@ router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) 
   }
 });
 
+//Delete a Team member if you are the Team Owner
+router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+
+});
+
+async function checkRole (req, res, next) {
+  const { user_id, team_id } = req.params;
+
+  const member = await teamMembersDB.getTeamMember(user_id, team_id);
+  
+  if(member.role !== 'team_owner'){
+    res.status(401).json({ error: 'Only Team Owners can do this'});
+  } else {
+    next();
+  }
+}
 module.exports = router;
