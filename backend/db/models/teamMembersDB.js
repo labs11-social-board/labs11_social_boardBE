@@ -12,10 +12,10 @@ const addTeamMember = async (user_id, team_id, role) => {
   return getTeamMembers(team_id);
 }
 
-const deleteTeamMember = (user_id, team_id) => {
-  return db('team_members')
-    .where({ user_id, team_id })
-    .del();
+const deleteTeamMember = async (user_id, team_id) => {
+  const del = await db('team_members').where({ user_id, team_id }).del();
+
+  return getTeamMembers(team_id);
 }
 
 module.exports = {

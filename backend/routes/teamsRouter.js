@@ -102,6 +102,7 @@ router.get('/discussion/posts/:user_id/:id', authenticate, async (req, res) => {
   }
 });
 
+//Get the team members of a Team
 router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
   const { team_id } = req.params;
 
@@ -114,6 +115,7 @@ router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => 
   }
 });
 
+//Add a team member to a team
 router.post('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
   const { user_id, team_id } = req.params;
   const role = 'member';
@@ -129,6 +131,18 @@ router.post('/team_members/:user_id/:team_id', authenticate, async (req, res) =>
     } catch(err) {
       res.status(500).json({ error: `Unable to addTeamMember(): ${err}`});
     }
+  }
+});
+
+router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
+  const { user_id, team_id } = req.params;
+
+  try {
+    const team_members = await teamMembersDB.deleteTeamMember(user_id, team_id);
+
+    res.status(200).json({ message: 'Deleted the Team Member from the Team', team_members });
+  } catch (err) {
+    res.status(500).json({ error: `Unable to deleteTeamMember(): ${err}`});
   }
 });
 
