@@ -46,7 +46,7 @@ router.post('/:user_id', authenticate, async (req, res) => {
 // });
 
 //Get Team information by Id
-router.get('/:user_id/:team_id', authenticate, (req, res) => {
+router.get('/:user_id/:team_id', authenticate, checkIfPrivate, (req, res) => {
   const { team_id } = req.params;
   
   return teamsDB
@@ -169,4 +169,19 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
   }
 });
 
+async function checkIfPrivate (req, res, next) {
+  const { user_id, team_id } = req.params;
+  const team = await teamsDB.getTeamById(team_id);
+
+  if(team.isPrivate){
+    const member = await teamMembersDB.getTeamMember(user_id, team_id);
+    if(member){
+      next();
+    } else {
+      res.status(401).json({ error: 'This Team is Private, you must be apart of the Team to view it'})
+    }
+  } else {
+    next();
+  }
+}
 module.exports = router;
