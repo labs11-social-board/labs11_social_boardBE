@@ -104,6 +104,10 @@ const findById = id => {
       'u.id',
       'u.email',
       'u.username',
+      'u.bio',
+      'u.github',
+      'u.twitter',
+      'u.linkedin',
       'u.status',
       'us.avatar',
       'us.signature',
@@ -339,6 +343,34 @@ const updateAvatar = (user_id, avatar) => {
     .update({ avatar }, ['avatar']); // update the avatar, returning the updated avatar
 };
 
+//Update Bio
+const updateBio = (id, bio) => {
+  return db('users')
+    .where({ id })
+    .update({ bio }, ['bio']);
+};
+
+//Update Github
+const updateGithub = (id, github) => {
+  return db('users')
+  .where({ id })
+  .update({ github }, ['github']);
+};
+
+//Update Twitter
+const updateTwitter = (id, twitter) => {
+  return db('users')
+    .where({ id })
+    .update({ twitter }, ['twitter']);
+};
+
+//Update Linkedin
+const updateLinkedin = (id, linkedin) => {
+  return db('users')
+    .where({ id })
+    .update({ linkedin }, ['linkedin']);
+};
+
 //Update signature
 const updateSignature = (user_id, signature) => {
   return db('user_settings')
@@ -407,5 +439,9 @@ module.exports = {
   updatePassword,
   updateEmail,
   updateLastLogin,
+  updateBio,
+  updateGithub,
+  updateTwitter,
+  updateLinkedin,
   remove
 };
