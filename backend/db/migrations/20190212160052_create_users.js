@@ -10,7 +10,7 @@ exports.up = function (knex, Promise) {
       .unique();
 
     // password
-    tbl.string('password', 128).notNullable();
+    tbl.string('password', 128);
 
     // email
     tbl.string('email', 128).unique();
