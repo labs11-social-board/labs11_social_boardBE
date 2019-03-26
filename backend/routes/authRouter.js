@@ -414,12 +414,13 @@ router.post('/auth0-login', async (req, res) => {
         status: 'active',
         uuid: uuidv4(), // for use with pusher
       };
-
+      
       const accountCreatedAt = Date.now();
 
       // user account created_at
       newUserCreds.created_at = accountCreatedAt;
       newUserCreds.last_login = accountCreatedAt;
+      
       return db
         .insert(newUserCreds) // [ { id: 1, username: 'username' } ]
         .then(async userAddedResults => {
@@ -430,7 +431,7 @@ router.post('/auth0-login', async (req, res) => {
             userSettings.subscribed_at = accountCreatedAt;
             await db.addUserSettings(userSettings);
           }
-
+          
           await categoryFollowsDB.addDefaultCategoryFollows(userAddedResults[0].id);
 
           return db
