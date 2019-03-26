@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require("dotenv").config();
 const express = require("express");
-const { teamsDB } = require("../db/models/index.js");
+const { teamsDB, teamMembersDB } = require("../db/models/index.js");
 
 const router = express.Router();
 
@@ -101,4 +101,15 @@ router.get('/discussion/posts/:user_id/:id', authenticate, async (req, res) => {
   }
 });
 
+router.get('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
+  const { team_id } = req.params;
+
+  try {
+    const members = await teamMembersDB.getTeamMembers(team_id);
+
+    res.status(200).json(members);
+  } catch(err) {
+    res.status(500).json({ error: `Unable to getTeamMembers(): ${err}`});
+  }
+})
 module.exports = router;
