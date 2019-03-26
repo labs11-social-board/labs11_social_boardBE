@@ -17,6 +17,20 @@ const { checkIfInTeam, checkRole } = require("../config/middleware/helpers.js");
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
 
+//Gets all the teams that are not Private
+router.get('/teams/:user_id', authenticate, async (req, res) => {
+  try {
+    const teams = await teamsDB.getTeams();
+    const notPrivateTeams = teams.filter(team => {
+      if(!team.isPrivate) return team;
+    });
+
+    res.status(200).json({ teams: notPrivateTeams });
+  } catch(err) {
+    res.status(500).json({ error: `Unable to getTeams(): ${err}`});
+  }
+});
+
 //Add a Team to the Database
 router.post('/:user_id', authenticate, async (req, res) => {
   const team = req.body;
