@@ -99,13 +99,15 @@ router.get('/category/:category_id/:user_id', authenticate, (req, res) => {
 });
 
 //Add Discussion
-router.post('/:user_id', authenticate, (req, res) => {
+router.post('/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
-  const { dBody, category_id } = req.body;
+  const { dBody, category_id, team_id } = req.body;
   const created_at = Date.now();
   if (!dBody) return res.status(400).json({ error: 'discussion body must not be empty.' });
-  const newDiscussion = { user_id, category_id, body: dBody, created_at };
-  return discussionsDB
+  const newDiscussion = { user_id, category_id, team_id, body: dBody, created_at };
+  
+  if(newDiscussion.category_id){
+    return discussionsDB
     .insert(newDiscussion)
     .then(async newId => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
@@ -125,6 +127,16 @@ router.post('/:user_id', authenticate, (req, res) => {
       return res.status(201).json(newId);
     })
     .catch(err => res.status(500).json({ error: `Failed to insert(): ${err}` }));
+  } else {
+    try {
+      
+      const discussion = await discussionsDB.insert(newDiscussion);
+
+      res.status(201).json(discussion);
+    } catch(err){
+      res.status(500).json({ error: `failed to insert(): ${err}` });
+    }
+  }
 });
 
 // edit post with given post id

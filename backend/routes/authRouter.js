@@ -266,6 +266,10 @@ router.post('/login', async (req, res) => {
                   id: user.id,
                   token,
                   username: user.username,
+                  bio: foundUser[0].bio,
+                  github: foundUser[0].github,
+                  twitter: foundUser[0].twitter,
+                  linkedin: foundUser[0].linkedin,
                   avatar: user.avatar,
                   isAuth0: foundUser[0].password ? false : true,
                   email_confirm: foundUser[0].email_confirm,
@@ -410,12 +414,13 @@ router.post('/auth0-login', async (req, res) => {
         status: 'active',
         uuid: uuidv4(), // for use with pusher
       };
-
+      
       const accountCreatedAt = Date.now();
 
       // user account created_at
       newUserCreds.created_at = accountCreatedAt;
       newUserCreds.last_login = accountCreatedAt;
+      
       return db
         .insert(newUserCreds) // [ { id: 1, username: 'username' } ]
         .then(async userAddedResults => {
@@ -426,7 +431,7 @@ router.post('/auth0-login', async (req, res) => {
             userSettings.subscribed_at = accountCreatedAt;
             await db.addUserSettings(userSettings);
           }
-
+          
           await categoryFollowsDB.addDefaultCategoryFollows(userAddedResults[0].id);
 
           return db

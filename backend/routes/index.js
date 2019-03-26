@@ -12,6 +12,8 @@ const discussionFollowsRouter = require('./discussionFollowsRouter.js');
 const categoryFollowsRouter = require('./categoryFollowsRouter.js');
 const userNotificationsRouter = require('./userNotificationsRouter.js');
 const userFollowersRouter = require('./userFollowersRouter.js');
+const teamsRouter = require('./teamsRouter');
+
 module.exports = {
   authRouter,
   categoriesRouter,
@@ -27,4 +29,5 @@ module.exports = {
   categoryFollowsRouter,
   userNotificationsRouter,
   userFollowersRouter,
+  teamsRouter,
 };
