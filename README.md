@@ -249,7 +249,14 @@ Expects header :
 }
 ```
 
-Returns the newly updat Team members list:
+Can also Expect body : 
+```javascript
+{
+  team_member_id: number //This is used for another user already apart of a Team to add another User to the Team
+}
+```
+
+Returns the newly updated Team members list:
 ```javascript
 [
   {
