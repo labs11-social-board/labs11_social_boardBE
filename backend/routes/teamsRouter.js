@@ -11,11 +11,25 @@ const router = express.Router();
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require("../config/middleware/authenticate.js");
-const { checkIfInTeam } = require("../config/middleware/helpers.js");
+const { checkIfInTeam, checkRole } = require("../config/middleware/helpers.js");
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
+
+//Gets all the teams that are not Private
+router.get('/teams/:user_id', authenticate, async (req, res) => {
+  try {
+    const teams = await teamsDB.getTeams();
+    const notPrivateTeams = teams.filter(team => {
+      if(!team.isPrivate) return team;
+    });
+
+    res.status(200).json({ teams: notPrivateTeams });
+  } catch(err) {
+    res.status(500).json({ error: `Unable to getTeams(): ${err}`});
+  }
+});
 
 //Add a Team to the Database
 router.post('/:user_id', authenticate, async (req, res) => {
@@ -46,7 +60,7 @@ router.post('/:user_id', authenticate, async (req, res) => {
 // });
 
 //Get Team information by Id
-router.get('/:user_id/:team_id', authenticate, (req, res) => {
+router.get('/:user_id/:team_id', authenticate, checkIfPrivate, (req, res) => {
   const { team_id } = req.params;
   
   return teamsDB
@@ -169,16 +183,17 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
   }
 });
 
-//Middleware function used to check the role of a User of a Team Board
-async function checkRole (req, res, next) {
+async function checkIfPrivate (req, res, next) {
   const { user_id, team_id } = req.params;
+  const team = await teamsDB.getTeamById(team_id);
 
-  const member = await teamMembersDB.getTeamMember(user_id, team_id);
-
-  if(!member) res.status(401).json({ error: 'You are not a Member of this Team'});
-
-  if(member.role !== 'team_owner'){
-    res.status(401).json({ error: 'Only Team Owners can do this'});
+  if(team.isPrivate){
+    const member = await teamMembersDB.getTeamMember(user_id, team_id);
+    if(member){
+      next();
+    } else {
+      res.status(401).json({ error: 'This Team is Private, you must be apart of the Team to view it'})
+    }
   } else {
     next();
   }
