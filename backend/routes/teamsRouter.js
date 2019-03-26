@@ -137,8 +137,10 @@ router.get('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, asyn
 router.post('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
   const { user_id, team_id } = req.params;
   const { team_member_id } = req.body;
+  
   const role = 'member';
   let user = team_member_id ? team_member_id : user_id; 
+
   const team_members = await teamMembersDB.getTeamMembers(team_id);
  
   if(checkIfInTeam(team_id, user, team_members)){
