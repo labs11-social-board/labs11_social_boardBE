@@ -23,6 +23,7 @@ const removeFollow = (user_id, following_id) => {
 const followUser = async (user_id, following_id) => {
     await removeFollow(user_id, following_id);
     await db("user_followers").insert([{user_id, following_id}]);
+    return getUserFollowers(user_id);
 };
 
 
