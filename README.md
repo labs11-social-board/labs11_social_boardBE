@@ -63,6 +63,7 @@ Returns the created Team:
 }
 ```
 ### GET Teams /team/teams/:user_id 
+
 - **GET** 
 
 Expects params: user_id (this is needed for authentication)
