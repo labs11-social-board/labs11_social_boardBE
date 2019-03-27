@@ -4,10 +4,10 @@ const db = require('../dbConfig.js');
 const getUserFollowers = user_id => {
   /*The user being followed id, username and avatar link is returned so that this information can be used on the front end */
   return db("user_followers")
-    .innerJoin("users", "user_followers.user_id", "users.id")
+    .innerJoin("users", "user_followers.following_id", "users.id")
     .where({"user_followers.user_id": user_id})
     .innerJoin("user_settings", "users.id", "user_settings.user_id")
-    .select(["user_followers.user_id", "users.id", "user_settings.avatar"])
+    .select(["user_followers.following_id", "users.username", "user_settings.avatar"])
 };
 
 //Removes a follow connection between a user.
