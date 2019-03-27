@@ -183,7 +183,7 @@ Expects header :
 example : 
 ```javascript
 {
-	Authorization: jsonWebToken,
+  Authorization: jsonWebToken,
   order: "name",
   orderType: "asc"
 }

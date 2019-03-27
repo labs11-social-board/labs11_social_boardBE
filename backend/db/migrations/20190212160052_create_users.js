@@ -26,6 +26,9 @@ exports.up = function (knex, Promise) {
     tbl.text('twitter');
     tbl.text('linkedin');
 
+    //User Location Optional (to be used for followers List)
+    tbl.string('location', 128);
+
     // Date in milliseconds
     tbl.bigInteger('created_at').notNullable();
 
