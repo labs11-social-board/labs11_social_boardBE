@@ -11,10 +11,14 @@ const getUserFollowers = user_id => {
 };
 
 //Removes a follow connection between a user.
-const removeFollow = (user_id, following_id) => {
-  return db("user_followers")
+const removeConnection = (user_id, following_id) => {
+  db("user_followers")
     .where({ user_id, following_id })
     .del();
+}
+const removeFollow = async (user_id, following_id) => {
+  await removeConnection(user_id, following_id);
+  return getUserFollowers(user_id); 
 };
 
 
