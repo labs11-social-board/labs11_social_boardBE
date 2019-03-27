@@ -14,14 +14,6 @@ exports.up = function(knex, Promise) {
       .inTable('categories')
       .onDelete('CASCADE');
 
-    // teams reference key
-    tbl
-      .integer('team_id')
-      .unsigned()
-      .references('id')
-      .inTable('teams')
-      .onDelete('CASCADE');
-
     // users reference key
     tbl
       .integer('user_id')

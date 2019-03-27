@@ -13,7 +13,7 @@ exports.up = function (knex, Promise) {
     tbl.string('password', 128);
 
     // email
-    tbl.string('email', 128).unique();
+    tbl.string('email', 128).unique().notNullable();
 
     // inactive, active, and banned
     tbl.string('status', 16);
