@@ -77,17 +77,19 @@ Expects header :
 
 Returns a list of all the Public Teams:
 ```javascript
-[
-  {
-    "id": 1,
-    "team_name": "labs11",
-    "wiki": "Labs 11 is the best labs group to date!",
-    "isPrivate": false,
-    "created_at": "2019-03-26T20:17:00.543Z",
-    "updated_at": null
-  },
-  ...
-]
+{
+  teams: [
+    {
+      "id": 1,
+      "team_name": "labs11",
+      "wiki": "Labs 11 is the best labs group to date!",
+      "isPrivate": false,
+      "created_at": "2019-03-26T20:17:00.543Z",
+      "updated_at": null
+    },
+    ...
+  ]
+}
 ```
 
 ### GET Team /team/:user_id/:team_id
