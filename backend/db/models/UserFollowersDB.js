@@ -21,6 +21,7 @@ const removeFollow = (user_id, following_id) => {
 
 //Adds a follow connection between a user
 const followUser = async (user_id, following_id) => {
+    await removeFollow(user_id, following_id);
     await db("user_followers").insert([{user_id, following_id}]);
 };
 
