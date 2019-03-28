@@ -174,6 +174,14 @@ const getUserType = user_id => {
     .first();
 };
 
+//get all teams a user is in with a given id
+const getUserTeams = user_id => {
+  return db('team_members as tm')
+    .select('tm.team_id', 't.team_name')
+    .join('teams as t', 't.id', 'tm.team_id')
+    .where('tm.user_id', user_id);
+};
+
 // change user_type in user_settings for matching user ID
 const changeUserType = (user_id, user_type) => {
   return db('user_settings')
@@ -418,6 +426,7 @@ module.exports = {
   getUsers,
   getPassword,
   getUserName,
+  getUserTeams,
   findById,
   changeUserType,
   findByUsername,
