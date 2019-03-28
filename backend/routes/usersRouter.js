@@ -27,6 +27,7 @@ const {
   transporter,
   getMailOptions,
 } = require('../config/nodeMailerConfig.js');
+const { isUrl } = require('../config/globals.js');
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -208,12 +209,20 @@ router.get('/search-all', (req, res) => {
 // updates a user
 router.put('/user/:user_id', async (req, res) => {
   const { user_id } = req.params;
-  const { username, oldPassword, newPassword, email, status } = req.body;
+  const { username, oldPassword, newPassword, email, status, bio, github, twitter, linkedin, location } = req.body;
   let newUser = {};
   let currentPW;
+  newUser.location = location;
   newUser.status = status;
   if (username) newUser.username = username;
   if (email) newUser.email = email;
+
+  if(bio) newUser.bio = bio;
+
+  if(isUrl(github)) newUser.github = github;
+  if(isUrl(twitter)) newUser.twitter = twitter;
+  if(isUrl(linkedin)) newUser.linkedin = linkedin;
+
   if (oldPassword && (!newPassword || newPassword === '')) {
     return res.status(400).json({ error: 'New password must not be empty.' });
   }
@@ -398,6 +407,88 @@ router.put('/avatar-url/:user_id', authenticate, async (req, res) => {
     .catch(err =>
       res.status(500).json({ error: `Failed to updateAvatar(): ${err}` })
     );
+});
+
+// Update the users Bio for their profile page
+router.put('/bio/:user_id', authenticate, async (req, res) => {
+  const { user_id } = req.params;
+  const { bio } = req.body;
+  
+  if(!bio){
+    res.status(400).json({ error: 'Please provided a Bio for the User' });
+  } else {
+    try {
+      
+      const userBio = await usersDB.updateBio(user_id, bio);
+      
+      res.status(200).json(userBio);
+    } catch(err) {
+      res.status(500).json({ error: `Failed to updateBio(): ${err}`});
+    }
+  }
+});
+
+// Update the users Github information
+router.put('/github/:user_id', authenticate, async (req, res) => {
+  const { user_id } = req.params;
+  const { github } = req.body;
+
+  if(!github){
+    res.status(400).json({ error: 'Please provided a Github link for the User' });
+  } else if(!isUrl(github)) {
+    res.status(400).json({ error: 'The request body must be a URL '});
+  } else {
+    try {
+      
+      const userGithub = await usersDB.updateGithub(user_id, github);
+      
+      res.status(200).json(userGithub);
+    } catch(err) {
+      res.status(500).json({ error: `Failed to updateGithub(): ${err}`});
+    }
+  }
+});
+
+//Update the users twitter information
+router.put('/twitter/:user_id', authenticate, async (req, res) => {
+  const { user_id } = req.params;
+  const { twitter } = req.body;
+
+  if(!twitter){
+    res.status(400).json({ error: 'Please provided a Twitter link for the User' });
+  } else if(!isUrl(twitter)) {
+    res.status(400).json({ error: 'The request body must be a URL '});
+  } else {
+    try {
+      
+      const userTwitter = await usersDB.updateTwitter(user_id, twitter);
+      
+      res.status(200).json(userTwitter);
+    } catch(err) {
+      res.status(500).json({ error: `Failed to updateTwitter(): ${err}`});
+    }
+  }
+});
+
+//Update the users linkedin information
+router.put('/linkedin/:user_id', authenticate, async (req, res) => {
+  const { user_id } = req.params;
+  const { linkedin } = req.body;
+
+  if(!linkedin){
+    res.status(400).json({ error: 'Please provided a Linkedin link for the User' });
+  } else if(!isUrl(linkedin)) {
+    res.status(400).json({ error: 'The request body must be a URL '});
+  } else {
+    try {
+      
+      const userLinkedin = await usersDB.updateLinkedin(user_id, linkedin);
+      
+      res.status(200).json(userLinkedin);
+    } catch(err) {
+      res.status(500).json({ error: `Failed to updateLinkedin(): ${err}`});
+    }
+  }
 });
 
 // Update last login
