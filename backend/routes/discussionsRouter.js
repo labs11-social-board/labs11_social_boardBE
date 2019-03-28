@@ -35,7 +35,6 @@ const getUniqueFollowers = (array1, array2, userId) => {
    }
 
    for(let user of array2){
-    const temp = {}; 
     if((!(user.id in keepIds))){
       if(user.id !== userId){
         keepIds[user.id] = user.uuid; 
