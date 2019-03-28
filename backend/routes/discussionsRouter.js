@@ -14,6 +14,7 @@ const pusher = require('../config/pusherConfig.js');
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require('../config/middleware/authenticate.js');
+const { checkRole } = require('../config/middleware/helpers.js');
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -99,7 +100,7 @@ router.get('/category/:category_id/:user_id', authenticate, (req, res) => {
 });
 
 //Add Discussion
-router.post('/:user_id', authenticate, async (req, res) => {
+router.post('/:user_id', authenticate, checkRole, async (req, res) => {
   const { user_id } = req.params;
   const { dBody, category_id, team_id } = req.body;
   const created_at = Date.now();
