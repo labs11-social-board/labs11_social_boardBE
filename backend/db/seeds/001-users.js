@@ -47,7 +47,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'carlos',
     password: bcrypt.hashSync('carlos', numOfHashes),
-    email: null,
+    email: 'carlos@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -62,7 +62,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'david',
     password: bcrypt.hashSync('david', numOfHashes),
-    email: null,
+    email: 'david@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -77,7 +77,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'huff',
     password: bcrypt.hashSync('huff', numOfHashes),
-    email: null,
+    email: 'huff@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -92,7 +92,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'lucas',
     password: bcrypt.hashSync('lucas', numOfHashes),
-    email: null,
+    email: 'lucas@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),

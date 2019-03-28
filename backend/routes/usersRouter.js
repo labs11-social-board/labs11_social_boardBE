@@ -209,9 +209,10 @@ router.get('/search-all', (req, res) => {
 // updates a user
 router.put('/user/:user_id', async (req, res) => {
   const { user_id } = req.params;
-  const { username, oldPassword, newPassword, email, status, bio, github, twitter, linkedin } = req.body;
+  const { username, oldPassword, newPassword, email, status, bio, github, twitter, linkedin, location } = req.body;
   let newUser = {};
   let currentPW;
+  newUser.location = location;
   newUser.status = status;
   if (username) newUser.username = username;
   if (email) newUser.email = email;

@@ -13,7 +13,7 @@ exports.up = function (knex, Promise) {
     tbl.string('password', 128);
 
     // email
-    tbl.string('email', 128).unique();
+    tbl.string('email', 128).unique().notNullable();
 
     // inactive, active, and banned
     tbl.string('status', 16);
@@ -25,6 +25,9 @@ exports.up = function (knex, Promise) {
     tbl.text('github');
     tbl.text('twitter');
     tbl.text('linkedin');
+
+    //User Location Optional (to be used for followers List)
+    tbl.string('location', 128);
 
     // Date in milliseconds
     tbl.bigInteger('created_at').notNullable();
