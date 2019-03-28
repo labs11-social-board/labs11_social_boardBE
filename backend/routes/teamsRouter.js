@@ -118,10 +118,7 @@ router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
 });
 
 //Get the posts for the discussion selected from the Team Board using the discussions ID
-router.get(
-  '/discussion/posts/:user_id/:discussion_id',
-  authenticate,
-  async (req, res) => {
+router.get('/discussion/posts/:user_id/:discussion_id', authenticate, async (req, res) => {
     const order = req.get('order');
     const orderType = req.get('orderType');
     const { discussion_id, user_id } = req.params;
@@ -144,11 +141,7 @@ router.get(
 );
 
 //Get the team members of a Team
-router.get(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  checkIfPrivate,
-  async (req, res) => {
+router.get('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
     const { team_id } = req.params;
 
     try {
@@ -162,11 +155,7 @@ router.get(
 );
 
 //Add a team member to a team
-router.post(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  checkIfPrivate,
-  async (req, res) => {
+router.post('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
     const { user_id, team_id } = req.params;
     const { team_member_id } = req.body;
 
@@ -192,22 +181,12 @@ router.post(
 );
 
 //Delete a team member from a team
-router.delete(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  async (req, res) => {
+router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
     const { user_id, team_id } = req.params;
-
     try {
-      const team_members = await teamMembersDB.deleteTeamMember(
-        user_id,
-        team_id
-      );
+      const team_members = await teamMembersDB.deleteTeamMember(user_id, team_id);
 
-      res.status(200).json({
-        message: 'Deleted the Team Member from the Team',
-        team_members
-      });
+      res.status(200).json({ message: 'Deleted the Team Member from the Team', team_members });
     } catch (err) {
       res.status(500).json({ error: `Unable to deleteTeamMember(): ${err}` });
     }
@@ -215,11 +194,7 @@ router.delete(
 );
 
 //Delete a Team member if you are the Team Owner
-router.delete(
-  '/team_members/team_owner/:user_id/:team_id',
-  authenticate,
-  checkRole,
-  async (req, res) => {
+router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
     const { team_id } = req.params;
     const { team_member_id } = req.body;
 
