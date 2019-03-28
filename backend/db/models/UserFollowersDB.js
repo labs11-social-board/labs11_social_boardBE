@@ -40,7 +40,7 @@ discussionsRouter and trigger notifications for each user.
 return db("user_followers")
   .innerJoin("users", "user_followers.user_id", "users.id")
   .where({"user_followers.following_id": following_id})
-  .select(["users.uuid"])
+  .select(["users.uuid", "users.id"])
 };
 
 
