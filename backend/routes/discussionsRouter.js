@@ -18,18 +18,32 @@ const { checkRole } = require('../config/middleware/helpers.js');
 
 //Used to make sure a user will get one notification and one notification only. 
 const getUniqueFollowers = (array1, array2, userId) => {
+  console.log(`This is the user id ${userId}`);
   /*array1 and array2 are arrays of user id and uuid   userId will be used to filter out the user final array returned shouldn't feature the 
    userId because this would be the user that is making the discussion/post. They don't need to be alerted having already created the post. */
-   const combinedFollows = [...array1, ...array2];
    const keepIds = {}; //keeps track of userIds that have already been 
    //instead of using an Array using a hash table/ Object allos for search complexity to occur in O(1)
    const finalFollows = []; 
-   for(let user of combinedFollows){
-     if(user.id !== userId && (!(user.id in keepIds))){
-       keepIds[user.id] = user.uuid; 
-       finalFollows.push(user)
+   for(let user of array1){
+     if((!(user.user_id in keepIds))){
+       if(user.user_id !== userId){
+         keepIds[user.user_id] = user.uuid; 
+         const temp = {user_id : user.user_id, uuid : user.uuid};
+         finalFollows.push(temp);
+       }
      }
    }
+
+   for(let user of array2){
+    const temp = {}; 
+    if((!(user.id in keepIds))){
+      if(user.id !== userId){
+        keepIds[user.id] = user.uuid; 
+        const temp = {user_id : user.id, uuid : user.uuid};
+        finalFollows.push(temp);
+      }
+    }
+  }
 
    return finalFollows; 
 }
@@ -132,6 +146,7 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
       const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
       const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
+      console.log(finalFollowers)
       // catFollowers.forEach(async user => {
         finalFollowers.forEach(async user => {
         const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
