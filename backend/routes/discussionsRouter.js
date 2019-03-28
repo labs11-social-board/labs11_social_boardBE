@@ -16,6 +16,24 @@ const pusher = require('../config/pusherConfig.js');
 const { authenticate } = require('../config/middleware/authenticate.js');
 const { checkRole } = require('../config/middleware/helpers.js');
 
+//Used to make sure a user will get one notification and one notification only. 
+const getUniqueFollowers = (array1, array2, userId) => {
+  /*array1 and array2 are arrays of user id and uuid   userId will be used to filter out the user final array returned shouldn't feature the 
+   userId because this would be the user that is making the discussion/post. They don't need to be alerted having already created the post. */
+   const combinedFollows = [...array1, ...array2];
+   const keepIds = {}; //keeps track of userIds that have already been 
+   //instead of using an Array using a hash table/ Object allos for search complexity to occur in O(1)
+   const finalFollows = []; 
+   for(let user of combinedFollows){
+     if(user.id !== userId && (!(user.id in keepIds))){
+       keepIds[user.id] = user.uuid; 
+       finalFollows.push(user)
+     }
+   }
+
+   return finalFollows; 
+}
+
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
@@ -112,7 +130,10 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     .insert(newDiscussion)
     .then(async newId => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
-      catFollowers.forEach(async user => {
+      const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
+      const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
+      // catFollowers.forEach(async user => {
+        finalFollowers.forEach(async user => {
         const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
         const notifications = await userNotificationsDB.getCount(user.user_id);
         if (parseInt(notifications.count) >= maxNumOfNotifications) {
@@ -125,22 +146,22 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
           null,
         );
       });
-      //Go and get the users following the user making the discussion. 
-      const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
-      //Create a newNotification for each user following the user add notification and trigger pusher alert. 
-      usersFollowing.forEach(async user => {
-        const newNotification = {user_id: user.id, category_id, discussion_id: newId[0], created_at};
-        const notifications = await userNotificationsDB.getCount(user.id);
-        if (parseInt(notifications.count) >= maxNumOfNotifications){
-          await userNotificationsDB.removeOldest(user.id);
-        }
-        await userNotificationsDB.add(newNotification);
-        pusher.trigger(
-          `user-${user.uuid}`,
-          `notification`,
-          null,
-        );
-      });
+      // //Go and get the users following the user making the discussion. 
+      // const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
+      // //Create a newNotification for each user following the user add notification and trigger pusher alert. 
+      // usersFollowing.forEach(async user => {
+      //   const newNotification = {user_id: user.id, category_id, discussion_id: newId[0], created_at};
+      //   const notifications = await userNotificationsDB.getCount(user.id);
+      //   if (parseInt(notifications.count) >= maxNumOfNotifications){
+      //     await userNotificationsDB.removeOldest(user.id);
+      //   }
+      //   await userNotificationsDB.add(newNotification);
+      //   pusher.trigger(
+      //     `user-${user.uuid}`,
+      //     `notification`,
+      //     null,
+      //   );
+      // });
       return res.status(201).json(newId);
     })
     .catch(err => res.status(500).json({ error: `Failed to insert(): ${err}` }));
