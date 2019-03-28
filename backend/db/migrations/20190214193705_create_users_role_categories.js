@@ -10,7 +10,6 @@ exports.up = function(knex, Promise) {
     tbl
       .integer('category_id')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('categories')
       .onDelete('CASCADE');
@@ -24,8 +23,8 @@ exports.up = function(knex, Promise) {
       .inTable('users')
       .onDelete('CASCADE');
 
-    // Role: super_moderator and moderator Only
-    tbl.string('role', 32).notNullable();
+    // Role: team_owner or member
+    tbl.string('role', 50).notNullable();
   });
 };
 

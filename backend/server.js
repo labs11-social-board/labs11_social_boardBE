@@ -1,12 +1,12 @@
 /***************************************************************************************************
  ******************************************* dependencies ******************************************
  **************************************************************************************************/
-require('dotenv').config();
-const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
-const { errorHandler } = require('./config/middleware/errorHandler.js');
+require("dotenv").config();
+const express = require("express");
+const morgan = require("morgan");
+const helmet = require("helmet");
+const cors = require("cors");
+const { errorHandler } = require("./config/middleware/errorHandler.js");
 
 /***************************************************************************************************
  ******************************************** middleware ********************************************
@@ -14,14 +14,14 @@ const { errorHandler } = require('./config/middleware/errorHandler.js');
 const server = express();
 server.use(helmet()); // hides your tech stack from sniffers
 server.use(express.json()); // built-in
-server.use(morgan('dev')); // logging middleware for console
+server.use(morgan("dev")); // logging middleware for console
 server.use(cors()); // allows domains/ports to connect to your server
 
 /***************************************************************************************************
  ********************************************** routes **********************************************
  **************************************************************************************************/
 // Home Page
-server.get('/', (req, res) => {
+server.get("/", (req, res) => {
   res.send(`WEB APP IS RUNNING...`);
 });
 
@@ -40,6 +40,8 @@ const {
   categoryFollowsRouter,
   userNotificationsRouter,
   replyVoteRouter,
+  userFollowersRouter,
+  teamsRouter,
 } = require('./routes/index.js');
 
 //Auth Route
@@ -62,6 +64,10 @@ server.use('/tests', testRouter);
 //Users Routes
 server.use('/users', usersRouter);
 server.use('/user-notifications', userNotificationsRouter);
+//Users Follows 
+server.use('/followers', userFollowersRouter);
+//Team Board Route
+server.use('/team', teamsRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 

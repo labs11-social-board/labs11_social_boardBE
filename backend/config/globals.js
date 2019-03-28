@@ -91,6 +91,16 @@ const getRandomUserId = () => {
   return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
 };
 
+const isUrl = (str) => {
+  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?'+ // port
+  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
 // Seeds
 // prettier-ignore
 const categoryNames = ['Tech Talk', 'Sports', 'Cars', 'Anime', 'TV Shows', 'Movies', 'Music'];
@@ -138,6 +148,7 @@ module.exports = {
   // methods
   getRandomIntInclusive,
   getRandomUserId,
+  isUrl,
 
   // seeds
   categoryNames,

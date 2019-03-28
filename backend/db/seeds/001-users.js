@@ -33,6 +33,8 @@ const generateSeeds = () => {
     email: 'james@example.com',
     status: 'active',
     uuid: uuidv4(),
+    bio: 'My name is james and im a pretty cool dude',
+    github: 'https://github.com/labs11-social-board',
     last_login: Date.now(),
     created_at: Date.parse(
       faker.date.between(
@@ -45,7 +47,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'carlos',
     password: bcrypt.hashSync('carlos', numOfHashes),
-    email: null,
+    email: 'carlos@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -60,7 +62,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'david',
     password: bcrypt.hashSync('david', numOfHashes),
-    email: null,
+    email: 'david@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -75,7 +77,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'huff',
     password: bcrypt.hashSync('huff', numOfHashes),
-    email: null,
+    email: 'huff@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
@@ -90,7 +92,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'lucas',
     password: bcrypt.hashSync('lucas', numOfHashes),
-    email: null,
+    email: 'lucas@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
