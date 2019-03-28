@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require('dotenv').config();
 const express = require('express');
-const { discussionsDB, userNotificationsDB, categoryFollowsDB, UserFollowersDB } = require('../db/models/index.js');
+const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -126,7 +126,7 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
         );
       });
       //Go and get the users following the user making the discussion. 
-      const usersFollowing = await UserFollowersDB.getUsersFollowingUser(user_id);
+      const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
       //Create a newNotification for each user following the user add notification and trigger pusher alert. 
       usersFollowing.forEach(async user => {
         const newNotification = {user_id: user.id, category_id, discussion_id: newId[0], created_at};
