@@ -1,8 +1,38 @@
 const db = require('../dbConfig.js');
 
 //returns all the Teams in the teams table in the database
-const getTeams = () => {
-  return db('teams');
+const getTeams = async (order, orderType) => {
+  const postsQuery = db('posts')
+    .select('discussion_id')
+    .count('id as post_count')
+    .groupBy('discussion_id');
+
+  const postCountQuery = db('discussions as d')
+    .select('d.team_id')
+    .sum('p.post_count as post_count')
+    .join(postsQuery.as('p'), function() {
+      this.on('p.discussion_id', '=', 'd.id');
+    })
+    .groupBy('d.team_id')
+    .orderBy('d.team_id');
+
+  const teams = await db('teams as t')
+    .select(
+      't.team_name',
+      't.id',
+      't.isPrivate',
+      't.created_at',
+      't.updated_at',
+      'pc.post_count')
+    .count('d.id as discussion_count')
+    .join('discussions as d', 'd.team_id', 't.id')
+    .leftOuterJoin(postCountQuery.as('pc'), function () {
+      this.on('pc.team_id', '=', 't.id');
+    })
+    .groupBy('t.team_name', 't.id', 'pc.post_count')
+    .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
+
+    return teams;
 };
 
 //Finds the Team by it's name in the database

@@ -27,6 +27,7 @@ router.get('/teams/:user_id', authenticate, async (req, res) => {
 
     res.status(200).json({ teams: notPrivateTeams });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: `Unable to getTeams(): ${err}` });
   }
 });
