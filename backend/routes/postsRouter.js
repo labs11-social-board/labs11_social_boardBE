@@ -17,12 +17,7 @@ const fileUpload = require("express-fileupload");
 /***************************************************************************************************
  ******************************************** middleware ********************************************
  **************************************************************************************************/
-<<<<<<< HEAD
 const { authenticate } = require("../config/middleware/authenticate.js");
-=======
-const { authenticate } = require('../config/middleware/authenticate.js');
-const { checkRole } = require('../config/middleware/helpers.js');
->>>>>>> 4edc72a9be8a1befab0a5b8a46828b4091e686ba
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -44,11 +39,7 @@ router.get("/search", (req, res) => {
 });
 
 // create a post by a given user_id to a given discussion_id
-<<<<<<< HEAD
 router.post("/:user_id", authenticate, (req, res) => {
-=======
-router.post('/:user_id', authenticate, checkRole, (req, res) => {
->>>>>>> 4edc72a9be8a1befab0a5b8a46828b4091e686ba
   const { user_id } = req.params;
   const { discussion_id, postBody, repliedPostID } = req.body;
   const created_at = Date.now();
