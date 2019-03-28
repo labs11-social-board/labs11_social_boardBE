@@ -35,7 +35,7 @@ Expects params: user_id (this is needed for authentication)
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 
@@ -71,7 +71,7 @@ Expects params: user_id (this is needed for authentication) and id of the Team
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 
@@ -96,7 +96,7 @@ Expects params: user_id (this is needed for authentication) and id of the Team
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 Expects body any team value you want changed: 
@@ -117,12 +117,12 @@ example :
 Returns the updated Team:
 ```javascript
 {
-    "id": 1,
-    "team_name": "labs11",
-    "wiki": "This was changed",
-    "isPrivate": false,
-    "created_at": "2019-03-26T20:17:00.543Z",
-    "updated_at": null
+  "id": 1,
+  "team_name": "labs11",
+  "wiki": "This was changed",
+  "isPrivate": false,
+  "created_at": "2019-03-26T20:17:00.543Z",
+  "updated_at": null
 }
 ```
 
@@ -135,9 +135,9 @@ Expects params: user_id (this is needed for authentication) and id of the Team
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken,
-    order: string,
-    orderType: asc, desc
+  Authorization: jsonWebToken,
+  order: string,
+  orderType: asc, desc
 }
 ```
 
@@ -154,12 +154,12 @@ Returns the team and it's discussions:
 ```javascript
 {
   "team": {
-      "id": 1,
-      "team_name": "labs11",
-      "wiki": "Labs 11 is the best labs group to date!",
-      "isPrivate": false,
-      "created_at": "2019-03-26T20:17:00.543Z",
-      "updated_at": null
+    "id": 1,
+    "team_name": "labs11",
+    "wiki": "Labs 11 is the best labs group to date!",
+    "isPrivate": false,
+    "created_at": "2019-03-26T20:17:00.543Z",
+    "updated_at": null
   },
   "discussions": []
 }
@@ -174,16 +174,16 @@ Expects params: user_id (this is needed for authentication) and id of the discus
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken,
-    order: string,
-    orderType: asc, desc
+  Authorization: jsonWebToken,
+  order: string,
+  orderType: asc, desc
 }
 ```
 
 example : 
 ```javascript
 {
-	Authorization: jsonWebToken,
+  Authorization: jsonWebToken,
   order: "name",
   orderType: "asc"
 }
@@ -192,22 +192,22 @@ example :
 Returns the discussion with it's posts:
 ```javascript
 {
-    "id": 30,
-    "user_id": 506,
-    "username": "test",
-    "team_id": 1,
-    "team_name": "labs11",
-    "avatar": "data:image/png;base64,...",
-    "signature": null,
-    "body": "This was placed here by me",
-    "created_at": "1553634012794",
-    "last_edited_at": null,
-    "views": 0,
-    "upvotes": null,
-    "downvotes": null,
-    "user_vote": null,
-    "post_count": 0,
-    "posts": []
+  "id": 30,
+  "user_id": 506,
+  "username": "test",
+  "team_id": 1,
+  "team_name": "labs11",
+  "avatar": "data:image/png;base64,...",
+  "signature": null,
+  "body": "This was placed here by me",
+  "created_at": "1553634012794",
+  "last_edited_at": null,
+  "views": 0,
+  "upvotes": null,
+  "downvotes": null,
+  "user_vote": null,
+  "post_count": 0,
+  "posts": []
 }
 ```
 
@@ -220,20 +220,20 @@ Expects params: user_id (this is needed for authentication) and id of the Team
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 
 Returns the Team Members:
 ```javascript
 [
-    {
-        "team_id": 1,
-        "team_name": "labs11",
-        "user_id": 505,
-        "username": "lucas",
-        "role": "team_owner"
-    }
+  {
+    "team_id": 1,
+    "team_name": "labs11",
+    "user_id": 505,
+    "username": "lucas",
+    "role": "team_owner"
+  }
 ]
 ```
 ### Add Team Member to a Team /team/team_members/:user_id/:team_id
@@ -245,7 +245,7 @@ Expects params: user_id (id of the user joining the Team, same as logged in user
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 
@@ -278,7 +278,7 @@ Expects params: user_id (id of the user leaving the Team, same as logged in user
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 
@@ -304,7 +304,7 @@ Expects params: user_id (id of the user, same as logged in user) and id of the T
 Expects header :
 ```javascript
 {
-    Authorization: jsonWebToken
+  Authorization: jsonWebToken
 }
 ```
 Expects body: 
