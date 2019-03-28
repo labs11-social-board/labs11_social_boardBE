@@ -1,6 +1,7 @@
 const { teamMembersDB } = require('../../db/models/index.js');
 
 const checkIfInTeam = (user_id, team_members) => {
+  console.log(team_members)
   const filtered = team_members.filter(member => member.user_id === Number(user_id));
 
   if(filtered.length > 0){
