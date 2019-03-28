@@ -24,25 +24,17 @@ const getUniqueFollowers = (array1, array2, userId) => {
    const keepIds = {}; //keeps track of userIds that have already been 
    //instead of using an Array using a hash table/ Object allos for search complexity to occur in O(1)
    const finalFollows = []; 
-   for(let user of array1){
-     if((!(user.user_id in keepIds))){
-       if(user.user_id !== userId){
+   const combinedFollows = [...array1, ...array2];
+   for(let user of combinedFollows){
+     if(Number(user.user_id) !== Number(userId)){
+       if(!(user.user_id in keepIds)){
          keepIds[user.user_id] = user.uuid; 
          const temp = {user_id : user.user_id, uuid : user.uuid};
          finalFollows.push(temp);
        }
      }
    }
-
-   for(let user of array2){
-    if((!(user.id in keepIds))){
-      if(user.id !== userId){
-        keepIds[user.id] = user.uuid; 
-        const temp = {user_id : user.id, uuid : user.uuid};
-        finalFollows.push(temp);
-      }
-    }
-  }
+  
 
    return finalFollows; 
 }
@@ -145,8 +137,6 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
       const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
       const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
-      console.log(finalFollowers)
-      // catFollowers.forEach(async user => {
         finalFollowers.forEach(async user => {
         const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
         const notifications = await userNotificationsDB.getCount(user.user_id);
@@ -160,22 +150,7 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
           null,
         );
       });
-      // //Go and get the users following the user making the discussion. 
-      // const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
-      // //Create a newNotification for each user following the user add notification and trigger pusher alert. 
-      // usersFollowing.forEach(async user => {
-      //   const newNotification = {user_id: user.id, category_id, discussion_id: newId[0], created_at};
-      //   const notifications = await userNotificationsDB.getCount(user.id);
-      //   if (parseInt(notifications.count) >= maxNumOfNotifications){
-      //     await userNotificationsDB.removeOldest(user.id);
-      //   }
-      //   await userNotificationsDB.add(newNotification);
-      //   pusher.trigger(
-      //     `user-${user.uuid}`,
-      //     `notification`,
-      //     null,
-      //   );
-      // });
+     
       return res.status(201).json(newId);
     })
     .catch(err => res.status(500).json({ error: `Failed to insert(): ${err}` }));

@@ -36,12 +36,12 @@ router.delete('/:user_id/:following_id', authenticate, (req,res) => {
 });
 
 //This is to test the results from the getUsersFollowing  function should return uuid's of users following the user. 
-router.get('/get/:following_id', (req,res) => {
-  const following_id = req.params.following_id; 
-  return userFollowersDB
-    .getUsersFollowingUser(following_id)
-    .then(results => res.status(200).json(results))
-    .catch(err => res.status(500).json({error: `Failed to get users following the user ${err}`}));
-})
+// router.get('/get/:following_id', (req,res) => {
+//   const following_id = req.params.following_id; 
+//   return userFollowersDB
+//     .getUsersFollowingUser(following_id)
+//     .then(results => res.status(200).json(results))
+//     .catch(err => res.status(500).json({error: `Failed to get users following the user ${err}`}));
+// })
 
 module.exports = router; 
