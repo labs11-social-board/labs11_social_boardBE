@@ -176,7 +176,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     })
     .where({ discussion_id: id })
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
-  console.log(posts)
+  
   discussion.post_count = posts.length;
   
   const replies = [];
