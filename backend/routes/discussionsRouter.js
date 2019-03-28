@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require('dotenv').config();
 const express = require('express');
-const { discussionsDB, userNotificationsDB, categoryFollowsDB } = require('../db/models/index.js');
+const { discussionsDB, userNotificationsDB, categoryFollowsDB, UserFollowersDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -122,6 +122,22 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
         pusher.trigger(
           `user-${user.uuid}`,
           'notification',
+          null,
+        );
+      });
+      //Go and get the users following the user making the discussion. 
+      const usersFollowing = await UserFollowersDB.getUsersFollowingUser(user_id);
+      //Create a newNotification for each user following the user add notification and trigger pusher alert. 
+      usersFollowing.forEach(async user => {
+        const newNotification = {user_id: user.id, category_id, discussion_id: newId[0], created_at};
+        const notifications = await userNotificationsDB.getCount(user.id);
+        if (parseInt(notifications.count) >= maxNumOfNotifications){
+          await userNotificationsDB.removeOldest(user.id);
+        }
+        await userNotificationsDB.add(newNotification);
+        pusher.trigger(
+          `user-${user.uuid}`,
+          `notification`,
           null,
         );
       });
