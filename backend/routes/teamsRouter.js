@@ -143,7 +143,7 @@ router.post('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, asy
 
   const team_members = await teamMembersDB.getTeamMembers(team_id);
  
-  if(checkIfInTeam(team_id, user, team_members)){
+  if(checkIfInTeam(user, team_members)){
     res.status(400).json({ error: 'That User is already apart of that Team!' });
   } else {
     try {
