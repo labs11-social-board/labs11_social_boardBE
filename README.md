@@ -1,5 +1,7 @@
 .env file for localhost set up, register for [Nodemailer](https://nodemailer.com/about/), [Stripe](https://stripe.com), and [Pusher](https://pusher.com).
 
+
+
 ```
 SECURE_KEY=
 NODE_ENV=development
