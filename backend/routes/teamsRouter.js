@@ -19,8 +19,10 @@ const { checkIfInTeam, checkRole } = require('../config/middleware/helpers.js');
 
 //Gets all the teams that are not Private
 router.get('/teams/:user_id', authenticate, async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
   try {
-    const teams = await teamsDB.getTeams();
+    const teams = await teamsDB.getTeams(order, orderType);
     const notPrivateTeams = teams.filter(team => {
       if (!team.isPrivate) return team;
     });
