@@ -43,34 +43,39 @@ const findById = id => {
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id').where('p.user_id', id);
-  const getReplies = db('replies as r').select(
-    'r.id',
-    'r.post_id',
-    'r.created_at',
-    'r.body',
-    'u.username',
-    'us.avatar',
-    'c.id as category_id',
-    'c.name as category_name',
-    'p.discussion_id'
-  )
+    .join('categories as c', 'c.id', 'd.category_id')
+    .where('p.user_id', id);
+  const getReplies = db('replies as r')
+    .select(
+      'r.id',
+      'r.post_id',
+      'r.created_at',
+      'r.body',
+      'u.username',
+      'us.avatar',
+      'c.id as category_id',
+      'c.name as category_name',
+      'p.discussion_id'
+    )
     .leftOuterJoin('reply_votes as rv', 'rv.reply_id', 'r.id')
     .leftOuterJoin('users as u', 'u.id', 'r.user_id')
     .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
     .join('posts as p', 'p.id', 'r.post_id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id').where('r.user_id', id);
+    .join('categories as c', 'c.id', 'd.category_id')
+    .where('r.user_id', id);
   const getDiscussionFollows = db('discussion_follows as df')
     .select(
       'df.discussion_id',
       'd.created_at',
-      'd.body', 'd.user_id',
+      'd.body',
+      'd.user_id',
       'u.username',
       'us.avatar',
       'c.id as category_id',
       'c.name as category_name',
-      'c.icon as category_icon')
+      'c.icon as category_icon'
+    )
     .join('discussions as d', 'd.id', 'df.discussion_id')
     .join('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
@@ -91,7 +96,7 @@ const findById = id => {
       'p.body as post_body',
       'un.reply_id',
       'r.body as reply_body',
-      'un.created_at',
+      'un.created_at'
     )
     .leftOuterJoin('categories as c', 'c.id', 'un.category_id')
     .leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
@@ -115,7 +120,7 @@ const findById = id => {
       'u.password',
       'u.email_confirm',
       'u.uuid',
-      'u.last_login',
+      'u.last_login'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
     .where('u.id', id);
@@ -127,28 +132,27 @@ const findById = id => {
     getUser,
     getDiscussionFollows,
     getCategoryFollows,
-    getNotifications,
+    getNotifications
   ];
-  return Promise.all(promises)
-    .then(results => {
-      let [
-        getDiscussionsResults,
-        getPostsResults,
-        gerRepliesResults,
-        getUserResults,
-        getDiscussionFollowsResults,
-        getCategoryFollowsResults,
-        getNotificationsResults,
-      ] = results;
-      if (!getUserResults.length) throw `User with ID ${id} does not exist.`;
-      getUserResults[0].discussions = getDiscussionsResults;
-      getUserResults[0].posts = getPostsResults;
-      getUserResults[0].replies = gerRepliesResults;
-      getUserResults[0].discussionFollows = getDiscussionFollowsResults;
-      getUserResults[0].categoryFollows = getCategoryFollowsResults;
-      getUserResults[0].notifications = getNotificationsResults;
-      return getUserResults;
-    });
+  return Promise.all(promises).then(results => {
+    let [
+      getDiscussionsResults,
+      getPostsResults,
+      gerRepliesResults,
+      getUserResults,
+      getDiscussionFollowsResults,
+      getCategoryFollowsResults,
+      getNotificationsResults
+    ] = results;
+    if (!getUserResults.length) throw `User with ID ${id} does not exist.`;
+    getUserResults[0].discussions = getDiscussionsResults;
+    getUserResults[0].posts = getPostsResults;
+    getUserResults[0].replies = gerRepliesResults;
+    getUserResults[0].discussionFollows = getDiscussionFollowsResults;
+    getUserResults[0].categoryFollows = getCategoryFollowsResults;
+    getUserResults[0].notifications = getNotificationsResults;
+    return getUserResults;
+  });
 };
 
 const getUserName = id => {
@@ -172,6 +176,14 @@ const getUserType = user_id => {
     .select('user_type')
     .where({ user_id })
     .first();
+};
+
+//get all teams a user is in with a given id
+const getUserTeams = user_id => {
+  return db('team_members as tm')
+    .select('tm.team_id', 't.team_name')
+    .join('teams as t', 't.id', 'tm.team_id')
+    .where('tm.user_id', user_id);
 };
 
 // change user_type in user_settings for matching user ID
@@ -216,7 +228,14 @@ const findByEmail = email => {
 // search through categories, discussions and posts
 const searchAll = (searchText, orderType) => {
   const categoriesQuery = db('categories as c')
-    .select('c.id', 'c.name', 'c.user_id', 'u.username', 'c.created_at', 'c.icon')
+    .select(
+      'c.id',
+      'c.name',
+      'c.user_id',
+      'u.username',
+      'c.created_at',
+      'c.icon'
+    )
     .leftOuterJoin('users as u', 'u.id', 'c.user_id')
     .whereRaw('LOWER(c.name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
@@ -229,7 +248,7 @@ const searchAll = (searchText, orderType) => {
       'd.created_at',
       'd.category_id',
       'c.name as category_name',
-      db.raw('SUM(COALESCE(dv.type, 0)) AS votes'),
+      db.raw('SUM(COALESCE(dv.type, 0)) AS votes')
     )
     .leftOuterJoin('discussion_votes as dv', 'dv.discussion_id', 'd.id')
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
@@ -248,7 +267,7 @@ const searchAll = (searchText, orderType) => {
       'd.body as discussion_body',
       'c.id as category_id',
       'c.name as category_name',
-      db.raw('SUM(COALESCE(pv.type, 0)) AS votes'),
+      db.raw('SUM(COALESCE(pv.type, 0)) AS votes')
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
@@ -258,19 +277,25 @@ const searchAll = (searchText, orderType) => {
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body');
 
   const promises = [categoriesQuery, discussionsQuery, postsQuery];
-  return Promise.all(promises)
-    .then(results => {
-      const [categoriesResults, discussionsResults, postsResults] = results;
-      const resultArr = [];
-      categoriesResults.forEach(cat => resultArr.push({ type: 'category', result: cat }));
-      discussionsResults.forEach(dis => resultArr.push({ type: 'discussion', result: dis }));
-      postsResults.forEach(post => resultArr.push({ type: 'comment', result: post }));
-      resultArr.sort((a, b) => {
-        if (orderType === 'desc') return b.result.created_at - a.result.created_at;
-        return a.result.created_at - b.result.created_at;
-      });
-      return resultArr;
+  return Promise.all(promises).then(results => {
+    const [categoriesResults, discussionsResults, postsResults] = results;
+    const resultArr = [];
+    categoriesResults.forEach(cat =>
+      resultArr.push({ type: 'category', result: cat })
+    );
+    discussionsResults.forEach(dis =>
+      resultArr.push({ type: 'discussion', result: dis })
+    );
+    postsResults.forEach(post =>
+      resultArr.push({ type: 'comment', result: post })
+    );
+    resultArr.sort((a, b) => {
+      if (orderType === 'desc')
+        return b.result.created_at - a.result.created_at;
+      return a.result.created_at - b.result.created_at;
     });
+    return resultArr;
+  });
 };
 
 //Checks if username exists (returns nothing if no, or the user object if yes)
@@ -314,7 +339,9 @@ const insert = user => {
 
 //Create a new user
 const addEmailConfirm = (id, email_confirm) => {
-  return db('users').update({ email_confirm }).where({ id });
+  return db('users')
+    .update({ email_confirm })
+    .where({ id });
 };
 
 //Insert user settings (with new created user)
@@ -353,8 +380,8 @@ const updateBio = (id, bio) => {
 //Update Github
 const updateGithub = (id, github) => {
   return db('users')
-  .where({ id })
-  .update({ github }, ['github']);
+    .where({ id })
+    .update({ github }, ['github']);
 };
 
 //Update Twitter
@@ -418,6 +445,7 @@ module.exports = {
   getUsers,
   getPassword,
   getUserName,
+  getUserTeams,
   findById,
   changeUserType,
   findByUsername,

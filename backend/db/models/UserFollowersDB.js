@@ -28,10 +28,26 @@ const followUser = async (user_id, following_id) => {
     return getUserFollowers(user_id);
 };
 
+//Need to grab the uuid's for. 
+const getUsersFollowingUser = (following_id) => {
+/*The following_id should be the user_id that created the discussion. so for example
+User A is following User B.  User A  has  id in Users of 1  User B has id in Users as 2. 
+in the table their connection is    user_id: 1  following_id: 2  So when User B makes a discussion 
+(post on the site) we want to alert every user_id in the 'user_followers' table where User B is the following_id. 
+This function will grab the uuid's for each user so that this will return an array of uuid's so that they can be looped through on the 
+discussionsRouter and trigger notifications for each user. 
+*/
+return db("user_followers")
+  .innerJoin("users", "user_followers.user_id", "users.id")
+  .where({"user_followers.following_id": following_id})
+  .select(["users.uuid", "users.id as  user_id"])
+};
+
 
 
 module.exports = {
   getUserFollowers,
   removeFollow,
-  followUser
+  followUser,
+  getUsersFollowingUser
 };
