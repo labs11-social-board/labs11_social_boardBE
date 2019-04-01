@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 
 const getMailOptions = (route, email, token, clientIP) => {
 	const mailOptions = {
-		from: '"Symposium Board" <symposiumdiscussionboard2@gmail.com>',
+		from: 'Symposium Board" <symposiumdiscussionboard2@gmail.com>',
 		to: email,
 	};
 	if (route === 'register' || route === 'update-email') {

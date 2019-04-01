@@ -349,11 +349,7 @@ router.put('/password/:user_id', authenticate, (req, res) => {
 });
 
 // update email
-router.put(
-  '/update-email/:user_id',
-  authenticate,
-  requestClientIP,
-  (req, res) => {
+router.put('/update-email/:user_id', authenticate, requestClientIP, (req, res) => {
     const { user_id } = req.params;
     const { email, clientIP } = req.body;
 
@@ -404,8 +400,7 @@ router.put(
           .status(500)
           .json({ error: `Server failed to get user by email: ${err}` })
       );
-  }
-);
+});
 
 // Change the user_type of a user given their ID
 router.put('/type/:user_id', authenticate, (req, res) => {
