@@ -229,7 +229,6 @@ const findByEmail = email => {
 
 // search through categories, discussions and posts
 const searchAll = (searchText, orderType) => {
-  console.log('running')
   const categoriesQuery = db('categories as c')
     .select(
       'c.id',
@@ -279,9 +278,23 @@ const searchAll = (searchText, orderType) => {
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body');
 
-  const promises = [categoriesQuery, discussionsQuery, postsQuery];
+  const teamDiscussions = db('discussions as d')
+      .select(
+        'd.id',
+        'd.body',
+        'd.user_id',
+        'd.created_at',
+        'u.username',
+        'd.team_id',
+        't.team_name as team_name',
+      )
+      .join('teams as t', 't.id', 'd.team_id')
+      .join('users as u', 'u.id', 'd.user_id')
+      .whereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`);
+
+  const promises = [categoriesQuery, discussionsQuery, postsQuery, teamDiscussions];
   return Promise.all(promises).then(results => {
-    const [categoriesResults, discussionsResults, postsResults] = results;
+    const [categoriesResults, discussionsResults, postsResults, teamDiscussionsResults] = results;
     const resultArr = [];
     categoriesResults.forEach(cat =>
       resultArr.push({ type: 'category', result: cat })
@@ -291,6 +304,9 @@ const searchAll = (searchText, orderType) => {
     );
     postsResults.forEach(post =>
       resultArr.push({ type: 'comment', result: post })
+    );
+    teamDiscussionsResults.forEach(dis => 
+      resultArr.push({ type: 'discussion', result: dis })
     );
     resultArr.sort((a, b) => {
       if (orderType === 'desc')
