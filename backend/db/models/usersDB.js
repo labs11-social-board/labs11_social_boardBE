@@ -229,6 +229,7 @@ const findByEmail = email => {
 
 // search through categories, discussions and posts
 const searchAll = (searchText, orderType) => {
+  console.log('running')
   const categoriesQuery = db('categories as c')
     .select(
       'c.id',
