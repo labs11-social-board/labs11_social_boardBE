@@ -38,7 +38,7 @@ const { isUrl } = require('../config/globals.js');
  **************************************************************************************************/
 
 // Gets a list of users with mock data (user id, username, email, status, password, id)
-router.get('/', (req, res) => {
+router.get('/:user_id', authenticate, (req, res) => {
   return usersDB
     .getUsers()
     .then(users => res.status(200).json(users))
