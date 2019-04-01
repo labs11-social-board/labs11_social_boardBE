@@ -1,10 +1,10 @@
 // Variables
-const numOfFakeUsers = 500;
+const numOfFakeUsers = 400;
 const numOfHashes = 10;
 const numOfDiscussions = 29;
 const numOfDefaultCategories = 7;
 const numOfPosts = 59;
-const numOfPostVotes = 500; // must be same as numOfFakeUsers
+const numOfPostVotes = 400; // must be same as numOfFakeUsers
 const numOfDiscussionVotes = 5000;
 const tokenOptionExpiration = '24h';
 const tokenTimeLeftRefresh = 3; // in hrs

@@ -5,13 +5,13 @@ exports.seed = function(knex, Promise) {
       // Inserts seed entries
       return knex('user_notifications').insert([
         {
-          user_id: 502,
+          user_id: 402,
           category_id: 4,
           discussion_id: 17,
           created_at: Date.parse(new Date(Date.now())),
         },
         {
-          user_id: 502,
+          user_id: 402,
           discussion_id: 17,
           post_id: 34,
           created_at: Date.parse(new Date(Date.now() - (1000 * 60 * 60 * 5))), // 5 hours ago
