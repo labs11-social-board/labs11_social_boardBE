@@ -18,7 +18,6 @@ const { checkRole } = require('../config/middleware/helpers.js');
 
 //Used to make sure a user will get one notification and one notification only. 
 const getUniqueFollowers = (array1, array2, userId) => {
-  console.log(`This is the user id ${userId}`);
   /*array1 and array2 are arrays of user id and uuid   userId will be used to filter out the user final array returned shouldn't feature the 
    userId because this would be the user that is making the discussion/post. They don't need to be alerted having already created the post. */
    const keepIds = {}; //keeps track of userIds that have already been 
@@ -34,8 +33,6 @@ const getUniqueFollowers = (array1, array2, userId) => {
        }
      }
    }
-  
-
    return finalFollows; 
 }
 
