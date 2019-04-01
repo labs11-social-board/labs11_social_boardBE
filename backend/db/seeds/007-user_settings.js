@@ -72,6 +72,66 @@ const generateSeeds = () => {
       )
     )
   });
+  arr.push({
+    user_id: 506,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 507,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 508,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 509,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 510,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 511,
+    user_type: admin,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
   return arr;
 };
 
