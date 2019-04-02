@@ -1,5 +1,5 @@
 // External API containing mock data for various endpoints
-const { numOfFakeUsers, accountUserTypes, permissionTypes } = require('../../config/globals.js');
+const { numOfFakeUsers, accountUserTypes } = require('../../config/globals.js');
 const faker = require('faker');
 
 // For loop to generate numOfFakeUsers
@@ -19,7 +19,6 @@ const generateSeeds = () => {
 
   // our test accounts (owners) for authentication/authorization
   const admin = accountUserTypes[accountUserTypes.length - 1];
-  const moderator = permissionTypes[6];
   arr.push({
     user_id: 401,
     avatar:
@@ -36,7 +35,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 402,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -47,7 +45,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 403,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -58,7 +55,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 404,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -69,7 +65,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 405,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -80,7 +75,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 406,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -91,7 +85,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 407,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -102,7 +95,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 408,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -113,7 +105,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 409,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -124,7 +115,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 410,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
@@ -135,7 +125,6 @@ const generateSeeds = () => {
   arr.push({
     user_id: 411,
     user_type: admin,
-    user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
         new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),

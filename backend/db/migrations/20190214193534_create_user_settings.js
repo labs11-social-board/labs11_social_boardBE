@@ -1,7 +1,7 @@
 const { defaultAvatar } = require('../../config/globals.js');
 
 // globals
-const { accountUserTypes, permissionTypes } = require('../../config/globals.js');
+const { accountUserTypes } = require('../../config/globals.js');
 
 exports.up = function (knex, Promise) {
   return knex.schema.createTable('user_settings', function (tbl) {
@@ -30,9 +30,6 @@ exports.up = function (knex, Promise) {
 
     // Date in milliseconds
     tbl.bigInteger('subscribed_at').notNullable();
-
-    // Permissions for users
-    tbl.string('user_permissions', 32).defaultTo(permissionTypes[0]);
   });
 };
 
