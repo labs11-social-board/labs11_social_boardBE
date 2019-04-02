@@ -242,7 +242,10 @@ router.get('/search', (req, res) => {
   if (orderType === 'undefined') orderType = null;
   if (!searchText) return res.status(200).json([]);
   return teamsDB.search(searchText, order, orderType)
-    .then(results => res.status(200).json(results))
+    .then(results => {
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
     .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
 });
 // //Add a Team member if you are the Team Owner (can also be used if the team is set to private)
