@@ -13,6 +13,7 @@ const categoryFollowsRouter = require('./categoryFollowsRouter.js');
 const userNotificationsRouter = require('./userNotificationsRouter.js');
 const userFollowersRouter = require('./userFollowersRouter.js');
 const teamsRouter = require('./teamsRouter');
+const userModerator = require('./userModeratorRouter.js');
 
 module.exports = {
   authRouter,
@@ -30,4 +31,5 @@ module.exports = {
   userNotificationsRouter,
   userFollowersRouter,
   teamsRouter,
+  userModerator
 };
