@@ -220,6 +220,18 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
   }
 );
 
+//Search for a Team
+router.get('/search', (req, res) => {
+  const searchText = req.get('searchText');
+  let order = req.get('order');
+  let orderType = req.get('orderType');
+  if (order === 'undefined') order = null;
+  if (orderType === 'undefined') orderType = null;
+  if (!searchText) return res.status(200).json([]);
+  return teamsDB.search(searchText, order, orderType)
+    .then(results => res.status(200).json(results))
+    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+});
 // //Add a Team member if you are the Team Owner (can also be used if the team is set to private)
 // router.post('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
 //   const { team_id } = req.params;
