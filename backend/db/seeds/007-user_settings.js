@@ -19,10 +19,14 @@ const generateSeeds = () => {
 
   // our test accounts (owners) for authentication/authorization
   const admin = accountUserTypes[accountUserTypes.length - 1];
+<<<<<<< HEAD
 
   // moderator
   const moderator = permissionTypes[6];
 
+=======
+  const moderator = permissionTypes[6];
+>>>>>>> abc046d7242f3ff26920669df036e43e70c22260
   arr.push({
     user_id: 401,
     avatar:
