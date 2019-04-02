@@ -283,10 +283,18 @@ const searchAll = (searchText, orderType) => {
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id');
+  
+    const teamsQuery = db('teams as t')
+      .select(
+        't.id',
+        't.team_name',
+        't.created_at',
+      )
+      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
-  const promises = [categoriesQuery, discussionsQuery, postsQuery];
+  const promises = [categoriesQuery, discussionsQuery, postsQuery, teamsQuery];
   return Promise.all(promises).then(results => {
-    const [categoriesResults, discussionsResults, postsResults] = results;
+    const [categoriesResults, discussionsResults, postsResults, teamsResults] = results;
     const resultArr = [];
     categoriesResults.forEach(cat =>
       resultArr.push({ type: 'category', result: cat })
@@ -296,6 +304,9 @@ const searchAll = (searchText, orderType) => {
     );
     postsResults.forEach(post =>
       resultArr.push({ type: 'comment', result: post })
+    );
+    teamsResults.forEach(team => 
+      resultArr.push({ type: 'team', result: team })
     );
     resultArr.sort((a, b) => {
       if (orderType === 'desc')
