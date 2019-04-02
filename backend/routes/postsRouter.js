@@ -103,7 +103,11 @@ router.delete("/:user_id", authenticate, (req, res) => {
 });
 
 // this post was created for file uploads for replies and comments (MAG)
+router.put("post/image_upload", authenticate, fileUpload(), async (req, res) => {
+  const {}
 
+
+})
 
 
 module.exports = router;

@@ -20,6 +20,7 @@ exports.up = function (knex, Promise) {
 
     // Other Columns
     tbl.text('body', 2048).notNullable();
+    tbl.text('image');
 
     // Date in milliseconds
     tbl.bigInteger('created_at').notNullable();
