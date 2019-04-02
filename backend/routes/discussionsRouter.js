@@ -92,7 +92,7 @@ router.get('/search', (req, res) => {
   if (!searchText) return res.status(200).json([]);
   return discussionsDB.search(searchText, order, orderType)
     .then(results => res.status(200).json(results))
-    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+    .catch(err => {console.log(err);res.status(500).json({ error: `Failed to search(): ${err}` })});
 });
 
 //GET Discussion by User ID (Super-Mod/Creator)

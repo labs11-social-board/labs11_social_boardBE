@@ -286,8 +286,8 @@ const findById = (id, user_id, order, orderType) => {
   });
 };
 
-const search = (searchText, order, orderType) => {
-  return db('discussions as d')
+const search = async (searchText, order, orderType) => {
+  const cDiscussions = await db('discussions as d')
     .select(
       'd.id',
       'd.body',
@@ -305,6 +305,25 @@ const search = (searchText, order, orderType) => {
     .groupBy('d.id', 'u.username', 'c.name')
     // order by given order and orderType, else default to ordering by created_at descending
     .orderBy(`${order ? order : 'd.created_at'}`, `${orderType ? orderType : 'desc'}`);
+  
+    const tDiscussions = await db('discussions as d')
+      .select(
+        'd.id',
+        'd.body',
+        'd.user_id',
+        'd.created_at',
+        'u.username',
+        'd.team_id',
+        't.team_name as team_name',
+      )
+      .join('teams as t', 't.id', 'd.team_id')
+      .leftOuterJoin('users as u', 'u.id', 'd.user_id')
+      .whereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`)
+      .orderBy(`${order ? order : 'd.created_at'}`, `${orderType ? orderType : 'desc'}`);
+  
+  const results = [...cDiscussions, ...tDiscussions]
+
+  return results;
 };
 
 //Find by User ID (Original Creator)
