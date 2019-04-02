@@ -1,8 +1,46 @@
 const db = require('../dbConfig.js');
 
 //returns all the Teams in the teams table in the database
-const getTeams = () => {
-  return db('teams');
+const getTeams = async (order, orderType) => {
+  const postsQuery = db('posts')
+    .select('discussion_id')
+    .count('id as post_count')
+    .groupBy('discussion_id');
+
+  const postCountQuery = db('discussions as d')
+    .select('d.team_id')
+    .sum('p.post_count as post_count')
+    .join(postsQuery.as('p'), function() {
+      this.on('p.discussion_id', '=', 'd.id');
+    })
+    .groupBy('d.team_id')
+    .orderBy('d.team_id');
+
+  const discussonCount = db('discussions as d')
+    .select('d.team_id')
+    .count('d.id as discussion_count')
+    .groupBy('d.team_id');
+
+  const teams = await db('teams as t')
+    .select(
+      't.team_name',
+      't.id',
+      't.isPrivate',
+      't.created_at',
+      't.updated_at',
+      'pc.post_count',
+      'dc.discussion_count'
+      )
+      .leftOuterJoin(postCountQuery.as('pc'), function () {
+        this.on('pc.team_id', '=', 't.id');
+      })
+      .leftOuterJoin(discussonCount.as('dc'), function() {
+        this.on('dc.team_id', '=', 't.id')
+      })
+    .groupBy('t.team_name', 't.id', 'pc.post_count', 'dc.discussion_count')
+    .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
+
+    return teams;
 };
 
 //Finds the Team by it's name in the database
@@ -224,6 +262,18 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
   return discussion;
 };
 
+const search = (searchText, order, orderType) => {
+  return db('teams as t')
+      .select(
+        't.id',
+        't.team_name',
+        't.created_at',
+        't.isPrivate'
+      )
+      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`)
+      .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);
+};
+
 module.exports = {
   getTeams,
   getTeamByName,
@@ -232,5 +282,6 @@ module.exports = {
   deleteTeamBoard,
   getTeamById,
   findByTeamId,
-  getTeamDiscussionPostsById
+  getTeamDiscussionPostsById,
+  search
 };

@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require('dotenv').config();
 const express = require('express');
-const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB } = require('../db/models/index.js');
+const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB, teamMembersDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -18,7 +18,6 @@ const { checkRole } = require('../config/middleware/helpers.js');
 
 //Used to make sure a user will get one notification and one notification only. 
 const getUniqueFollowers = (array1, array2, userId) => {
-  console.log(`This is the user id ${userId}`);
   /*array1 and array2 are arrays of user id and uuid   userId will be used to filter out the user final array returned shouldn't feature the 
    userId because this would be the user that is making the discussion/post. They don't need to be alerted having already created the post. */
    const keepIds = {}; //keeps track of userIds that have already been 
@@ -34,8 +33,6 @@ const getUniqueFollowers = (array1, array2, userId) => {
        }
      }
    }
-  
-
    return finalFollows; 
 }
 
@@ -94,8 +91,11 @@ router.get('/search', (req, res) => {
   if (orderType === 'undefined') orderType = null;
   if (!searchText) return res.status(200).json([]);
   return discussionsDB.search(searchText, order, orderType)
-    .then(results => res.status(200).json(results))
-    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+    .then(results =>{
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
+    .catch(err => {console.log(err);res.status(500).json({ error: `Failed to search(): ${err}` })});
 });
 
 //GET Discussion by User ID (Super-Mod/Creator)
@@ -158,6 +158,20 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     try {
       
       const discussion = await discussionsDB.insert(newDiscussion);
+      const team_members = await teamMembersDB.getTeamMembers(newDiscussion.team_id);
+        team_members.forEach( async mem => {
+          const newNotification = { user_id: mem.user_id, team_id, discussion_id: discussion[0], created_at };
+          const notifications = await userNotificationsDB.getCount(mem.user_id);
+          if (parseInt(notifications.count) >= maxNumOfNotifications) {
+            await userNotificationsDB.removeOldest(mem.user_id);
+          }
+          await userNotificationsDB.add(newNotification);
+          pusher.trigger(
+            `user-${mem.uuid}`,
+            'notification',
+            null,
+          );
+        })
 
       res.status(201).json(discussion);
     } catch(err){
