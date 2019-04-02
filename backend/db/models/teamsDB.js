@@ -268,6 +268,7 @@ const search = (searchText, order, orderType) => {
         't.id',
         't.team_name',
         't.created_at',
+        't.isPrivate'
       )
       .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`)
       .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);

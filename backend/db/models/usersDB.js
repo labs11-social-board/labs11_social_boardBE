@@ -252,6 +252,7 @@ const searchAll = (searchText, orderType) => {
       'c.name as category_name',
       'd.team_id',
       't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(dv.type, 0)) AS votes')
     )
     .leftOuterJoin('discussion_votes as dv', 'dv.discussion_id', 'd.id')
@@ -259,7 +260,7 @@ const searchAll = (searchText, orderType) => {
     .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .orWhereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('d.id', 'u.username', 'c.name', 't.team_name');
+    .groupBy('d.id', 'u.username', 'c.name', 't.team_name', 't.isPrivate');
 
   const postsQuery = db('posts as p')
     .select(
@@ -274,6 +275,7 @@ const searchAll = (searchText, orderType) => {
       'c.name as category_name',
       't.id as team_id',
       't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(pv.type, 0)) AS votes')
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
@@ -282,13 +284,14 @@ const searchAll = (searchText, orderType) => {
     .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id');
+    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate');
   
     const teamsQuery = db('teams as t')
       .select(
         't.id',
         't.team_name',
         't.created_at',
+        't.isPrivate'
       )
       .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
