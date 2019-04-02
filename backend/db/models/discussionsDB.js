@@ -286,8 +286,8 @@ const findById = (id, user_id, order, orderType) => {
   });
 };
 
-const search = (searchText, order, orderType) => {
-  return db('discussions as d')
+const search = async (searchText, order, orderType) => {
+  const discussions = await db('discussions as d')
     .select(
       'd.id',
       'd.body',
@@ -296,15 +296,21 @@ const search = (searchText, order, orderType) => {
       'd.created_at',
       'd.category_id',
       'c.name as category_name',
+      'd.team_id',
+      't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(dv.type, 0)) AS votes'),
     )
     .leftOuterJoin('discussion_votes as dv', 'dv.discussion_id', 'd.id')
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .orWhereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('d.id', 'u.username', 'c.name')
+    .groupBy('d.id', 'u.username', 'c.name', 't.team_name', 't.isPrivate')
     // order by given order and orderType, else default to ordering by created_at descending
     .orderBy(`${order ? order : 'd.created_at'}`, `${orderType ? orderType : 'desc'}`);
+
+  return discussions;
 };
 
 //Find by User ID (Original Creator)
