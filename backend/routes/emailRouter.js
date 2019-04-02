@@ -39,9 +39,11 @@ router.delete('/:id', (req, res) => {
 // Add a new email route
 router.post('/', (req, res) => {
     const newEmail = req.body;
+    console.log(newEmail)
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
+            console.log(email)
             res.status(201).json(email)
         })
         .catch(err => {

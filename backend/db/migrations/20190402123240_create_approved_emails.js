@@ -1,6 +1,6 @@
 
-exports.up = function(knex, Promise) {
-    return knex.schema.createTable('approved_emails', function(tbl) {
+exports.up = function (knex, Promise) {
+    return knex.schema.createTable('approved_emails', function (tbl) {
         tbl.increments();
 
         tbl
@@ -9,11 +9,12 @@ exports.up = function(knex, Promise) {
             .unique();
 
         tbl
-            .bigInteger('created_at')
+            .timestamp('created_at')
+            .defaultTo(knex.fn.now())
             .notNullable();
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
     return knex.schema.dropTableIfExists('approved_emails');
 };
