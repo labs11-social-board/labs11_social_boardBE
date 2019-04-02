@@ -100,6 +100,19 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   }
 });
 
+//Delete a Team by its Id
+router.delete('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+  const { team_id } = req.params;
+
+  try {
+    const deleted = await teamsDB.deleteTeamBoard(team_id);
+
+    res.json(200).json({ message: 'Team deleted' });
+  } catch (err) {
+    res.json(500).json({ error: `Unable to deleteTeamBoard(): ${err}`});
+  }
+});
+
 //Get discussions for a Team by it's id
 router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
   const order = req.get('order');
@@ -268,5 +281,6 @@ async function checkIfPrivate(req, res, next) {
   } else {
     next();
   }
-}
+};
+
 module.exports = router;
