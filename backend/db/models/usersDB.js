@@ -93,17 +93,20 @@ const findById = id => {
       'un.category_id',
       'c.name as category_name',
       'un.discussion_id',
-      'd.body as discussion_body',
       'un.post_id',
       'p.body as post_body',
       'un.reply_id',
       'r.body as reply_body',
-      'un.created_at'
+      'un.created_at',
+      't.id as team_id',
+			't.team_name',
+			't.isPrivate'
     )
     .leftOuterJoin('categories as c', 'c.id', 'un.category_id')
     .leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
     .leftOuterJoin('posts as p', 'p.id', 'un.post_id')
     .leftOuterJoin('replies as r', 'r.id', 'un.reply_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .where('un.user_id', id)
     .orderBy('un.created_at', 'desc');
   const getUser = db('users as u')
