@@ -250,13 +250,16 @@ const searchAll = (searchText, orderType) => {
       'd.created_at',
       'd.category_id',
       'c.name as category_name',
+      'd.team_id',
+      't.team_name',
       db.raw('SUM(COALESCE(dv.type, 0)) AS votes')
     )
     .leftOuterJoin('discussion_votes as dv', 'dv.discussion_id', 'd.id')
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .orWhereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('d.id', 'u.username', 'c.name');
+    .groupBy('d.id', 'u.username', 'c.name', 't.team_name');
 
   const postsQuery = db('posts as p')
     .select(
@@ -269,49 +272,21 @@ const searchAll = (searchText, orderType) => {
       'd.body as discussion_body',
       'c.id as category_id',
       'c.name as category_name',
+      't.id as team_id',
+      't.team_name',
       db.raw('SUM(COALESCE(pv.type, 0)) AS votes')
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body');
+    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id');
 
-  const teamDiscussions = db('discussions as d')
-      .select(
-        'd.id',
-        'd.body',
-        'd.user_id',
-        'd.created_at',
-        'u.username',
-        'd.team_id',
-        't.team_name as team_name',
-      )
-      .join('teams as t', 't.id', 'd.team_id')
-      .join('users as u', 'u.id', 'd.user_id')
-      .whereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`);
-  
-  const teamPosts = db('posts as p')
-        .select(
-          'p.id',
-          'p.discussion_id',
-          'p.created_at',
-          'p.body',
-          'p.user_id',
-          'u.username',
-          'd.body as discussion_body',
-          't.id as team_id',
-          't.team_name as team_name',
-        )
-        .join('discussions as d', 'd.id', 'p.discussion_id')
-        .join('teams as t', 't.id', 'd.team_id')
-        .leftOuterJoin('users as u', 'u.id', 'p.user_id')
-        .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-
-  const promises = [categoriesQuery, discussionsQuery, postsQuery, teamDiscussions, teamPosts];
+  const promises = [categoriesQuery, discussionsQuery, postsQuery];
   return Promise.all(promises).then(results => {
-    const [categoriesResults, discussionsResults, postsResults, teamDiscussionsResults, teamPostsResults] = results;
+    const [categoriesResults, discussionsResults, postsResults] = results;
     const resultArr = [];
     categoriesResults.forEach(cat =>
       resultArr.push({ type: 'category', result: cat })
@@ -320,12 +295,6 @@ const searchAll = (searchText, orderType) => {
       resultArr.push({ type: 'discussion', result: dis })
     );
     postsResults.forEach(post =>
-      resultArr.push({ type: 'comment', result: post })
-    );
-    teamDiscussionsResults.forEach(dis => 
-      resultArr.push({ type: 'discussion', result: dis })
-    );
-    teamPostsResults.forEach(post => 
       resultArr.push({ type: 'comment', result: post })
     );
     resultArr.sort((a, b) => {

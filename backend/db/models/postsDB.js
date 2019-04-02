@@ -12,14 +12,17 @@ const search = (searchText, order, orderType) => {
       'c.id as category_id',
       'c.name as category_name',
       'd.body as discussion_body',
+      't.id as team_id',
+      't.team_name',
       db.raw('SUM(COALESCE(pv.type, 0)) AS votes'),
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${ searchText.toLowerCase() }%`)
-    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body')
+    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id')
     // order by given order and orderType, else default to ordering by created_at descending
     .orderBy(`${ order ? order : 'p.created_at' }`, `${ orderType ? orderType : 'desc' }`);
 };
