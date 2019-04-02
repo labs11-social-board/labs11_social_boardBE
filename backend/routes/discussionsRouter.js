@@ -91,8 +91,11 @@ router.get('/search', (req, res) => {
   if (orderType === 'undefined') orderType = null;
   if (!searchText) return res.status(200).json([]);
   return discussionsDB.search(searchText, order, orderType)
-    .then(results => res.status(200).json(results))
-    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+    .then(results =>{
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
+    .catch(err => {console.log(err);res.status(500).json({ error: `Failed to search(): ${err}` })});
 });
 
 //GET Discussion by User ID (Super-Mod/Creator)

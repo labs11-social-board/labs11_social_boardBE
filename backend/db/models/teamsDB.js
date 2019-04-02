@@ -262,6 +262,18 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
   return discussion;
 };
 
+const search = (searchText, order, orderType) => {
+  return db('teams as t')
+      .select(
+        't.id',
+        't.team_name',
+        't.created_at',
+        't.isPrivate'
+      )
+      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`)
+      .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);
+};
+
 module.exports = {
   getTeams,
   getTeamByName,
@@ -270,5 +282,6 @@ module.exports = {
   deleteTeamBoard,
   getTeamById,
   findByTeamId,
-  getTeamDiscussionPostsById
+  getTeamDiscussionPostsById,
+  search
 };
