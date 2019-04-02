@@ -13,6 +13,7 @@ const pusher = require('../config/pusherConfig.js');
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require('../config/middleware/authenticate.js');
+const { checkRole } = require('../config/middleware/helpers.js');
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -31,7 +32,7 @@ router.get('/search', (req, res) => {
 });
 
 // create a post by a given user_id to a given discussion_id
-router.post('/:user_id', authenticate, (req, res) => {
+router.post('/:user_id', authenticate, checkRole, (req, res) => {
   const { user_id } = req.params;
   const { discussion_id, postBody, repliedPostID } = req.body;
   const created_at = Date.now();
