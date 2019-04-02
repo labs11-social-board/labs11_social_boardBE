@@ -1,13 +1,12 @@
 
 exports.up = function(knex, Promise) {
-    return knex.schema.createTable('approved_emails', tbl => {
+    return knex.schema.createTable('approved_emails', function(tbl) {
         tbl.increments();
 
         tbl
             .string('email', 128)
             .notNullable()
-            .unique()
-            .onDelete('CASCADE');
+            .unique();
 
         tbl
             .bigInteger('created_at')
