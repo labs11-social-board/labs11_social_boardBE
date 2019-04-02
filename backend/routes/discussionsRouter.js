@@ -159,7 +159,6 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
       
       const discussion = await discussionsDB.insert(newDiscussion);
       const team_members = await teamMembersDB.getTeamMembers(newDiscussion.team_id);
-        console.log(team_members)
         team_members.forEach( async mem => {
           const newNotification = { user_id: mem.user_id, team_id, discussion_id: discussion[0], created_at };
           const notifications = await userNotificationsDB.getCount(mem.user_id);

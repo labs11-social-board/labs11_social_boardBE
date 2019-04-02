@@ -35,12 +35,6 @@ exports.up = function(knex, Promise) {
 			.onDelete('CASCADE');
 
 		tbl
-			.integer('team_id')
-			.references('id')
-			.inTable('teams')
-			.onDelete('CASCADE');
-
-		tbl
 			.bigInteger('created_at') // milliseconds since the epoch
 			.notNullable();
 	});
