@@ -60,7 +60,7 @@ router.get('/discussions/:user_id', (req, res, next) => {
 });
 
 //Gets a list of teams a user is in
-router.get('/teams/:user_id', (req, res) => {
+router.get('/teams/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
   return usersDB
     .getUserTeams(user_id)

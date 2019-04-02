@@ -93,7 +93,6 @@ const findById = id => {
       'un.category_id',
       'c.name as category_name',
       'un.discussion_id',
-      'd.body as discussion_body',
       'un.post_id',
       'p.body as post_body',
       'un.reply_id',
