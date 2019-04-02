@@ -3,7 +3,7 @@ const express = require('express');
 const userModeratorDB = require('../db/models/userModeratorDB');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/mod', (req, res) => {
     return userModeratorDB
         .getModerators()
         .then(moderators => {
