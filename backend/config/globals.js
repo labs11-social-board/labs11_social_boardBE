@@ -144,6 +144,7 @@ module.exports = {
   tokenTimeLeftRefresh,
   allowedAvatarTypes,
   categoryIcons,
+  permissionTypes,
 
   // methods
   getRandomIntInclusive,
