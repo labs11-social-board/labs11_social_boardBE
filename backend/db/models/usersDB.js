@@ -2,7 +2,9 @@ const db = require('../dbConfig.js');
 
 //Gets all of the users in the db
 const getUsers = () => {
-  return db('users').select('id', 'username', 'email', 'status');
+  return db('users')
+  .select('id', 'username', 'email', 'status', 'us.avatar')
+  .join('user_settings as us', 'us.user_id', 'users.id');
 };
 
 //Gets a user by their id
@@ -227,6 +229,7 @@ const findByEmail = email => {
 
 // search through categories, discussions and posts
 const searchAll = (searchText, orderType) => {
+  console.log('running')
   const categoriesQuery = db('categories as c')
     .select(
       'c.id',

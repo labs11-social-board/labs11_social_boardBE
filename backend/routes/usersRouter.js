@@ -38,7 +38,7 @@ const { isUrl } = require('../config/globals.js');
  **************************************************************************************************/
 
 // Gets a list of users with mock data (user id, username, email, status, password, id)
-router.get('/', (req, res) => {
+router.get('/',  (req, res) => {
   return usersDB
     .getUsers()
     .then(users => res.status(200).json(users))
@@ -349,11 +349,7 @@ router.put('/password/:user_id', authenticate, (req, res) => {
 });
 
 // update email
-router.put(
-  '/update-email/:user_id',
-  authenticate,
-  requestClientIP,
-  (req, res) => {
+router.put('/update-email/:user_id', authenticate, requestClientIP, (req, res) => {
     const { user_id } = req.params;
     const { email, clientIP } = req.body;
 
@@ -404,8 +400,7 @@ router.put(
           .status(500)
           .json({ error: `Server failed to get user by email: ${err}` })
       );
-  }
-);
+});
 
 // Change the user_type of a user given their ID
 router.put('/type/:user_id', authenticate, (req, res) => {
@@ -611,5 +606,45 @@ router.delete('/:user_id', authenticate, (req, res) => {
       res.status(500).json({ error: `Failed to remove(): ${err}` })
     );
 });
+
+//Post to send email 
+// send a reset-pw email to user
+router.post('/invite', requestClientIP, (req, res) => {
+  const { email, clientIP } = req.body;
+  return usersDB
+    .getUserFromConfirmedEmail(email)
+    .then(async user => {
+      if (!user) {
+        return res.status(401).json({
+          error: 'Either email is not registered or it has not been confirmed.'
+        });
+      }
+      const token = ""; //maybe update this later  shouldn't need a token for an invite. 
+      const mailOptions = getMailOptions(
+        'invite',
+        email,
+        token,
+        clientIP
+      );
+      return transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+          return res
+            .status(500)
+            .json({ error: `Failed to send e-mail: ${error}` });
+        } else {
+          return res.status(201).json({
+            message: `Success! An e-mail was sent to ${email} with a link to reset your password. Please check your inbox (You may also want to check your spam folder).`
+          });
+        }
+      });
+    })
+    .catch(err =>
+      res
+        .status(500)
+        .json({ error: `Failed to getUserFromConfirmedEmail(): ${err}` })
+    );
+});
+
+
 
 module.exports = router;
