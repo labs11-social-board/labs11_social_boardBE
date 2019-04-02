@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
         })
 });
 
-// Remove an email 
+// Remove an email route
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
     return emailDB
@@ -36,11 +36,11 @@ router.delete('/:id', (req, res) => {
         })
 })
 
-// Add a new email
+// Add a new email route
 router.post('/', (req, res) => {
-    const email = req.body;
+    const newEmail = req.body;
     return emailDB
-        .insertEmail(email)
+        .insertEmail(newEmail)
         .then(email => {
             res.status(201).json(email)
         })
