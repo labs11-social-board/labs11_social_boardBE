@@ -1,5 +1,6 @@
 const db = require('../dbConfig');
 
+
 // Get all emails from the table
 const getEmails = () => {
     return db('approved_emails')
@@ -14,7 +15,7 @@ const insertEmail = email => {
 // Add csv file to approved_emails database
 const csvInsert = csv => {
     return db('approved_emails')
-        .copy('approved_emails', csv, 'first_name', 'last_name', 'email')
+        .insert(csv)
 }
 
 // removeEmail from the table

@@ -1,5 +1,6 @@
 // Dependicies
 const express = require('express');
+const papa = require('papaparse')
 const emailDB = require('../db/models/emailDB.js');
 const router = express.Router();
 
@@ -53,10 +54,12 @@ router.post('/', (req, res) => {
 })
 
 // Add CSV File Into Approved_Emails Table Route
-router.post('/', (req, res) => {
+router.post('/csv', (req, res) => {
     const file = req.body;
+    const data = papa.unparse([file]);
+    console.log(data)
     return emailDB
-        .csvInsert(file)
+        .csvInsert({ data })
         .then(accepted => {
             res.status(202).json(accepted)
         })
