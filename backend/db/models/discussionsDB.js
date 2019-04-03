@@ -100,6 +100,7 @@ const getAllDiscussionsByFollowedCategories = user_id => {
       'c.name as category_name',
       'c.icon as category_icon',
       'd.views',
+      'pi.image'
     )
     .join(categoryFollowsQuery.as('cf'), function() {
       this.on('cf.category_id', '=', 'd.category_id');
@@ -116,6 +117,7 @@ const getAllDiscussionsByFollowedCategories = user_id => {
     .leftOuterJoin(userQuery.as('u'), function() {
       this.on('u.id', '=', 'd.user_id');
     })
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .join(categoryQuery.as('c'), function() {
       this.on('c.id', '=', 'd.category_id');
     })
@@ -160,11 +162,13 @@ const findById = (id, user_id, order, orderType) => {
       'dv.upvotes',
       'dv.downvotes',
       db.raw('COALESCE(pc.post_count, 0) AS post_count'),
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
     )
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
     .join('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(postCountQuery.as('pc'), function () {
       this.on('pc.discussion_id', '=', 'd.id');
     })
@@ -175,7 +179,7 @@ const findById = (id, user_id, order, orderType) => {
       this.on('dv.discussion_id', '=', 'd.id');
     })
     .where('d.id', id)
-    .groupBy('d.id', 'u.username','c.name', 'c.id', 'uv.type', 'us.avatar', 'us.signature','pc.post_count', 'dv.upvotes', 'dv.downvotes');
+    .groupBy('d.id', 'u.username','c.name', 'c.id', 'uv.type', 'us.avatar', 'us.signature','pc.post_count', 'dv.upvotes', 'dv.downvotes', 'pi.image');
 
   const userPostVoteQuery = db('post_votes as pv')
     .select('pv.type', 'pv.post_id')
@@ -203,10 +207,12 @@ const findById = (id, user_id, order, orderType) => {
       'uv.type as user_vote',
       'pv.upvotes',
       'pv.downvotes',
+      'pi.image'
     )
     .join('discussions as d', 'd.id', 'p.discussion_id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
     .leftOuterJoin(userPostVoteQuery.as('uv'), function () {
       this.on('uv.post_id', '=', 'p.id');
     })
@@ -214,7 +220,7 @@ const findById = (id, user_id, order, orderType) => {
       this.on('pv.post_id', '=', 'p.id');
     })
     .where('p.discussion_id', id)
-    .groupBy('p.id', 'u.username', 'uv.type', 'us.avatar', 'us.signature', 'pv.upvotes', 'pv.downvotes')
+    .groupBy('p.id', 'u.username', 'uv.type', 'us.avatar', 'us.signature', 'pv.upvotes', 'pv.downvotes', 'pi.image')
     // order by order and orderType variables
     // else default to ordering by created_at descending
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
@@ -248,11 +254,13 @@ const findById = (id, user_id, order, orderType) => {
         'uv.type as user_vote',
         'rv.upvotes',
         'rv.downvotes',
+        'pi.image'
       )
       .join('users as u', 'u.id', 'r.user_id')
       .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
       .leftOuterJoin('posts as p', 'p.id', 'r.post_id')
       .leftOuterJoin('discussions as d', 'd.id', 'p.discussion_id')
+      .leftOuterJoin('post_images as pi', 'pi.replies_id', 'r.id')
       .leftOuterJoin(userReplyVoteQuery.as('uv'), function () {
         this.on('uv.reply_id', '=', 'r.id');
       })
@@ -260,7 +268,7 @@ const findById = (id, user_id, order, orderType) => {
         this.on('rv.reply_id', '=', 'r.id');
       })
       .whereIn('r.post_id', postIDs)
-      .groupBy('r.id','u.username', 'us.avatar', 'u.id', 'd.id', 'rv.upvotes', 'rv.downvotes', 'uv.type')
+      .groupBy('r.id','u.username', 'us.avatar', 'u.id', 'd.id', 'rv.upvotes', 'rv.downvotes', 'uv.type', 'pi.image')
       .orderBy('r.created_at');
 
 
@@ -362,10 +370,12 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
       'dv.downvotes',
       'd.views',
       db.raw('COALESCE(pc.post_count, 0) AS post_count'),
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
     )
     // .leftOuterJoin('users as u', 'u.id', 'd.user_id')
     .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(discussionVotesQuery.as('dv'), function() {
       this.on('dv.discussion_id', '=', 'd.id');
     })
@@ -379,7 +389,7 @@ const findByCategoryId = (category_id, user_id, order, orderType) => {
       this.on('uv.discussion_id', '=', 'd.id');
     })
     .where('c.id', category_id)
-    .groupBy('d.id', 'u.username', 'c.name', 'pc.post_count', 'uv.type', 'dv.upvotes', 'dv.downvotes', 'u.avatar', 'c.icon')
+    .groupBy('d.id', 'u.username', 'c.name', 'pc.post_count', 'uv.type', 'dv.upvotes', 'dv.downvotes', 'u.avatar', 'c.icon', 'pi.image')
     // order by given order and orderType variables
     // else default to ordering by created_at descending
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);

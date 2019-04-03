@@ -9,10 +9,10 @@ const createUsersToFollow = (currentUserId) => {
   const followThese = [];
   const amountToFollow = getRandomFollowerCount();
   while(followThese.length <= amountToFollow){
-    const randomId1 = Math.floor(Math.random() * 500) + 1; 
-    const randomId2 = Math.floor(Math.random() * 500) + 1;
-    const randomId3 = Math.floor(Math.random() * 500) + 1;
-    const randomId4 = Math.floor(Math.random() * 500) + 1;
+    const randomId1 = Math.floor(Math.random() * 400) + 1; 
+    const randomId2 = Math.floor(Math.random() * 400) + 1;
+    const randomId3 = Math.floor(Math.random() * 400) + 1;
+    const randomId4 = Math.floor(Math.random() * 400) + 1;
     if (followThese.includes(randomId1) === false && randomId1 !== currentUserId ){
       followThese.push(randomId1); 
     }
@@ -34,7 +34,7 @@ const createUsersToFollow = (currentUserId) => {
 const createFollowList = () => {
   const completeFollowList = [];
   let currentUserId = 1;  
-  while(currentUserId !== 500){
+  while(currentUserId !== 400){
     const grabFollowers = createUsersToFollow(currentUserId);
     for(let followId of grabFollowers){
       completeFollowList.push({user_id: currentUserId, following_id: followId});

@@ -581,6 +581,23 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
   }
 });
 
+//Update the users location 
+router.put('/location/:user_id', authenticate, async (req, res) => {
+  const {user_id} = req.params; 
+  const { location } = req.body; 
+
+  if(!location){
+    res
+      .status(400)
+      .json({ error : "Please provide a location for the User"})
+  }else {
+    return usersDB 
+      .updateLocation(user_id, location)
+      .then(response => res.status(201).json(response))
+      .catch(error =>  res.status(500).json({error : `Failed to update location ${error}`}))
+  }
+})
+
 // Update last login
 router.put('/last-login/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
@@ -614,39 +631,25 @@ router.delete('/:user_id', authenticate, (req, res) => {
 // send a reset-pw email to user
 router.post('/invite', requestClientIP, (req, res) => {
   const { email, clientIP } = req.body;
-  return usersDB
-    .getUserFromConfirmedEmail(email)
-    .then(async user => {
-      if (!user) {
-        return res.status(401).json({
-          error: 'Either email is not registered or it has not been confirmed.'
-        });
-      }
-      const token = ""; //maybe update this later  shouldn't need a token for an invite. 
-      const mailOptions = getMailOptions(
-        'invite',
-        email,
-        token,
-        clientIP
-      );
-      return transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-          return res
-            .status(500)
-            .json({ error: `Failed to send e-mail: ${error}` });
-        } else {
-          return res.status(201).json({
-            message: `Success! An e-mail was sent to ${email} with a link to reset your password. Please check your inbox (You may also want to check your spam folder).`
-          });
-        }
-      });
-    })
-    .catch(err =>
-      res
+  const token = ""; //maybe update this later  shouldn't need a token for an invite. 
+  const mailOptions = getMailOptions(
+    'invite',
+    email,
+    token,
+    clientIP
+  );
+  return transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      return res
         .status(500)
-        .json({ error: `Failed to getUserFromConfirmedEmail(): ${err}` })
-    );
-});
+        .json({ error: `Failed to send e-mail: ${error}` });
+    } else {
+      return res.status(201).json({
+        message: `Success! An e-mail was sent to ${email} with a link to reset your password. Please check your inbox (You may also want to check your spam folder).`
+      });
+    }
+  });
+})
 
 
 
