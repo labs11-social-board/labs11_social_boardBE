@@ -100,6 +100,19 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   }
 });
 
+//Delete a Team by its Id
+router.delete('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+  const { team_id } = req.params;
+
+  try {
+    const deleted = await teamsDB.deleteTeamBoard(team_id);
+
+    res.json(200).json({ message: 'Team deleted' });
+  } catch (err) {
+    res.json(500).json({ error: `Unable to deleteTeamBoard(): ${err}`});
+  }
+});
+
 //Get discussions for a Team by it's id
 router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
   const order = req.get('order');
@@ -220,6 +233,21 @@ router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkR
   }
 );
 
+//Search for a Team
+router.get('/search', (req, res) => {
+  const searchText = req.get('searchText');
+  let order = req.get('order');
+  let orderType = req.get('orderType');
+  if (order === 'undefined') order = null;
+  if (orderType === 'undefined') orderType = null;
+  if (!searchText) return res.status(200).json([]);
+  return teamsDB.search(searchText, order, orderType)
+    .then(results => {
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
+    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+});
 // //Add a Team member if you are the Team Owner (can also be used if the team is set to private)
 // router.post('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
 //   const { team_id } = req.params;
@@ -256,5 +284,6 @@ async function checkIfPrivate(req, res, next) {
   } else {
     next();
   }
-}
+};
+
 module.exports = router;

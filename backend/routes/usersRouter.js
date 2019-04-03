@@ -60,7 +60,7 @@ router.get('/discussions/:user_id', (req, res, next) => {
 });
 
 //Gets a list of teams a user is in
-router.get('/teams/:user_id', (req, res) => {
+router.get('/teams/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
   return usersDB
     .getUserTeams(user_id)
@@ -251,7 +251,10 @@ router.get('/search-all', (req, res) => {
   if (!searchText) return res.status(200).json([]);
   return usersDB
     .searchAll(searchText, orderType)
-    .then(results => res.status(200).json(results))
+    .then(results => {
+      const newRes = results.filter(res => res.result.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
     .catch(err =>
       res.status(500).json({ error: `Failed to searchAll(): ${err}` })
     );
