@@ -3,7 +3,7 @@ const db = require('../dbConfig.js');
 // GET ALL USERS THAT ARE MODERATORS
 const getModerators = (id) => {
     return db('users')
-       .where({'id': id})
+      // .where({'id': id})
         .select('id', 'username', 'email', 'status', 'us.user_permissions')
         .join('user_settings as us', 'us.user_id', 'users.id')
         .orderBy('us.user_permissions', 'desc')
