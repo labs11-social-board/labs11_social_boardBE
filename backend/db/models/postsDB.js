@@ -79,6 +79,12 @@ const updateImageWithReply = (id, replies_id) => {
     .where({ id })
 };
 
+const updateImageWithDiscussion = (id, discussion_id) => {
+  return db('post_images')
+    .update({ discussion_id })
+    .where({ id })
+};
+
 module.exports = {
   search,
   getDiscAndUserInfoFromPostID,
@@ -86,8 +92,9 @@ module.exports = {
   update,
   remove,
   addImage,
-  updateImageWithPost,
   getPostImagesByPostId,
   deleteImage,
-  updateImageWithReply
+  updateImageWithPost,
+  updateImageWithReply,
+  updateImageWithDiscussion
 };

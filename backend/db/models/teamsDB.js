@@ -117,11 +117,13 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
       'dv.upvotes',
       'dv.downvotes',
       'd.views',
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
     )
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(discussionVotes.as('dv'), function(){
       this.on('dv.discussion_id', '=', 'd.id');
     })
@@ -167,11 +169,13 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       'd.views',
       'dv.upvotes',
       'dv.downvotes',
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
       )
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
     .leftOuterJoin(discussionVotes.as('dv'), function() {
       this.on('dv.discussion_id', '=', 'd.id')
     })
