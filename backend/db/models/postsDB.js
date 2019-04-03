@@ -52,10 +52,35 @@ const remove = id => {
   return db('posts').where({ id }).del();
 };
 
+const addImage = post_image => {
+  return db('post_images').insert(post_image, 'id');
+};
+
+const deleteImage = id => {
+  return db('post_images')
+    .where({ id })
+    .del();
+};
+
+const getPostImagesByPostId = post_id => {
+  return db('post_images')  
+    .where({ post_id });
+}
+
+const updateImageWithPost = (id, post_id) => {
+  return db('post_images')
+    .update({ post_id })
+    .where({ id })
+};
+
 module.exports = {
   search,
   getDiscAndUserInfoFromPostID,
   insert,
   update,
   remove,
+  addImage,
+  updateImageWithPost,
+  getPostImagesByPostId,
+  deleteImage
 };

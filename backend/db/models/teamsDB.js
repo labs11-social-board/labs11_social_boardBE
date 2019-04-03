@@ -203,9 +203,11 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     'uv.type as user_vote',
     'pv.upvotes',
     'pv.downvotes',
+    'pi.image'
     )
     .join('users as u', 'u.id', 'p.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
     .leftOuterJoin(postVotes.as('pv'), function(){
       this.on('pv.post_id', '=', 'p.id')
     })
