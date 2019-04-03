@@ -6,6 +6,7 @@ exports.seed = function(knex, Promise) {
       // Inserts seed entries
       return knex('team_members').insert([
         {team_id: 1, user_id: 405, role: 'team_owner'},
+
       ]);
     });
 };

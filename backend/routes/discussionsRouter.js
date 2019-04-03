@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require('dotenv').config();
 const express = require('express');
-const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB } = require('../db/models/index.js');
+const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB, teamMembersDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -158,6 +158,20 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     try {
       
       const discussion = await discussionsDB.insert(newDiscussion);
+      const team_members = await teamMembersDB.getTeamMembers(newDiscussion.team_id);
+        team_members.forEach( async mem => {
+          const newNotification = { user_id: mem.user_id, team_id, discussion_id: discussion[0], created_at };
+          const notifications = await userNotificationsDB.getCount(mem.user_id);
+          if (parseInt(notifications.count) >= maxNumOfNotifications) {
+            await userNotificationsDB.removeOldest(mem.user_id);
+          }
+          await userNotificationsDB.add(newNotification);
+          pusher.trigger(
+            `user-${mem.uuid}`,
+            'notification',
+            null,
+          );
+        })
 
       res.status(201).json(discussion);
     } catch(err){
