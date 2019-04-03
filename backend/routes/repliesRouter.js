@@ -14,13 +14,14 @@ const pusher = require('../config/pusherConfig.js');
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const { authenticate } = require('../config/middleware/authenticate.js');
+const { checkRole } = require('../config/middleware/helpers.js');
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
 
 // create reply by given user_id to the selected post_id
-router.post('/:user_id', authenticate, (req, res) => {
+router.post('/:user_id', authenticate, checkRole, (req, res) => {
   const { user_id } = req.params;
   const { post_id, replyBody } = req.body;
   const created_at = Date.now();

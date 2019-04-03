@@ -3,7 +3,7 @@
  **************************************************************************************************/
 require('dotenv').config();
 const express = require('express');
-const { discussionsDB, userNotificationsDB, categoryFollowsDB } = require('../db/models/index.js');
+const { discussionsDB, userNotificationsDB, categoryFollowsDB, userFollowersDB, teamMembersDB } = require('../db/models/index.js');
 
 const router = express.Router();
 
@@ -15,6 +15,26 @@ const pusher = require('../config/pusherConfig.js');
  **************************************************************************************************/
 const { authenticate } = require('../config/middleware/authenticate.js');
 const { checkRole } = require('../config/middleware/helpers.js');
+
+//Used to make sure a user will get one notification and one notification only. 
+const getUniqueFollowers = (array1, array2, userId) => {
+  /*array1 and array2 are arrays of user id and uuid   userId will be used to filter out the user final array returned shouldn't feature the 
+   userId because this would be the user that is making the discussion/post. They don't need to be alerted having already created the post. */
+   const keepIds = {}; //keeps track of userIds that have already been 
+   //instead of using an Array using a hash table/ Object allos for search complexity to occur in O(1)
+   const finalFollows = []; 
+   const combinedFollows = [...array1, ...array2];
+   for(let user of combinedFollows){
+     if(Number(user.user_id) !== Number(userId)){
+       if(!(user.user_id in keepIds)){
+         keepIds[user.user_id] = user.uuid; 
+         const temp = {user_id : user.user_id, uuid : user.uuid};
+         finalFollows.push(temp);
+       }
+     }
+   }
+   return finalFollows; 
+}
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -71,8 +91,11 @@ router.get('/search', (req, res) => {
   if (orderType === 'undefined') orderType = null;
   if (!searchText) return res.status(200).json([]);
   return discussionsDB.search(searchText, order, orderType)
-    .then(results => res.status(200).json(results))
-    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+    .then(results =>{
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
+    .catch(err => {console.log(err);res.status(500).json({ error: `Failed to search(): ${err}` })});
 });
 
 //GET Discussion by User ID (Super-Mod/Creator)
@@ -112,7 +135,9 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     .insert(newDiscussion)
     .then(async newId => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
-      catFollowers.forEach(async user => {
+      const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
+      const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
+        finalFollowers.forEach(async user => {
         const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
         const notifications = await userNotificationsDB.getCount(user.user_id);
         if (parseInt(notifications.count) >= maxNumOfNotifications) {
@@ -125,6 +150,7 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
           null,
         );
       });
+     
       return res.status(201).json(newId);
     })
     .catch(err => res.status(500).json({ error: `Failed to insert(): ${err}` }));
@@ -132,6 +158,20 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     try {
       
       const discussion = await discussionsDB.insert(newDiscussion);
+      const team_members = await teamMembersDB.getTeamMembers(newDiscussion.team_id);
+        team_members.forEach( async mem => {
+          const newNotification = { user_id: mem.user_id, team_id, discussion_id: discussion[0], created_at };
+          const notifications = await userNotificationsDB.getCount(mem.user_id);
+          if (parseInt(notifications.count) >= maxNumOfNotifications) {
+            await userNotificationsDB.removeOldest(mem.user_id);
+          }
+          await userNotificationsDB.add(newNotification);
+          pusher.trigger(
+            `user-${mem.uuid}`,
+            'notification',
+            null,
+          );
+        })
 
       res.status(201).json(discussion);
     } catch(err){

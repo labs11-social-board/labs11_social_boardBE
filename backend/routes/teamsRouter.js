@@ -19,14 +19,17 @@ const { checkIfInTeam, checkRole } = require('../config/middleware/helpers.js');
 
 //Gets all the teams that are not Private
 router.get('/teams/:user_id', authenticate, async (req, res) => {
+  const order = req.get('order');
+  const orderType = req.get('orderType');
   try {
-    const teams = await teamsDB.getTeams();
+    const teams = await teamsDB.getTeams(order, orderType);
     const notPrivateTeams = teams.filter(team => {
       if (!team.isPrivate) return team;
     });
 
     res.status(200).json({ teams: notPrivateTeams });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: `Unable to getTeams(): ${err}` });
   }
 });
@@ -97,6 +100,19 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   }
 });
 
+//Delete a Team by its Id
+router.delete('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
+  const { team_id } = req.params;
+
+  try {
+    const deleted = await teamsDB.deleteTeamBoard(team_id);
+
+    res.json(200).json({ message: 'Team deleted' });
+  } catch (err) {
+    res.json(500).json({ error: `Unable to deleteTeamBoard(): ${err}`});
+  }
+});
+
 //Get discussions for a Team by it's id
 router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
   const order = req.get('order');
@@ -118,10 +134,7 @@ router.get('/discussions/:user_id/:team_id', authenticate, async (req, res) => {
 });
 
 //Get the posts for the discussion selected from the Team Board using the discussions ID
-router.get(
-  '/discussion/posts/:user_id/:discussion_id',
-  authenticate,
-  async (req, res) => {
+router.get('/discussion/posts/:user_id/:discussion_id', authenticate, async (req, res) => {
     const order = req.get('order');
     const orderType = req.get('orderType');
     const { discussion_id, user_id } = req.params;
@@ -144,11 +157,7 @@ router.get(
 );
 
 //Get the team members of a Team
-router.get(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  checkIfPrivate,
-  async (req, res) => {
+router.get('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
     const { team_id } = req.params;
 
     try {
@@ -162,11 +171,7 @@ router.get(
 );
 
 //Add a team member to a team
-router.post(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  checkIfPrivate,
-  async (req, res) => {
+router.post('/team_members/:user_id/:team_id', authenticate, checkIfPrivate, async (req, res) => {
     const { user_id, team_id } = req.params;
     const { team_member_id } = req.body;
 
@@ -175,7 +180,7 @@ router.post(
 
     const team_members = await teamMembersDB.getTeamMembers(team_id);
 
-    if (checkIfInTeam(team_id, user, team_members)) {
+    if (checkIfInTeam(user, team_members)) {
       res
         .status(400)
         .json({ error: 'That User is already apart of that Team!' });
@@ -192,22 +197,12 @@ router.post(
 );
 
 //Delete a team member from a team
-router.delete(
-  '/team_members/:user_id/:team_id',
-  authenticate,
-  async (req, res) => {
+router.delete('/team_members/:user_id/:team_id', authenticate, async (req, res) => {
     const { user_id, team_id } = req.params;
-
     try {
-      const team_members = await teamMembersDB.deleteTeamMember(
-        user_id,
-        team_id
-      );
+      const team_members = await teamMembersDB.deleteTeamMember(user_id, team_id);
 
-      res.status(200).json({
-        message: 'Deleted the Team Member from the Team',
-        team_members
-      });
+      res.status(200).json({ message: 'Deleted the Team Member from the Team', team_members });
     } catch (err) {
       res.status(500).json({ error: `Unable to deleteTeamMember(): ${err}` });
     }
@@ -215,11 +210,7 @@ router.delete(
 );
 
 //Delete a Team member if you are the Team Owner
-router.delete(
-  '/team_members/team_owner/:user_id/:team_id',
-  authenticate,
-  checkRole,
-  async (req, res) => {
+router.delete('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
     const { team_id } = req.params;
     const { team_member_id } = req.body;
 
@@ -242,6 +233,21 @@ router.delete(
   }
 );
 
+//Search for a Team
+router.get('/search', (req, res) => {
+  const searchText = req.get('searchText');
+  let order = req.get('order');
+  let orderType = req.get('orderType');
+  if (order === 'undefined') order = null;
+  if (orderType === 'undefined') orderType = null;
+  if (!searchText) return res.status(200).json([]);
+  return teamsDB.search(searchText, order, orderType)
+    .then(results => {
+      const newRes = results.filter(res => res.isPrivate !== true);
+      res.status(200).json(newRes)
+    })
+    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+});
 // //Add a Team member if you are the Team Owner (can also be used if the team is set to private)
 // router.post('/team_members/team_owner/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
 //   const { team_id } = req.params;
@@ -278,5 +284,6 @@ async function checkIfPrivate(req, res, next) {
   } else {
     next();
   }
-}
+};
+
 module.exports = router;

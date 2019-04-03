@@ -13,11 +13,15 @@ const getAll = user_id => {
 			'un.reply_id',
 			'r.body as reply_body',
 			'un.created_at',
+			't.id as team_id',
+			't.team_name',
+			't.isPrivate'
 		)
 		.leftOuterJoin('categories as c', 'c.id', 'un.category_id')
 		.leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
 		.leftOuterJoin('posts as p', 'p.id', 'un.post_id')
 		.leftOuterJoin('replies as r', 'r.id', 'un.reply_id')
+		.leftOuterJoin('teams as t', 't.id', 'd.team_id')
 		.where('un.user_id', user_id)
 		.orderBy('un.created_at', 'desc');
 };
