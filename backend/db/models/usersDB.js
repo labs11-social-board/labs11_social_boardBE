@@ -125,7 +125,8 @@ const findById = id => {
       'u.password',
       'u.email_confirm',
       'u.uuid',
-      'u.last_login'
+      'u.last_login',
+      'u.location'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
     .where('u.id', id);
@@ -423,6 +424,13 @@ const updateLinkedin = (id, linkedin) => {
     .update({ linkedin }, ['linkedin']);
 };
 
+//Update Location 
+const updateLocation = (id, location) => {
+  return db('users')
+    .where({ id })
+    .update({ location }, ['location']);
+}
+
 //Update signature
 const updateSignature = (user_id, signature) => {
   return db('user_settings')
@@ -496,5 +504,6 @@ module.exports = {
   updateGithub,
   updateTwitter,
   updateLinkedin,
-  remove
+  remove,
+  updateLocation
 };
