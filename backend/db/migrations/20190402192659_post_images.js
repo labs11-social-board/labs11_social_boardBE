@@ -10,12 +10,21 @@ exports.up = function(knex, Promise) {
       .references('id')
       .inTable('posts')
       .onDelete('CASCADE');
-    
+
+    //reference key to the reply the image is being added to
     pi
       .integer('replies_id')
       .unsigned()
       .references('id')
       .inTable('replies')
+      .onDelete('CASCADE')
+
+    //reference key to the discussion the image is being added to
+    pi
+      .integer('discussion_id')
+      .unsigned()
+      .references('id')
+      .inTable('discussions')
       .onDelete('CASCADE')
 
     // image: base64

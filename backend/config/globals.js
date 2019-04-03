@@ -1,5 +1,5 @@
 // Variables
-const numOfFakeUsers = 500;
+const numOfFakeUsers = 400;
 const numOfHashes = 10;
 const numOfDiscussions = 29;
 const numOfDefaultCategories = 7;
