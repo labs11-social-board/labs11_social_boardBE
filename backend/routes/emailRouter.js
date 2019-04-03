@@ -43,7 +43,6 @@ router.post('/', (req, res) => {
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
-            console.log(email)
             res.status(201).json(email)
         })
         .catch(err => {
