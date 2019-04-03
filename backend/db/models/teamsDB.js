@@ -175,7 +175,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
-    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(discussionVotes.as('dv'), function() {
       this.on('dv.discussion_id', '=', 'd.id')
     })
@@ -183,7 +183,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       this.on('uv.discussion_id', '=', 'd.id')
     })
     .where('d.id', id)
-    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type')
+    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type', 'pi.image')
     .first();
   
   const postVotes = db('post_votes').select(
@@ -218,7 +218,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     .leftOuterJoin(userPostVote.as('uv'), function() {
       this.on('uv.post_id', '=', 'p.id')
     })
-    .where({ discussion_id: id })
+    .where('p.discussion_id', id)
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   discussion.post_count = posts.length;
