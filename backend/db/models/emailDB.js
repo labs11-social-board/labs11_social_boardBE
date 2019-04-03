@@ -11,6 +11,12 @@ const insertEmail = email => {
         .insert(email)
 }
 
+// Add csv file to approved_emails database
+const csvInsert = csv => {
+    return db('approved_emails')
+        .copy('approved_emails', csv, 'first_name', 'last_name', 'email')
+}
+
 // removeEmail from the table
 const removeEmail = (id) => {
     return db('approved_emails')
@@ -21,5 +27,6 @@ const removeEmail = (id) => {
 module.exports = {
     getEmails,
     insertEmail,
-    removeEmail
+    removeEmail,
+    csvInsert
 }

@@ -3,7 +3,7 @@ const express = require('express');
 const emailDB = require('../db/models/emailDB.js');
 const router = express.Router();
 
-// Get all emails route
+// Get All Emails Route
 router.get('/', (req, res) => {
     return emailDB
         .getEmails()
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
         })
 });
 
-// Remove an email route
+// Remove An Email Route
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
     return emailDB
@@ -36,7 +36,7 @@ router.delete('/:id', (req, res) => {
         })
 })
 
-// Add a new email route
+// Add A New Email Route
 router.post('/', (req, res) => {
     const newEmail = req.body;
     console.log(newEmail)
@@ -49,6 +49,19 @@ router.post('/', (req, res) => {
             res.status(500).json({
                 error: 'Could not add email'
             })
+        })
+})
+
+// Add CSV File Into Approved_Emails Table Route
+router.post('/', (req, res) => {
+    const file = req.body;
+    return emailDB
+        .csvInsert(file)
+        .then(accepted => {
+            res.status(202).json(accepted)
+        })
+        .catch(err => {
+            res.status(500).json(err)
         })
 })
 
