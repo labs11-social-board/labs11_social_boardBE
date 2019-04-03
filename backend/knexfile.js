@@ -4,6 +4,7 @@ require('dotenv').config();
 const localPg = {
   host: process.env.HOST,
   database: process.env.DATABASE,
+  port: process.env.PORT,
   user: process.env.USER,
   password: process.env.PASS || ''
 };
