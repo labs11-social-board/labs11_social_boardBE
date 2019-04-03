@@ -13,6 +13,7 @@ const router = express.Router();
 const { maxNumOfNotifications } = require("../config/globals.js");
 const pusher = require("../config/pusherConfig.js");
 const fileUpload = require("express-fileupload");
+const Jimp = require("jimp");
 
 /***************************************************************************************************
  ******************************************** middleware ********************************************
@@ -30,22 +31,48 @@ router.get("/search", (req, res) => {
   if (order === "undefined") order = null;
   if (orderType === "undefined") orderType = null;
   if (!searchText) return res.status(200).json([]);
-  return postsDB.search(searchText, order, orderType)
+  return postsDB
+    .search(searchText, order, orderType)
     .then(results => {
       const newRes = results.filter(res => res.isPrivate !== true);
-      res.status(200).json(newRes)
+      res.status(200).json(newRes);
     })
-    .catch(err => res.status(500).json({ error: `Failed to search(): ${err}` }));
+    .catch(err =>
+      res.status(500).json({ error: `Failed to search(): ${err}` })
+    );
 });
 
 // create a post by a given user_id to a given discussion_id
-router.post("/:user_id", authenticate, (req, res) => {
+router.post("/:user_id", authenticate, fileUpload(), async (req, res) => {
+  console.log(req.files);
+  // const imageFile = req.files.imageFile;
+  // const imageBuffer = imageFile.data;
+  // const mimeType = imageFile.mimetype;
   const { user_id } = req.params;
   const { discussion_id, postBody, repliedPostID } = req.body;
   const created_at = Date.now();
+  console.log(req.body);
+
+ 
   if (!postBody)
     return res.status(400).json({ error: "Post body must not be empty." });
-  const newPost = { user_id, discussion_id, body: postBody, created_at };
+  // const convertedImage = await Jimp.read(imageBuffer)
+  //   .then(image => {
+  //     return image
+  //       .scaleToFit(100, 100)
+  //       .getBase64(Jimp.AUTO, (err, convertedImage) => {
+  //         if (err) throw err;
+  //         return convertedImage;
+  //       })
+  //   })
+  //   .catch(err =>
+  //     res
+  //       .status(500)
+  //       .json({ error: `Jimp failed to read image buffer: ${err}` })
+  //   );
+
+
+const newPost = { user_id, discussion_id, body: postBody, created_at };
   if (repliedPostID) newPost.reply_to = repliedPostID;
   return postsDB
     .insert(newPost)
@@ -102,12 +129,6 @@ router.delete("/:user_id", authenticate, (req, res) => {
     );
 });
 
-// this post was created for file uploads for replies and comments (MAG)
-router.put("post/image_upload", authenticate, fileUpload(), async (req, res) => {
-  const {}
-
-
-})
-
+// this post was created for image file uploads for replies and comments (MAG)
 
 module.exports = router;
