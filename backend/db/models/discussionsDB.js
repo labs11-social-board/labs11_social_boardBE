@@ -250,11 +250,13 @@ const findById = (id, user_id, order, orderType) => {
         'uv.type as user_vote',
         'rv.upvotes',
         'rv.downvotes',
+        'pi.image'
       )
       .join('users as u', 'u.id', 'r.user_id')
       .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
       .leftOuterJoin('posts as p', 'p.id', 'r.post_id')
       .leftOuterJoin('discussions as d', 'd.id', 'p.discussion_id')
+      .leftOuterJoin('post_images as pi', 'pi.replies_id', 'r.id')
       .leftOuterJoin(userReplyVoteQuery.as('uv'), function () {
         this.on('uv.reply_id', '=', 'r.id');
       })
@@ -262,7 +264,7 @@ const findById = (id, user_id, order, orderType) => {
         this.on('rv.reply_id', '=', 'r.id');
       })
       .whereIn('r.post_id', postIDs)
-      .groupBy('r.id','u.username', 'us.avatar', 'u.id', 'd.id', 'rv.upvotes', 'rv.downvotes', 'uv.type')
+      .groupBy('r.id','u.username', 'us.avatar', 'u.id', 'd.id', 'rv.upvotes', 'rv.downvotes', 'uv.type', 'pi.image')
       .orderBy('r.created_at');
 
 
