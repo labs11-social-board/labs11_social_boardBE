@@ -582,8 +582,7 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
 });
 
 //Update the users location 
-// router.put('/location/:user_id', authenticate, async (req, res) => {
-  router.put('/location/:user_id', async (req, res) => {
+router.put('/location/:user_id', authenticate, async (req, res) => {
   const {user_id} = req.params; 
   const { location } = req.body; 
 
