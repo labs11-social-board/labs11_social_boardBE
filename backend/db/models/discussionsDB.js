@@ -203,10 +203,12 @@ const findById = (id, user_id, order, orderType) => {
       'uv.type as user_vote',
       'pv.upvotes',
       'pv.downvotes',
+      'pi.image'
     )
     .join('discussions as d', 'd.id', 'p.discussion_id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .leftOuterJoin('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
     .leftOuterJoin(userPostVoteQuery.as('uv'), function () {
       this.on('uv.post_id', '=', 'p.id');
     })
@@ -214,7 +216,7 @@ const findById = (id, user_id, order, orderType) => {
       this.on('pv.post_id', '=', 'p.id');
     })
     .where('p.discussion_id', id)
-    .groupBy('p.id', 'u.username', 'uv.type', 'us.avatar', 'us.signature', 'pv.upvotes', 'pv.downvotes')
+    .groupBy('p.id', 'u.username', 'uv.type', 'us.avatar', 'us.signature', 'pv.upvotes', 'pv.downvotes', 'pi.image')
     // order by order and orderType variables
     // else default to ordering by created_at descending
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
