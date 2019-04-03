@@ -4,7 +4,7 @@ const numOfHashes = 10;
 const numOfDiscussions = 29;
 const numOfDefaultCategories = 7;
 const numOfPosts = 59;
-const numOfPostVotes = 500; // must be same as numOfFakeUsers
+const numOfPostVotes = 400; // must be same as numOfFakeUsers
 const numOfDiscussionVotes = 5000;
 const tokenOptionExpiration = '24h';
 const tokenTimeLeftRefresh = 3; // in hrs
@@ -92,13 +92,13 @@ const getRandomUserId = () => {
 };
 
 const isUrl = (str) => {
-  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
-  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
-  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-  '(\\:\\d+)?'+ // port
-  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
-  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
-  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name and extension
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?' + // port
+    '(\\/[-a-z\\d%@_.~+&:]*)*' + // path
+    '(\\?[;&a-z\\d%@_.,~+&:=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
   return pattern.test(str);
 }
 // Seeds
@@ -144,6 +144,7 @@ module.exports = {
   tokenTimeLeftRefresh,
   allowedAvatarTypes,
   categoryIcons,
+  permissionTypes,
 
   // methods
   getRandomIntInclusive,
