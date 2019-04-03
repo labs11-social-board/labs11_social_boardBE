@@ -149,7 +149,6 @@ router.get('/discussion/posts/:user_id/:discussion_id', authenticate, async (req
 
       res.status(200).json(posts);
     } catch (err) {
-      console.log(err)
       res
         .status(500)
         .json({ error: `Failed to getTeamDiscussionPostsById(): ${err}` });
