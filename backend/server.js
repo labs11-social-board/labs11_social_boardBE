@@ -42,7 +42,8 @@ const {
   replyVoteRouter,
   userFollowersRouter,
   teamsRouter,
-  userModerator
+  userModerator,
+  emailRouter
 } = require('./routes/index.js');
 
 //Auth Route
@@ -71,6 +72,8 @@ server.use('/followers', userFollowersRouter);
 server.use('/team', teamsRouter);
 //Moderator Routes
 server.use('/moderators', userModerator);
+//Email Routes
+server.use('/emails', emailRouter)
 
 server.use(errorHandler); // This line needs to be after all routes
 
