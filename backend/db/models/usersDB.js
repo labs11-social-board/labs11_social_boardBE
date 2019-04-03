@@ -93,17 +93,20 @@ const findById = id => {
       'un.category_id',
       'c.name as category_name',
       'un.discussion_id',
-      'd.body as discussion_body',
       'un.post_id',
       'p.body as post_body',
       'un.reply_id',
       'r.body as reply_body',
-      'un.created_at'
+      'un.created_at',
+      't.id as team_id',
+			't.team_name',
+			't.isPrivate'
     )
     .leftOuterJoin('categories as c', 'c.id', 'un.category_id')
     .leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
     .leftOuterJoin('posts as p', 'p.id', 'un.post_id')
     .leftOuterJoin('replies as r', 'r.id', 'un.reply_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .where('un.user_id', id)
     .orderBy('un.created_at', 'desc');
   const getUser = db('users as u')
@@ -122,7 +125,8 @@ const findById = id => {
       'u.password',
       'u.email_confirm',
       'u.uuid',
-      'u.last_login'
+      'u.last_login',
+      'u.location'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
     .where('u.id', id);
@@ -229,7 +233,6 @@ const findByEmail = email => {
 
 // search through categories, discussions and posts
 const searchAll = (searchText, orderType) => {
-  console.log('running')
   const categoriesQuery = db('categories as c')
     .select(
       'c.id',
@@ -251,13 +254,17 @@ const searchAll = (searchText, orderType) => {
       'd.created_at',
       'd.category_id',
       'c.name as category_name',
+      'd.team_id',
+      't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(dv.type, 0)) AS votes')
     )
     .leftOuterJoin('discussion_votes as dv', 'dv.discussion_id', 'd.id')
     .leftOuterJoin('users as u', 'u.id', 'd.user_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .orWhereRaw('LOWER(d.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('d.id', 'u.username', 'c.name');
+    .groupBy('d.id', 'u.username', 'c.name', 't.team_name', 't.isPrivate');
 
   const postsQuery = db('posts as p')
     .select(
@@ -270,18 +277,31 @@ const searchAll = (searchText, orderType) => {
       'd.body as discussion_body',
       'c.id as category_id',
       'c.name as category_name',
+      't.id as team_id',
+      't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(pv.type, 0)) AS votes')
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
-    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body');
+    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate');
+  
+    const teamsQuery = db('teams as t')
+      .select(
+        't.id',
+        't.team_name',
+        't.created_at',
+        't.isPrivate'
+      )
+      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
-  const promises = [categoriesQuery, discussionsQuery, postsQuery];
+  const promises = [categoriesQuery, discussionsQuery, postsQuery, teamsQuery];
   return Promise.all(promises).then(results => {
-    const [categoriesResults, discussionsResults, postsResults] = results;
+    const [categoriesResults, discussionsResults, postsResults, teamsResults] = results;
     const resultArr = [];
     categoriesResults.forEach(cat =>
       resultArr.push({ type: 'category', result: cat })
@@ -291,6 +311,9 @@ const searchAll = (searchText, orderType) => {
     );
     postsResults.forEach(post =>
       resultArr.push({ type: 'comment', result: post })
+    );
+    teamsResults.forEach(team => 
+      resultArr.push({ type: 'team', result: team })
     );
     resultArr.sort((a, b) => {
       if (orderType === 'desc')
@@ -401,6 +424,13 @@ const updateLinkedin = (id, linkedin) => {
     .update({ linkedin }, ['linkedin']);
 };
 
+//Update Location 
+const updateLocation = (id, location) => {
+  return db('users')
+    .where({ id })
+    .update({ location }, ['location']);
+}
+
 //Update signature
 const updateSignature = (user_id, signature) => {
   return db('user_settings')
@@ -474,5 +504,6 @@ module.exports = {
   updateGithub,
   updateTwitter,
   updateLinkedin,
-  remove
+  remove,
+  updateLocation
 };
