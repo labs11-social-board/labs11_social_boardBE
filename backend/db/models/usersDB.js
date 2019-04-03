@@ -420,6 +420,13 @@ const updateLinkedin = (id, linkedin) => {
     .update({ linkedin }, ['linkedin']);
 };
 
+//Update Location 
+const updateLocation = (id, location) => {
+  return db('users')
+    .where({ id })
+    .update({ location }, ['location']);
+}
+
 //Update signature
 const updateSignature = (user_id, signature) => {
   return db('user_settings')
