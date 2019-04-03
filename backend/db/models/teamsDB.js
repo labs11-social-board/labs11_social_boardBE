@@ -244,7 +244,8 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       'p.discussion_id',
       'uv.type as user_vote',
       'rv.upvotes',
-      'rv.downvotes'
+      'rv.downvotes',
+      'pi.image'
       )
       .join('users as u', 'u.id', 'r.user_id')
       .join('user_settings as us', 'us.user_id', 'u.id')
@@ -255,7 +256,9 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       })
       .leftOuterJoin(userReplyVote.as('uv'), function() {
         this.on('uv.reply_id', '=', 'r.id')
-      }).where({ post_id: posts[i].id }));
+      })
+      .leftOuterJoin('post_images as pi', 'pi.replies_id', 'r.id')
+      .where('r.post_id', posts[i].id));
     newPosts[i].replies = replies[i];
   }
 

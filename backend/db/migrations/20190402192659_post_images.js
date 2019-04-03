@@ -10,6 +10,13 @@ exports.up = function(knex, Promise) {
       .references('id')
       .inTable('posts')
       .onDelete('CASCADE');
+    
+    pi
+      .integer('replies_id')
+      .unsigned()
+      .references('id')
+      .inTable('replies')
+      .onDelete('CASCADE')
 
     // image: base64
     pi.text('image');
