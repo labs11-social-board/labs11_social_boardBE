@@ -581,6 +581,24 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
   }
 });
 
+//Update the users location 
+// router.put('/location/:user_id', authenticate, async (req, res) => {
+  router.put('/location/:user_id', async (req, res) => {
+  const {user_id} = req.params; 
+  const { location } = req.body; 
+
+  if(!location){
+    res
+      .status(400)
+      .json({ error : "Please provide a location for the User"})
+  }else {
+    return usersDB 
+      .updateLocation(user_id, location)
+      .then(response => res.status(201).json(response))
+      .catch(error =>  res.status(500).json({error : `Failed to update location ${error}`}))
+  }
+})
+
 // Update last login
 router.put('/last-login/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;

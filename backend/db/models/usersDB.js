@@ -122,7 +122,8 @@ const findById = id => {
       'u.password',
       'u.email_confirm',
       'u.uuid',
-      'u.last_login'
+      'u.last_login',
+      'u.location'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
     .where('u.id', id);
@@ -500,5 +501,6 @@ module.exports = {
   updateGithub,
   updateTwitter,
   updateLinkedin,
-  remove
+  remove,
+  updateLocation
 };
