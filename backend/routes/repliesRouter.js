@@ -80,12 +80,8 @@ router.delete('/:user_id', authenticate, (req, res) => {
     );
 });
 
-<<<<<<< HEAD
 
 
 
 
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> c5b801f74e6dddec2e65464abb331b13ca8c91a6
