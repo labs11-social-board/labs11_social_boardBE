@@ -1,5 +1,6 @@
 const db = require('../dbConfig');
 
+
 // Get all emails from the table
 const getEmails = () => {
     return db('approved_emails')
@@ -9,6 +10,12 @@ const getEmails = () => {
 const insertEmail = email => {
     return db('approved_emails')
         .insert(email)
+}
+
+// Add csv file to approved_emails database
+const csvInsert = csv => {
+    return db('approved_emails')
+        .insert(csv)
 }
 
 // removeEmail from the table
@@ -21,5 +28,6 @@ const removeEmail = (id) => {
 module.exports = {
     getEmails,
     insertEmail,
-    removeEmail
+    removeEmail,
+    csvInsert
 }
