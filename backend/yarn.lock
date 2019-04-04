@@ -888,6 +888,33 @@ crypto-random-string@^1.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
   integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
+csv-generate@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-3.2.0.tgz#17c0defbad71bfe63182cd3c41c972138ce0b300"
+  integrity sha512-ZdS2KrgoLxm1guL9XhuaZX223Tiorldvl9QC0M/gihcrJavNDokAp/rX3CyyRHpK+rImxEE3L47cHe7npQMkkg==
+
+csv-parse@^4.3.0:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-4.3.4.tgz#fc896c170ebbdf6fb286de85c41bbaea4973d25f"
+  integrity sha512-M1R4WL+vt81+GnkKzi0s1qQM6WXvHQKDecNkpozzAEG8LHvIW9bq5eBnOKFQn50fTuAos7JodBh/07MK+J6G2Q==
+
+csv-stringify@^5.1.2:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-5.3.0.tgz#ff2dfafa6fcccd455ff5039be9c202475aa3bbe0"
+  integrity sha512-VMYPbE8zWz475smwqb9VbX9cj0y4J0PBl59UdcqzLkzXHZZ8dh4Rmbb0ZywsWEtUml4A96Hn7Q5MW9ppVghYzg==
+  dependencies:
+    lodash.get "~4.4.2"
+
+csv@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-5.1.1.tgz#bd715f15a4ed9141309a24ec6dab1c903ab79f92"
+  integrity sha512-gezB9D+enrh2tLj+vsAD8JyYRMIJdSMpec/Pgbb+7YRj6Q6/D12HLSwjhx+CrirRT4dESjZYXWX1JfqlV4RlTA==
+  dependencies:
+    csv-generate "^3.2.0"
+    csv-parse "^4.3.0"
+    csv-stringify "^5.1.2"
+    stream-transform "^1.0.8"
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -2194,6 +2221,11 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
+lodash.get@~4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
 lodash.includes@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.includes/-/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
@@ -2763,6 +2795,11 @@ pako@^1.0.5:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.8.tgz#6844890aab9c635af868ad5fecc62e8acbba3ea4"
   integrity sha512-6i0HVbUfcKaTv+EG8ZTr75az7GFXcLYk9UyLEg7Notv/Ma+z/UG3TCoz6GiNeOrn1E/e63I0X/Hpw18jHOTUnA==
+
+papaparse@^4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-4.6.3.tgz#742e5eaaa97fa6c7e1358d2934d8f18f44aee781"
+  integrity sha512-LRq7BrHC2kHPBYSD50aKuw/B/dGcg29omyJbKWY3KsYUZU69RKwaBHu13jGmCYBtOc4odsLCrFyk6imfyNubJQ==
 
 parse-bmfont-ascii@^1.0.3:
   version "1.0.6"
@@ -3526,6 +3563,11 @@ statuses@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.4.0.tgz#bb73d446da2796106efcc1b601a253d6c46bd087"
   integrity sha512-zhSCtt8v2NDrRlPQpCNtw/heZLtfUDqxBM1udqikb/Hbk52LK4nQSwr10u77iopCW5LsyHpuXS0GnEc48mLeew==
+
+stream-transform@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-1.0.8.tgz#54f721122d310eca855a16c97939881ab5bbb76c"
+  integrity sha512-1q+dL790Ps0NV33rISMq9OLtfDA9KMJZdo1PHZXE85orrWsM4FAh8CVyAOTHO0rhyeM138KNPngBPrx33bFsxw==
 
 streamifier@^0.1.1:
   version "0.1.1"

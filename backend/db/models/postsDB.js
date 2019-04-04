@@ -12,14 +12,18 @@ const search = (searchText, order, orderType) => {
       'c.id as category_id',
       'c.name as category_name',
       'd.body as discussion_body',
+      't.id as team_id',
+      't.team_name',
+      't.isPrivate',
       db.raw('SUM(COALESCE(pv.type, 0)) AS votes'),
     )
     .leftOuterJoin('post_votes as pv', 'pv.post_id', 'p.id')
     .leftOuterJoin('users as u', 'u.id', 'p.user_id')
     .join('discussions as d', 'd.id', 'p.discussion_id')
-    .join('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
+    .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${ searchText.toLowerCase() }%`)
-    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body')
+    .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate')
     // order by given order and orderType, else default to ordering by created_at descending
     .orderBy(`${ order ? order : 'p.created_at' }`, `${ orderType ? orderType : 'desc' }`);
 };
@@ -48,10 +52,49 @@ const remove = id => {
   return db('posts').where({ id }).del();
 };
 
+const addImage = post_image => {
+  return db('post_images').insert(post_image, 'id');
+};
+
+const deleteImage = id => {
+  return db('post_images')
+    .where({ id })
+    .del();
+};
+
+const getPostImagesByPostId = post_id => {
+  return db('post_images')  
+    .where({ post_id });
+}
+
+const updateImageWithPost = (id, post_id) => {
+  return db('post_images')
+    .update({ post_id })
+    .where({ id })
+};
+
+const updateImageWithReply = (id, replies_id) => {
+  return db('post_images')
+    .update({ replies_id })
+    .where({ id })
+};
+
+const updateImageWithDiscussion = (id, discussion_id) => {
+  return db('post_images')
+    .update({ discussion_id })
+    .where({ id })
+};
+
 module.exports = {
   search,
   getDiscAndUserInfoFromPostID,
   insert,
   update,
   remove,
+  addImage,
+  getPostImagesByPostId,
+  deleteImage,
+  updateImageWithPost,
+  updateImageWithReply,
+  updateImageWithDiscussion
 };
