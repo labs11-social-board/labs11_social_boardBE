@@ -117,11 +117,13 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
       'dv.upvotes',
       'dv.downvotes',
       'd.views',
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
     )
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(discussionVotes.as('dv'), function(){
       this.on('dv.discussion_id', '=', 'd.id');
     })
@@ -167,11 +169,13 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       'd.views',
       'dv.upvotes',
       'dv.downvotes',
-      'uv.type as user_vote'
+      'uv.type as user_vote',
+      'pi.image'
       )
     .join('users as u', 'u.id', 'd.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
     .join('teams as t', 't.id', 'd.team_id')
+    .leftOuterJoin('post_images as pi', 'pi.discussion_id', 'd.id')
     .leftOuterJoin(discussionVotes.as('dv'), function() {
       this.on('dv.discussion_id', '=', 'd.id')
     })
@@ -179,7 +183,7 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       this.on('uv.discussion_id', '=', 'd.id')
     })
     .where('d.id', id)
-    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type')
+    .groupBy('d.id', 'u.username', 't.team_name', 'us.avatar','us.signature', 'd.body', 'dv.upvotes', 'dv.downvotes', 'uv.type', 'pi.image')
     .first();
   
   const postVotes = db('post_votes').select(
@@ -203,16 +207,18 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
     'uv.type as user_vote',
     'pv.upvotes',
     'pv.downvotes',
+    'pi.image'
     )
     .join('users as u', 'u.id', 'p.user_id')
     .join('user_settings as us', 'us.user_id', 'u.id')
+    .leftOuterJoin('post_images as pi', 'pi.post_id', 'p.id')
     .leftOuterJoin(postVotes.as('pv'), function(){
       this.on('pv.post_id', '=', 'p.id')
     })
     .leftOuterJoin(userPostVote.as('uv'), function() {
       this.on('uv.post_id', '=', 'p.id')
     })
-    .where({ discussion_id: id })
+    .where('p.discussion_id', id)
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   discussion.post_count = posts.length;
@@ -242,7 +248,8 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       'p.discussion_id',
       'uv.type as user_vote',
       'rv.upvotes',
-      'rv.downvotes'
+      'rv.downvotes',
+      'pi.image'
       )
       .join('users as u', 'u.id', 'r.user_id')
       .join('user_settings as us', 'us.user_id', 'u.id')
@@ -253,13 +260,27 @@ const getTeamDiscussionPostsById = async (id, user_id, order, orderType) => {
       })
       .leftOuterJoin(userReplyVote.as('uv'), function() {
         this.on('uv.reply_id', '=', 'r.id')
-      }).where({ post_id: posts[i].id }));
+      })
+      .leftOuterJoin('post_images as pi', 'pi.replies_id', 'r.id')
+      .where('r.post_id', posts[i].id));
     newPosts[i].replies = replies[i];
   }
 
   discussion.posts = newPosts;
   
   return discussion;
+};
+
+const search = (searchText, order, orderType) => {
+  return db('teams as t')
+      .select(
+        't.id',
+        't.team_name',
+        't.created_at',
+        't.isPrivate'
+      )
+      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`)
+      .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);
 };
 
 module.exports = {
@@ -270,5 +291,6 @@ module.exports = {
   deleteTeamBoard,
   getTeamById,
   findByTeamId,
-  getTeamDiscussionPostsById
+  getTeamDiscussionPostsById,
+  search
 };
