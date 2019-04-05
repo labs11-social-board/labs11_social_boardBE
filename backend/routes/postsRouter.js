@@ -160,8 +160,7 @@ router.post('/images/:user_id', fileUpload(), async (req, res) => {
 
 //Update the image with the Post it will be attached to
 router.put('/images/:user_id', async (req, res) => {
-  const { image_id, post_id, reply_id, discussion_id } = req.body;
-
+  const { image_id, post_id, reply_id, discussion_id, team_id } = req.body;
   try {
     if (post_id) {
       const addPost = await postsDB.updateImageWithPost(image_id, post_id);
@@ -171,14 +170,15 @@ router.put('/images/:user_id', async (req, res) => {
       const addReply = await postsDB.updateImageWithReply(image_id, reply_id);
 
       res.status(200).json(addReply);
-    } else {
-      const addReply = await postsDB.updateImageWithDiscussion(
-        image_id,
-        discussion_id
-      );
+    } else if(discussion_id) {
+      const addDiscussion = await postsDB.updateImageWithDiscussion(image_id, discussion_id);
 
-      res.status(200).json(addReply);
-    }
+      res.status(200).json(addDiscussion);
+    } else {
+      const addTeam = await teamsDB.updateImageWithTeam(image_id, team_id);
+
+      res.status(200).json(addTeam);
+    } 
   } catch (err) {
     res.status(500).json({ error: `Unable to updateImageWithPost():${err}` });
   }
