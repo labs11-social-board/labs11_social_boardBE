@@ -649,8 +649,20 @@ router.post('/invite', requestClientIP, (req, res) => {
       });
     }
   });
-})
+});
 
+//Search for a user by their username or email
+router.get('/search-user', async (req, res) => {
+  const searchText = req.get('searchText');
+  if (!searchText) return res.status(200).json([]);
 
+  try {
+      const user = await usersDB.searchUsersByName(searchText);
+  
+      res.status(200).json(user);
+  } catch(err) {
+    res.status(500).json({ error: `Unable to searchUsersBy():${err}`});
+  }
+});
 
 module.exports = router;
