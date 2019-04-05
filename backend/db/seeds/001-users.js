@@ -194,8 +194,22 @@ const generateSeeds = () => {
     )
   });
 
+  // prettier-ignore
+  arr.push({
+    username: 'modesto',
+    password: bcrypt.hashSync('modesto', numOfHashes),
+    email: 'modesto@example.com',
+    status: 'active',
+    uuid: uuidv4(),
+    last_login: Date.now(),
+    created_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 10)), // from 10 days ago
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 8)) // to 8 days ago
+      )
+    )
+  });
   
-
 
   return arr;
 };
