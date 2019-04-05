@@ -15,7 +15,21 @@ router.get('/', (req, res) => {
                 error: 'Failed to get moderators'
             })
         })
-})
+});
+
+// Get Individual User 
+router.get('/:id', (req, res) => {
+    return userModeratorDB
+        .getUser(req.params.id)
+        .then(moderators => {
+            res.status(200).json(moderators)
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: 'Failed to get moderators'
+            })
+        })
+});
 
 router.get('/changeToMod/:user_id', (req, res) => {
 
@@ -32,7 +46,8 @@ router.get('/changeToMod/:user_id', (req, res) => {
                 error: `Failed to update${err}`
             })
         })
-})
+});
+
 router.get('/changeToBasic/:user_id', (req, res) => {
 
     return userModeratorDB
@@ -48,5 +63,11 @@ router.get('/changeToBasic/:user_id', (req, res) => {
                 error: `Failed to update${err}`
             })
         })
+});
+
+router.post('/hide-post', (req, res) => {
+    return userModeratorDB
+
 })
+
 module.exports = router;
