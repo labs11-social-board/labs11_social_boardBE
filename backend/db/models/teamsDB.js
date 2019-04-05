@@ -283,6 +283,11 @@ const search = (searchText, order, orderType) => {
       .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);
 };
 
+const updateImageWithTeam = (id, team_id) => {
+  return db('post_images')
+    .update({ team_id })
+    .where({ id })
+}
 module.exports = {
   getTeams,
   getTeamByName,
@@ -292,5 +297,6 @@ module.exports = {
   getTeamById,
   findByTeamId,
   getTeamDiscussionPostsById,
-  search
+  search,
+  updateImageWithTeam
 };
