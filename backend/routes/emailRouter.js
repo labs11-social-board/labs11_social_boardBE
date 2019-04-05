@@ -4,6 +4,13 @@ const papa = require('papaparse')
 const emailDB = require('../db/models/emailDB.js');
 const router = express.Router();
 
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const {
+  secureKey,
+} = require('./../config/globals');
+
 // Get All Emails Route
 router.get('/', (req, res) => {
     return emailDB
@@ -37,9 +44,28 @@ router.delete('/:id', (req, res) => {
         })
 })
 
+function authEmail (req, res, next) {
+    const token = localStorage.getItem('symposium_token');
+
+    if (token) {
+        jwt.verify(token, secureKey, async (err, decoded) =>{
+            if (err) {return res.status(403).json({err, message:'failed to email auth'})}
+            else {
+                req.decoded = decoded;
+                let email = req.decoded.email;
+                res.locals.email = email;
+                next()
+            }
+        })
+    }
+}
+
+
 // Check If Email Is In The Accepted_Email Database
 router.get('/is-accepted-email', (req, res) => {
     const checkEmail = req.body.email;
+    //const checkEmail = res.locals.email
+
     console.log(checkEmail)
 
     return emailDB
