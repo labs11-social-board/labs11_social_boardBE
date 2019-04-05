@@ -77,10 +77,12 @@ const removePost = (id) => {
     .del()
 }
 
-const hidePost = (id) => {
+const hidePost = (post) => {
   return db('hidden_post')
     .where({ id })
-    .insert()
+    .insert(post)
+
+  removePost(id)
 }
 
 

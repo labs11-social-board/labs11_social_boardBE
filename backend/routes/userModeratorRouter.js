@@ -68,8 +68,14 @@ router.get('/changeToBasic/:user_id', (req, res) => {
 });
 
 router.post('/hide-post', (req, res) => {
+    const id = req.params.id;
+    const post = req.body;
     return userModeratorDB
-
+        .hidePost(post, id)
+        .then()
+        .catch(err => {
+            res.status(500).json(err)
+        })
 })
 
 module.exports = router;
