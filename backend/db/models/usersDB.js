@@ -7,6 +7,18 @@ const getUsers = () => {
   .join('user_settings as us', 'us.user_id', 'users.id');
 };
 
+const searchUsersByName = (searchText, order, orderType) => {
+  return db('users as u')
+      .select(
+        'u.id',
+        'u.username',
+        'u.email',
+        'us.avatar'
+      )
+      .join('user_settings as us', 'us.user_id', 'u.id')
+      .whereRaw('LOWER(u.username) LIKE ?', `%${searchText.toLowerCase()}%`);
+}
+
 //Gets a user by their id
 const findById = id => {
   const getDiscussions = db('discussions as d')
@@ -505,5 +517,6 @@ module.exports = {
   updateTwitter,
   updateLinkedin,
   remove,
-  updateLocation
+  updateLocation, 
+  searchUsersByName,
 };
