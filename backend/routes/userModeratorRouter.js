@@ -38,6 +38,8 @@ router.get('/changeToMod/:user_id', (req, res) => {
         .then(moderators => {
             if (moderators === 1) {
                 res.status(202).json(moderators)
+            } else {
+                res.status(401).json({message: 'already a moderator'})
             }
             console.log(moderators)
         })
