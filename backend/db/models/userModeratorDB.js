@@ -80,7 +80,7 @@ const removePost = (id) => {
 const hidePost = (id) => {
   return db('hidden_post')
     .where({ id })
-
+    .insert()
 }
 
 
