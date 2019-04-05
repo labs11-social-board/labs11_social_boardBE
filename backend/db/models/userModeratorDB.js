@@ -77,12 +77,12 @@ const removePost = (id) => {
     .del()
 }
 
-const hidePost = (post) => {
-  return db('hidden_post')
-    .where({ id })
-    .insert(post)
+async const hidePost = (post, user_id) => {
+  await db('hidden_post')
+    .where({ user_id })
+    .insert(post, user_id)
 
-  removePost(id)
+  return removePost(id)
 }
 
 

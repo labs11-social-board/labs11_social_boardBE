@@ -67,8 +67,8 @@ router.get('/changeToBasic/:user_id', (req, res) => {
         })
 });
 
-router.post('/hide-post', (req, res) => {
-    const id = req.params.id;
+router.post('/hide-post/:user_id', (req, res) => {
+    const id = req.params.user_id;
     const post = req.body;
     return userModeratorDB
         .hidePost(post, id)
