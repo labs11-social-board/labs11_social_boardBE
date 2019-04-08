@@ -32,10 +32,6 @@ const changeToModerator = (changeUser_id) => {
 
     });
 
-
-
-
-
 };
 
 
@@ -45,8 +41,8 @@ const changeToBasic = (changeUser_id) => {
     .where({ 'user_id': changeUser_id })
     .select('user_permissions')
     .then(data => {
-      console.log(data[0].user_permissions);
-      if (data[0].user_permissions != 'basic') {
+      console.log(data.user_permissions);
+      if (data.user_permissions != 'basic') {
 
         return db('user_settings')
           .where({ 'user_id': changeUser_id })
