@@ -7,8 +7,11 @@ const getTeamMembers = team_id => {
       't.team_name',
       'tm.user_id',
       'u.username',
-      'tm.role')
+      'tm.role',
+      'us.avatar',
+      'u.uuid')
     .join('users as u', 'u.id', 'tm.user_id')
+    .join('user_settings as us', 'us.user_id', 'tm.user_id')
     .join('teams as t', 't.id', 'tm.team_id')
     .where({ team_id });
 };
