@@ -109,6 +109,7 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
     .where('t.id', team_id)
     .first();
 
+    
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
     db.raw('COUNT(CASE WHEN dv.type = -1 THEN 1 END) AS downvotes'),
