@@ -105,7 +105,7 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
       't.updated_at',
       'pi.image as logo'
       )
-    .join('post_images as pi', 'pi.team_id', 't.id')
+    .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
     .where('t.id', team_id)
     .first();
 
