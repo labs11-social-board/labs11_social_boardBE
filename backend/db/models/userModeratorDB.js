@@ -5,7 +5,7 @@ const getModerators = () => {
   return db('users')
     .select('id', 'username', 'email', 'status', 'us.user_permissions')
     .join('user_settings as us', 'us.user_id', 'users.id')
-    .orderBy('us.user_permissions', 'desc')
+    .orderBy('username')
 };
 
 // GET INDIVIDUAL USER BY ID
@@ -77,9 +77,11 @@ const removePost = (id) => {
     .del()
 }
 
-async const hidePost = (post, user_id) => {
-  await db('hidden_post')
+const hidePost = (post, user_id) => {
+  db('hidden_post')
     .where({ user_id })
+    .leftJoin('posts')
+    .join('users as u', 'u.id', 'u.user_id')
     .insert(post, user_id)
 
   return removePost(id)

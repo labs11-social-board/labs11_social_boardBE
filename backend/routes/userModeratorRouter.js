@@ -67,11 +67,12 @@ router.get('/changeToBasic/:user_id', (req, res) => {
         })
 });
 
-router.post('/hide-post/:user_id', (req, res) => {
-    const id = req.params.user_id;
+// Hide Comments By A Moderator
+router.post('/hide-post/:id/:user_id', (req, res) => {
+    const moderator = req.params.user_id;
     const post = req.body;
     return userModeratorDB
-        .hidePost(post, id)
+        .hidePost(post, moderator)
         .then()
         .catch(err => {
             res.status(500).json(err)
