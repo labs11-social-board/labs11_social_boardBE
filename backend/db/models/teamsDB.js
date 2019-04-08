@@ -29,15 +29,17 @@ const getTeams = async (order, orderType) => {
       't.created_at',
       't.updated_at',
       'pc.post_count',
-      'dc.discussion_count'
+      'dc.discussion_count',
+      'pi.image as logo'
       )
+      .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
       .leftOuterJoin(postCountQuery.as('pc'), function () {
         this.on('pc.team_id', '=', 't.id');
       })
       .leftOuterJoin(discussonCount.as('dc'), function() {
         this.on('dc.team_id', '=', 't.id')
       })
-    .groupBy('t.team_name', 't.id', 'pc.post_count', 'dc.discussion_count')
+    .groupBy('t.team_name', 't.id', 'pc.post_count', 'dc.discussion_count', 'pi.image')
     .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
 
     return teams;
@@ -130,7 +132,7 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
     .leftOuterJoin(discussionUser_vote.as('uv'), function() {
       this.on('uv.discussion_id', '=', 'd.id')
     })
-    .where({ team_id })
+    .where('d.team_id', team_id)
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   for(let i = 0; i < discussions.length; i++){

@@ -8,7 +8,8 @@ const Jimp = require('jimp');
 const {
   postsDB,
   discussionFollowsDB,
-  userNotificationsDB
+  userNotificationsDB,
+  teamsDB
 } = require('../db/models/index.js');
 const router = express.Router();
 
