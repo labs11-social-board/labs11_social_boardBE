@@ -24,6 +24,8 @@ router.get('/changeToMod/:user_id', (req, res) => {
         .then(moderators => {
             if (moderators === 1) {
                 res.status(202).json(moderators)
+            } else {
+                res.status(401).json({message: 'already a moderator'})
             }
             console.log(moderators)
         })
@@ -38,7 +40,7 @@ router.get('/changeToBasic/:user_id', (req, res) => {
     return userModeratorDB
         .changeToBasic(req.params.user_id)
         .then(moderators => {
-            if (moderators === 1) {
+            if (moderators) {
                 res.status(202).json(moderators)
             }
             console.log(moderators)
