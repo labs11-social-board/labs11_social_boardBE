@@ -95,7 +95,19 @@ const deleteTeamBoard = id => {
 const findByTeamId =  async (team_id, user_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
 
-  const team = await db('teams').where({ id: team_id }).first();
+  const team = await db('teams as t')
+    .select(
+      't.id',
+      't.team_name',
+      't.wiki',
+      't.isPrivate',
+      't.created_at',
+      't.updated_at',
+      'pi.image as logo'
+      )
+    .join('post_images as pi', 'pi.team_id', 't.id')
+    .where('t.id', team_id)
+    .first();
 
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
