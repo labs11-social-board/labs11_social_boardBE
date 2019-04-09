@@ -81,10 +81,15 @@ router.get('/:user_id/:team_id', authenticate, checkIfPrivate, (req, res) => {
 //Update Team information
 router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   const { team_id, user_id } = req.params;
-  const changes = req.body;
+  const { team_name, isPrivate, image } = req.body;
+  const changes = { team_name, isPrivate };
 
   try {
     const updated = await teamsDB.updateTeamBoard(team_id, changes);
+
+    if(image){
+      const updated = await teamsDB.updateTeamLogo(team_id, image);
+    }
 
     if (updated === null) {
       res.status(400).json({
