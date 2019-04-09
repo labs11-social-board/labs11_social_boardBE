@@ -11,8 +11,9 @@ const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
 router.get('/', (req, res) => {
     return (
-    // res.status(200).json({getGData})
-    res.status(200).json({message: 'just keep swimming'})
+    res.status(201).json({getGData})
+   
+    // res.status(200).json({message: 'just keep swimming'})
     )
 })
 
