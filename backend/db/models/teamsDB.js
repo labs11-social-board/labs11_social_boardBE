@@ -302,6 +302,12 @@ const updateImageWithTeam = (id, team_id) => {
     .update({ team_id })
     .where({ id })
 }
+
+const updateTeamLogo = (team_id, changes) => {
+  return db('post_images')
+    .update({ image: changes })
+    .where({ team_id });
+}
 module.exports = {
   getTeams,
   getTeamByName,
@@ -312,5 +318,6 @@ module.exports = {
   findByTeamId,
   getTeamDiscussionPostsById,
   search,
-  updateImageWithTeam
+  updateImageWithTeam,
+  updateTeamLogo
 };
