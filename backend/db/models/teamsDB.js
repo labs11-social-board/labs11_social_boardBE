@@ -29,15 +29,17 @@ const getTeams = async (order, orderType) => {
       't.created_at',
       't.updated_at',
       'pc.post_count',
-      'dc.discussion_count'
+      'dc.discussion_count',
+      'pi.image as logo'
       )
+      .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
       .leftOuterJoin(postCountQuery.as('pc'), function () {
         this.on('pc.team_id', '=', 't.id');
       })
       .leftOuterJoin(discussonCount.as('dc'), function() {
         this.on('dc.team_id', '=', 't.id')
       })
-    .groupBy('t.team_name', 't.id', 'pc.post_count', 'dc.discussion_count')
+    .groupBy('t.team_name', 't.id', 'pc.post_count', 'dc.discussion_count', 'pi.image')
     .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
 
     return teams;
@@ -93,7 +95,19 @@ const deleteTeamBoard = id => {
 const findByTeamId =  async (team_id, user_id, order, orderType) => {
   if (order === 'undefined') order = undefined;
 
-  const team = await db('teams').where({ id: team_id }).first();
+  const team = await db('teams as t')
+    .select(
+      't.id',
+      't.team_name',
+      't.wiki',
+      't.isPrivate',
+      't.created_at',
+      't.updated_at',
+      'pi.image as logo'
+      )
+    .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
+    .where('t.id', team_id)
+    .first();
 
   const discussionVotes = db('discussion_votes as dv').select(
     db.raw('COUNT(CASE WHEN dv.type = 1 THEN 1 END) AS upvotes'),
@@ -130,7 +144,7 @@ const findByTeamId =  async (team_id, user_id, order, orderType) => {
     .leftOuterJoin(discussionUser_vote.as('uv'), function() {
       this.on('uv.discussion_id', '=', 'd.id')
     })
-    .where({ team_id })
+    .where('d.team_id', team_id)
     .orderBy(`${order ? order : 'created_at'}`, `${orderType ? orderType : 'desc'}`);
   
   for(let i = 0; i < discussions.length; i++){
@@ -283,6 +297,17 @@ const search = (searchText, order, orderType) => {
       .orderBy(`${order ? order : 't.created_at'}`, `${orderType ? orderType : 'desc'}`);
 };
 
+const updateImageWithTeam = (id, team_id) => {
+  return db('post_images')
+    .update({ team_id })
+    .where({ id })
+}
+
+const updateTeamLogo = (team_id, changes) => {
+  return db('post_images')
+    .update({ image: changes })
+    .where({ team_id });
+}
 module.exports = {
   getTeams,
   getTeamByName,
@@ -292,5 +317,7 @@ module.exports = {
   getTeamById,
   findByTeamId,
   getTeamDiscussionPostsById,
-  search
+  search,
+  updateImageWithTeam,
+  updateTeamLogo
 };
