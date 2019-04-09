@@ -26,6 +26,7 @@ const getGData = async function getData() {
   return result;
 }
 
+//module.exports = {getGData};
 //getGData();
 
 

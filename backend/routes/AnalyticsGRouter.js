@@ -9,11 +9,14 @@ const router = express.Router();
 const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
 
-router.get('/', (req, res) => {
+
+router.get('/', async (req, res) => {
+    let bob = await getGData;
     return (
-    res.status(201).json({getGData})
+    
+    //res.send({ bob })
    
-    // res.status(200).json({message: 'just keep swimming'})
+    res.status(200).json({message: 'just keep swimming'})
     )
 })
 
