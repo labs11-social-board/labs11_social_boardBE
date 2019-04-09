@@ -27,6 +27,13 @@ exports.up = function(knex, Promise) {
       .inTable('discussions')
       .onDelete('CASCADE')
 
+    pi
+      .integer('team_id')
+      .unsigned()
+      .references('id')
+      .inTable('teams')
+      .onDelete('CASCADE')
+
     // image: base64
     pi.text('image');
   });
