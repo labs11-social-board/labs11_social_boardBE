@@ -38,9 +38,7 @@ This function will grab the uuid's for each user so that this will return an arr
 discussionsRouter and trigger notifications for each user. 
 */
 return db("user_followers")
-  .innerJoin("users", "user_followers.user_id", "users.id")
-  .where({"user_followers.following_id": following_id})
-  .select(["users.uuid", "users.id as  user_id"])
+  .where({ following_id })
 };
 
 
