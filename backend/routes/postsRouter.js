@@ -24,6 +24,7 @@ const { authenticate } = require("../config/middleware/authenticate.js");
  ********************************************* Endpoints *******************************************
  **************************************************************************************************/
 
+
 router.get("/search", (req, res) => {
   const searchText = req.get("searchText");
   let order = req.get("order");
