@@ -121,6 +121,9 @@ const pusherAppId = process.env.PUSHER_APP_ID;
 const pusherKey = process.env.PUSHER_KEY;
 const pusherSecret = process.env.PUSHER_SECRET;
 const pusherCluster = process.env.PUSHER_CLUSTER;
+const oAuthClientId = process.env.OAUTH_CLIENT_ID;
+const oAuthClientSecret = process.env.OAUTH_CLIENT_SECRET; 
+const oAuthRefreshToken = process.env.OAUTH_REFRESH_TOKEN;
 
 module.exports = {
   // variables
@@ -167,4 +170,9 @@ module.exports = {
   pusherKey,
   pusherSecret,
   pusherCluster,
+
+  //oAUTH USED WITH NODEMAILER 
+  oAuthClientId,
+  oAuthClientSecret,
+  oAuthRefreshToken,
 };
