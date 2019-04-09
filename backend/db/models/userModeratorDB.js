@@ -1,11 +1,15 @@
 const db = require('../dbConfig.js');
 
+
 // GET ALL USERS THAT ARE MODERATORS
-const getModerators = () => {
-  return db('users')
+async function getModerators() {
+
+  const query = await db('users')
     .select('id', 'username', 'email', 'status', 'us.user_permissions')
     .join('user_settings as us', 'us.user_id', 'users.id')
     .orderBy('username')
+
+  return query;
 };
 
 // GET INDIVIDUAL USER BY ID

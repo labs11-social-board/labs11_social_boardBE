@@ -1,10 +1,14 @@
 // DEPENDENCIES
 const express = require('express');
 const userModeratorDB = require('../db/models/userModeratorDB');
+const paginate = require('express-paginate');
 const router = express.Router();
+
+router.use(paginate.middleware(10, 50));
 
 // Get All Users With Moderators At The Top
 router.get('/', (req, res) => {
+
     return userModeratorDB
         .getModerators()
         .then(moderators => {
