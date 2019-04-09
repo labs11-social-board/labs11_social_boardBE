@@ -23,42 +23,21 @@ var auth = {
 	refreshToken : oAuthRefreshToken,
   };
 
-// const transporter = nodemailer.createTransport({
-// 	host: nodeMailerHost,
-// 	port: nodeMailerPort,
-// 	requireTLS: true,
-// 	auth: {
-// 		type: "login",
-// 		user: nodeMailerUser,
-// 		pass: nodeMailerPass,
-// 	},
-// });
-
-//^^ old way  Invalid sender  error 
-
-//new method attempt currently unauthorized_client
 const transporter = nodemailer.createTransport({
 	host: nodeMailerHost,
 	port: nodeMailerPort,
-	requireTLS: true, 
-	service: 'gmail',
-	auth,
+	requireTLS: true,
+	auth: {
+		user: nodeMailerUser, 
+		pass : nodeMailerPass, 
+	}
 })
-
-// const transporter = nodemailer.createTransport({
-// 	host: nodeMailerHost,
-// 	port: nodeMailerPort,
-// 	secure: true, 
-// 	requireTLS: true, 
-// 	service: 'gmail',
-// 	auth,
-// })
-
 
 
 const getMailOptions = (route, email, token, clientIP) => {
 	const mailOptions = {
-		from: 'Symposium Board" <symposiumdiscussionboard2@gmail.com>',
+		// from: 'Symposium Board" <symposiumdiscussionboard2@gmail.com>',
+		from: 'symposiumdiscussionboard2@gmail.com',
 		to: email,
 	};
 	if (route === 'register' || route === 'update-email') {
@@ -80,5 +59,4 @@ const getMailOptions = (route, email, token, clientIP) => {
 module.exports = {
 	transporter,
 	getMailOptions,
-	smtpTransport,
 };
