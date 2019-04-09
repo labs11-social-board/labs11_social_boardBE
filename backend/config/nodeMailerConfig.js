@@ -17,20 +17,34 @@ const {
 var auth = {
 	type: 'oauth2',
 	user: nodeMailerUser,
+	pass : nodeMailerPass,
 	clientId: oAuthClientId,
 	clientSecret: oAuthClientSecret,
 	refreshToken : oAuthRefreshToken,
   };
 
+// const transporter = nodemailer.createTransport({
+// 	host: nodeMailerHost,
+// 	port: nodeMailerPort,
+// 	requireTLS: true,
+// 	auth: {
+// 		user: nodeMailerUser,
+// 		pass: nodeMailerPass,
+// 	},
+// });
+
+//^^ old way  Invalid sender  error 
+
+//new method attempt currently 
 const transporter = nodemailer.createTransport({
 	host: nodeMailerHost,
 	port: nodeMailerPort,
-	requireTLS: true,
-	auth: {
-		user: nodeMailerUser,
-		pass: nodeMailerPass,
-	},
-});
+	requireTLS: true, 
+	service: 'gmail',
+	auth,
+})
+
+
 
 const getMailOptions = (route, email, token, clientIP) => {
 	const mailOptions = {
