@@ -16,10 +16,6 @@ const {
   numOfHashes,
   defaultAvatar,
   allowedAvatarTypes,
-  nodeMailerUser,
-  oAuthClientId,
-  oAuthClientSecret,
-  oAuthRefreshToken,
 } = require('../config/globals.js');
 
 /***************************************************************************************************
@@ -37,13 +33,7 @@ const {
 } = require('../config/nodeMailerConfig.js');
 const { isUrl } = require('../config/globals.js');
 
-var auth = {
-  type: 'oauth2',
-  user: nodeMailerUser,
-  clientId: oAuthClientId,
-  clientSecret: oAuthClientSecret,
-  refreshToken : oAuthRefreshToken,
-};
+
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************

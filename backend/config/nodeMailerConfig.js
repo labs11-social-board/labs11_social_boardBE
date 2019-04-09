@@ -9,7 +9,18 @@ const {
 	nodeMailerUser,
 	nodeMailerPass,
 	frontEndUrl,
+	oAuthClientId,
+	oAuthClientSecret,
+	oAuthRefreshToken,
 } = require('./globals.js');
+
+var auth = {
+	type: 'oauth2',
+	user: nodeMailerUser,
+	clientId: oAuthClientId,
+	clientSecret: oAuthClientSecret,
+	refreshToken : oAuthRefreshToken,
+  };
 
 const transporter = nodemailer.createTransport({
 	host: nodeMailerHost,
