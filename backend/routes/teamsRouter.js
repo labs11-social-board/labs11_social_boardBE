@@ -40,6 +40,9 @@ router.post('/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const role = 'team_owner';
 
+  if(!req.body.team_name){
+    res.status(400).json({ error: 'Please enter a Team Name' });
+  }
   try {
     const teamBoard = await teamsDB.addTeamBoard(team);
     const teamOwner = await teamMembersDB.addTeamMember(
