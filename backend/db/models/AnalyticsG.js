@@ -1,10 +1,12 @@
-require('dotenv').config();
+
 const { google } = require('googleapis')
 
 const express = require('express');
 //const router = express.Router();
 
-const key = require('../../node_modules/Symposium-dc8cd0273c65.json');
+const { GClientEmail, nodeMailerHost } = require('../../config/globals');
+
+const key = require('../../routes/app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
 const gjwt = new google.auth.JWT(key.client_email, null, key.private_key, scopes, null)
@@ -12,7 +14,7 @@ const gjwt = new google.auth.JWT(key.client_email, null, key.private_key, scopes
 const view_id = '193170741'
 
 
-const getGData = async function getData() {
+const getGData = async function getData(nodeMailerHost) {
   const response = await gjwt.authorize()
   const result = await google.analytics('v3').data.ga.get({
     'auth': gjwt,
@@ -22,12 +24,13 @@ const getGData = async function getData() {
     'metrics': 'ga:pageviews'
   })
 
-  console.log(result)
+  
+  console.log(nodeMailerHost);
   return result;
 }
 
 //module.exports = {getGData};
-//getGData();
+getGData();
 
 
 

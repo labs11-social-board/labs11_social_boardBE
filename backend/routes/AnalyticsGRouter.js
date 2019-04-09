@@ -8,14 +8,15 @@ const router = express.Router();
 
 //const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
-const key = require('../node_modules/Symposium-dc8cd0273c65.json');
+//const key = require('./app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
-const gjwt = new google.auth.JWT(key.client_email, null, key.private_key, scopes, null)
+const gjwt = new google.auth.JWT(process.env.GCLIENT_EMAIL, null, process.env.GPRIVATE_KEY, scopes, null)
 
-const view_id = '193170741'
+// the live pull endpoints begin with /analytics //
 
-router.get('/', async (req, res) => {
+router.get('/pageviews', async (req, res) => {
+    const view_id = '193170741'
     
     const response = await gjwt.authorize()
     const result = await google.analytics('v3').data.ga.get({
@@ -28,6 +29,7 @@ router.get('/', async (req, res) => {
     
     .then(stuff =>{
         res.send(stuff)
+        // res.status(200).json({message: 'just keep swimming'})
     })
     .catch(e => {
         res.send(e)
@@ -37,10 +39,30 @@ router.get('/', async (req, res) => {
     // return (
     
     // //res.send({ bob })
-   
-    // res.status(200).json({message: 'just keep swimming'})
-    // )
 })
+
+router.get('/users', async (req, res) => {
+    const view_id = '193170741'
+    
+    const response = await gjwt.authorize()
+    const result = await google.analytics('v3').data.ga.get({
+        'auth': gjwt,
+        'ids': 'ga:' + view_id,
+        'start-date': '30daysAgo',
+        'end-date': 'today',
+        'metrics': 'ga:users'
+    })
+    
+    .then(stuff =>{
+        res.send(stuff)
+    })
+    .catch(e => {
+        res.send(e)
+    })
+
+})
+
+
 
 module.exports = router;
 
