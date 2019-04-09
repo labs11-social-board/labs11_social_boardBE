@@ -10,14 +10,22 @@ const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
 
 
-router.get('/', async (req, res) => {
-    let bob = await getGData;
-    return (
+router.get('/', (req, res) => {
+    getGData()
+    .then(stuff =>{
+        res.send(stuff.data)
+    })
+    .catch(e => {
+        res.send(e)
+    })
+
+    // let bob = await getGData;
+    // return (
     
-    //res.send({ bob })
+    // //res.send({ bob })
    
-    res.status(200).json({message: 'just keep swimming'})
-    )
+    // res.status(200).json({message: 'just keep swimming'})
+    // )
 })
 
 module.exports = router;
