@@ -40,6 +40,9 @@ router.post('/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const role = 'team_owner';
 
+  if(!req.body.team_name){
+    res.status(400).json({ error: 'Please enter a Team Name' });
+  }
   try {
     const teamBoard = await teamsDB.addTeamBoard(team);
     const teamOwner = await teamMembersDB.addTeamMember(
@@ -88,15 +91,22 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
     const updated = await teamsDB.updateTeamBoard(team_id, changes);
 
     if(image){
-      const updated = await teamsDB.updateTeamLogo(team_id, image);
-    }
+      const isImageAlready = await teamsDB.checkIfTeamHasImage(team_id);
+      if(!isImageAlready) {
+        const newImage = await teamsDB.updateImageWithTeam(image.id, team_id);
 
-    if (updated === null) {
-      res.status(400).json({
-        error: 'Only the Team Owner can update the Teams information'
-      });
-    } else {
-      res.status(200).json(updated);
+        res.status(200).json(newImage);
+      } else {
+        const updated = await teamsDB.updateTeamLogo(team_id, image.image);
+
+        if (updated === null) {
+          res.status(400).json({
+            error: 'Only the Team Owner can update the Teams information'
+          });
+        } else {
+          res.status(200).json(updated);
+        }
+      }
     }
   } catch (err) {
     res

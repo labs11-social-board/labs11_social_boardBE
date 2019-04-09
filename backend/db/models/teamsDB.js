@@ -308,6 +308,13 @@ const updateTeamLogo = (team_id, changes) => {
     .update({ image: changes })
     .where({ team_id });
 }
+
+const checkIfTeamHasImage = team_id => {
+  return db('post_images')
+    .where({ team_id })
+    .first();
+}
+
 module.exports = {
   getTeams,
   getTeamByName,
@@ -319,5 +326,6 @@ module.exports = {
   getTeamDiscussionPostsById,
   search,
   updateImageWithTeam,
-  updateTeamLogo
+  updateTeamLogo,
+  checkIfTeamHasImage
 };
