@@ -2,7 +2,7 @@ require('dotenv').config();
 const { google } = require('googleapis')
 
 const express = require('express');
-const router = express.Router();
+//const router = express.Router();
 
 const key = require('../../node_modules/Symposium-dc8cd0273c65.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
