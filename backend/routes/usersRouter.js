@@ -609,7 +609,6 @@ router.put('/last-login/:user_id', authenticate, (req, res) => {
     );
 });
 
-
 // Delete a user by their ID
 router.delete('/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
