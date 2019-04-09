@@ -81,8 +81,8 @@ router.get('/:user_id/:team_id', authenticate, checkIfPrivate, (req, res) => {
 //Update Team information
 router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   const { team_id, user_id } = req.params;
-  const { team_name, isPrivate, image } = req.body;
-  const changes = { team_name, isPrivate };
+  const { team_name, isPrivate, image, wiki } = req.body;
+  const changes = { wiki, team_name, isPrivate };
 
   try {
     const updated = await teamsDB.updateTeamBoard(team_id, changes);
