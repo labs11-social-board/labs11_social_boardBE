@@ -52,8 +52,12 @@ const remove = id => {
   return db('posts').where({ id }).del();
 };
 
-const addImage = post_image => {
-  return db('post_images').insert(post_image, 'id');
+const addImage = async post_image => {
+  const [id] = await db('post_images').insert(post_image, 'id');
+
+  return db('post_images')  
+    .where({ id })
+    .first();
 };
 
 const deleteImage = id => {

@@ -1,17 +1,18 @@
 'use strict';
 const express = require('express');
 
-require('dotenv').config();
+
 const { google } = require('googleapis')
 
 const router = express.Router();
+require('dotenv').config();
 
 //const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
-//const key = require('./app.json');
+const key = require('../node_modules/app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
-const gjwt = new google.auth.JWT(process.env.GCLIENT_EMAIL, null, process.env.GPRIVATE_KEY, scopes, null)
+const gjwt = new google.auth.JWT(key.client_email, null, key.private_key, scopes, null)
 
 // the live pull endpoints begin with /analytics //
 
