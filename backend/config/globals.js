@@ -124,7 +124,7 @@ const pusherCluster = process.env.PUSHER_CLUSTER;
 const oAuthClientId = process.env.OAUTH_CLIENT_ID;
 const oAuthClientSecret = process.env.OAUTH_CLIENT_SECRET; 
 const oAuthRefreshToken = process.env.OAUTH_REFRESH_TOKEN;
-
+const oAuthAccessToken = process.env.OAUTH_ACCESS_TOKEN; 
 module.exports = {
   // variables
   subSilverStartIndex,
@@ -175,4 +175,5 @@ module.exports = {
   oAuthClientId,
   oAuthClientSecret,
   oAuthRefreshToken,
+  oAuthAccessToken, 
 };

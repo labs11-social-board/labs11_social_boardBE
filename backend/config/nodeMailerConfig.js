@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const nodemailer = require('nodemailer');
-
 // globals
 const {
 	nodeMailerHost,
@@ -12,10 +11,11 @@ const {
 	oAuthClientId,
 	oAuthClientSecret,
 	oAuthRefreshToken,
+	oAuthAccessToken,
 } = require('./globals.js');
 
 var auth = {
-	type: 'oauth2',
+	type: 'OAuth2',
 	user: nodeMailerUser,
 	pass : nodeMailerPass,
 	clientId: oAuthClientId,
@@ -28,6 +28,7 @@ var auth = {
 // 	port: nodeMailerPort,
 // 	requireTLS: true,
 // 	auth: {
+// 		type: "login",
 // 		user: nodeMailerUser,
 // 		pass: nodeMailerPass,
 // 	},
@@ -35,7 +36,7 @@ var auth = {
 
 //^^ old way  Invalid sender  error 
 
-//new method attempt currently 
+//new method attempt currently unauthorized_client
 const transporter = nodemailer.createTransport({
 	host: nodeMailerHost,
 	port: nodeMailerPort,
@@ -43,6 +44,15 @@ const transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth,
 })
+
+// const transporter = nodemailer.createTransport({
+// 	host: nodeMailerHost,
+// 	port: nodeMailerPort,
+// 	secure: true, 
+// 	requireTLS: true, 
+// 	service: 'gmail',
+// 	auth,
+// })
 
 
 
@@ -70,4 +80,5 @@ const getMailOptions = (route, email, token, clientIP) => {
 module.exports = {
 	transporter,
 	getMailOptions,
+	smtpTransport,
 };
