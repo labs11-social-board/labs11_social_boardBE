@@ -105,7 +105,10 @@ router.delete('/:user_id/:post_id', authenticate, (req, res) => {
   if (!post_id) return res.status(400).json({ error: 'Post ID is required.' });
   return postsDB
     .remove(post_id)
-    .then(() => res.status(201).json({ message: 'Post removal successful.' }))
+    .then((post) => {
+      console.log(post)
+      res.status(201).json({ post, message: 'Post removal successful.' })
+    })
     .catch(err =>
       res.status(500).json({ error: `Failed to remove(): ${err}` })
     );
@@ -171,7 +174,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addReply = await postsDB.updateImageWithReply(image_id, reply_id);
 
       res.status(200).json(addReply);
-    } else if(discussion_id) {
+    } else if (discussion_id) {
       const addDiscussion = await postsDB.updateImageWithDiscussion(image_id, discussion_id);
 
       res.status(200).json(addDiscussion);
@@ -179,7 +182,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addTeam = await teamsDB.updateImageWithTeam(image_id, team_id);
 
       res.status(200).json(addTeam);
-    } 
+    }
   } catch (err) {
     res.status(500).json({ error: `Unable to updateImageWithPost():${err}` });
   }

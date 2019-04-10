@@ -22,10 +22,10 @@ const search = (searchText, order, orderType) => {
     .join('discussions as d', 'd.id', 'p.discussion_id')
     .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
-    .whereRaw('LOWER(p.body) LIKE ?', `%${ searchText.toLowerCase() }%`)
+    .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate')
     // order by given order and orderType, else default to ordering by created_at descending
-    .orderBy(`${ order ? order : 'p.created_at' }`, `${ orderType ? orderType : 'desc' }`);
+    .orderBy(`${order ? order : 'p.created_at'}`, `${orderType ? orderType : 'desc'}`);
 };
 
 // get the user_id and discussion_id related to the post with the given id
@@ -48,7 +48,7 @@ const update = (id, post) => {
 };
 
 // remove post with given post id
-const remove = id => {
+const remove = (id) => {
   return db('posts').where({ id }).del();
 };
 
@@ -63,7 +63,7 @@ const deleteImage = id => {
 };
 
 const getPostImagesByPostId = post_id => {
-  return db('post_images')  
+  return db('post_images')
     .where({ post_id });
 }
 

@@ -83,4 +83,15 @@ router.post('/hide-post/:id/:user_id', (req, res) => {
         })
 })
 
+router.get('/hidden-post', (req, res) => {
+    return userModeratorDB
+        .getHiddenPost()
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json(err)
+        })
+})
+
 module.exports = router;

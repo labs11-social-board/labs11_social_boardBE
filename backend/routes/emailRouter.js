@@ -8,7 +8,7 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {
-  secureKey,
+    secureKey,
 } = require('./../config/globals');
 
 // Get All Emails Route
@@ -44,12 +44,12 @@ router.delete('/:id', (req, res) => {
         })
 })
 
-function authEmail (req, res, next) {
+function authEmail(req, res, next) {
     const token = localStorage.getItem('symposium_token');
 
     if (token) {
-        jwt.verify(token, secureKey, async (err, decoded) =>{
-            if (err) {return res.status(403).json({err, message:'failed to email auth'})}
+        jwt.verify(token, secureKey, async (err, decoded) => {
+            if (err) { return res.status(403).json({ err, message: 'failed to email auth' }) }
             else {
                 req.decoded = decoded;
                 let email = req.decoded.email;
@@ -102,8 +102,12 @@ router.post('/', (req, res) => {
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
+            if (!email.email || !email.first_name || !email.last_name) {
+                res.status(400).json({ message: 'There was a problem adding email.' })
+            } else {
+                res.status(201).json(email)
+            }
 
-            res.status(201).json(email)
         })
         .catch(err => {
             res.status(500).json({
