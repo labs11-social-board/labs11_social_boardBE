@@ -9,7 +9,7 @@ require('dotenv').config();
 
 //const { getGData } = require('../../backend/db/models/AnalyticsG.js');
 
-const key = require('../node_modules/app.json');
+//const key = require('../node_modules/app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
 const creds = {
