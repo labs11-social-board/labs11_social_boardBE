@@ -136,21 +136,44 @@ router.post('/:user_id', authenticate, checkRole, async (req, res) => {
     .then(async newId => {
       const catFollowers = await categoryFollowsDB.getFollowers(category_id);
       const usersFollowing = await userFollowersDB.getUsersFollowingUser(user_id);
-      const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
-        finalFollowers.forEach(async user => {
+      const alreadySent = {}; 
+      // const finalFollowers = await getUniqueFollowers(catFollowers, usersFollowing, user_id);
+        // finalFollowers.forEach(async user => {
+
+      catFollowers.forEach(async user => {
         const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
         const notifications = await userNotificationsDB.getCount(user.user_id);
         if (parseInt(notifications.count) >= maxNumOfNotifications) {
           await userNotificationsDB.removeOldest(user.user_id);
         }
         await userNotificationsDB.add(newNotification);
-        pusher.trigger(
-          `user-${user.uuid}`,
-          'notification',
-          null,
-        );
+        alreadySent[user.user_id] = category_id; 
+        if(user_id != user.user_id){
+          pusher.trigger(
+            `user-${user.uuid}`,
+            'notification',
+            null,
+          );
+        }
       });
-     
+
+      usersFollowing.forEach(async user => {
+        const newNotification = { user_id: user.user_id, category_id, discussion_id: newId[0], created_at };
+        const notifications = await userNotificationsDB.getCount(user.user_id);
+        if (parseInt(notifications.count) >= maxNumOfNotifications) {
+          await userNotificationsDB.removeOldest(user.user_id);
+        }
+
+        await userNotificationsDB.add(newNotification);
+        if(!(user.user_id in alreadySent && user_id != user.user_id)){
+          pusher.trigger(
+            `user-${user.uuid}`,
+            'notification',
+            null,
+          );
+        }
+      }); 
+      
       return res.status(201).json(newId);
     })
     .catch(err => res.status(500).json({ error: `Failed to insert(): ${err}` }));

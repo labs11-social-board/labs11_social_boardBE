@@ -15,7 +15,7 @@ const router = express.Router();
 const {
   numOfHashes,
   defaultAvatar,
-  allowedAvatarTypes
+  allowedAvatarTypes,
 } = require('../config/globals.js');
 
 /***************************************************************************************************
@@ -29,9 +29,11 @@ const {
 const requestClientIP = require('../config/middleware/requestClientIP.js');
 const {
   transporter,
-  getMailOptions
+  getMailOptions,
 } = require('../config/nodeMailerConfig.js');
 const { isUrl } = require('../config/globals.js');
+
+
 
 /***************************************************************************************************
  ********************************************* Endpoints *******************************************
@@ -628,7 +630,6 @@ router.delete('/:user_id', authenticate, (req, res) => {
 });
 
 //Post to send email 
-// send a reset-pw email to user
 router.post('/invite', requestClientIP, (req, res) => {
   const { email, clientIP } = req.body;
   const token = ""; //maybe update this later  shouldn't need a token for an invite. 
@@ -645,7 +646,7 @@ router.post('/invite', requestClientIP, (req, res) => {
         .json({ error: `Failed to send e-mail: ${error}` });
     } else {
       return res.status(201).json({
-        message: `Success! An e-mail was sent to ${email} with a link to reset your password. Please check your inbox (You may also want to check your spam folder).`
+        message: `Success! An e-mail was sent to ${email}  inviting them to join Symposium).`
       });
     }
   });

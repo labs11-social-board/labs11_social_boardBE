@@ -43,5 +43,13 @@ router.delete('/:user_id/:following_id', authenticate, (req,res) => {
 //     .then(results => res.status(200).json(results))
 //     .catch(err => res.status(500).json({error: `Failed to get users following the user ${err}`}));
 // })
-
+router.get('/following/:following_id', (req,res) => {
+  //used get the number of followers for a particular user. 
+  /*Stretch goal in current implementation this will only be displayed for a user logged in on their own profile*/
+  const followingId = req.params.following_id;
+  return userFollowersDB
+    .getUsersFollowingUser(followingId)
+    .then(results => res.status(200).json(results))
+    .catch(err => res.status(500).json({error : `Failed to get followers count ${err}`}));
+})
 module.exports = router; 

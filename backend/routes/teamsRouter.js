@@ -40,6 +40,9 @@ router.post('/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const role = 'team_owner';
 
+  if(!req.body.team_name){
+    res.status(400).json({ error: 'Please enter a Team Name' });
+  }
   try {
     const teamBoard = await teamsDB.addTeamBoard(team);
     const teamOwner = await teamMembersDB.addTeamMember(
@@ -81,15 +84,11 @@ router.get('/:user_id/:team_id', authenticate, checkIfPrivate, (req, res) => {
 //Update Team information
 router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   const { team_id, user_id } = req.params;
-  const { team_name, isPrivate, image } = req.body;
-  const changes = { team_name, isPrivate };
+  const { team_name, isPrivate, image, wiki } = req.body;
+  const changes = { wiki, team_name, isPrivate };
 
   try {
     const updated = await teamsDB.updateTeamBoard(team_id, changes);
-
-    if(image){
-      const updated = await teamsDB.updateTeamLogo(team_id, image);
-    }
 
     if (updated === null) {
       res.status(400).json({
@@ -97,6 +96,19 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
       });
     } else {
       res.status(200).json(updated);
+    }
+
+    if(image){
+      const isImageAlready = await teamsDB.checkIfTeamHasImage(team_id);
+      if(!isImageAlready) {
+        const newImage = await teamsDB.updateImageWithTeam(image.id, team_id);
+
+        res.status(200).json(newImage);
+      } else {
+        const updated = await teamsDB.updateTeamLogo(team_id, image.image);
+
+        res.status(200).json(updated);
+      }
     }
   } catch (err) {
     res
