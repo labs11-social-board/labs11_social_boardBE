@@ -667,5 +667,3 @@ router.get('/search-user', async (req, res) => {
 });
 
 module.exports = router;
-
-
