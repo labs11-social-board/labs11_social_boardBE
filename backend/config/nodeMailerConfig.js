@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const nodemailer = require('nodemailer');
-
 // globals
 const {
 	nodeMailerHost,
@@ -9,21 +8,36 @@ const {
 	nodeMailerUser,
 	nodeMailerPass,
 	frontEndUrl,
+	oAuthClientId,
+	oAuthClientSecret,
+	oAuthRefreshToken,
+	oAuthAccessToken,
 } = require('./globals.js');
+
+var auth = {
+	type: 'OAuth2',
+	user: nodeMailerUser,
+	pass : nodeMailerPass,
+	clientId: oAuthClientId,
+	clientSecret: oAuthClientSecret,
+	refreshToken : oAuthRefreshToken,
+  };
 
 const transporter = nodemailer.createTransport({
 	host: nodeMailerHost,
 	port: nodeMailerPort,
 	requireTLS: true,
 	auth: {
-		user: nodeMailerUser,
-		pass: nodeMailerPass,
-	},
-});
+		user: nodeMailerUser, 
+		pass : nodeMailerPass, 
+	}
+})
+
 
 const getMailOptions = (route, email, token, clientIP) => {
 	const mailOptions = {
-		from: 'Symposium Board" <symposiumdiscussionboard2@gmail.com>',
+		// from: 'Symposium Board" <symposiumdiscussionboard2@gmail.com>',
+		from: 'symposiumdiscussionboard2@gmail.com',
 		to: email,
 	};
 	if (route === 'register' || route === 'update-email') {

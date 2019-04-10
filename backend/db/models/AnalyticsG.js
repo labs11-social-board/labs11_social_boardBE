@@ -6,7 +6,7 @@ const express = require('express');
 
 const { GClientEmail, nodeMailerHost } = require('../../config/globals');
 
-const key = require('../../routes/app.json');
+const key = require('../../node_modules/app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
 const gjwt = new google.auth.JWT(key.client_email, null, key.private_key, scopes, null)
@@ -25,7 +25,7 @@ const getGData = async function getData(nodeMailerHost) {
   })
 
   
-  console.log(nodeMailerHost);
+  console.log(key.client_email);
   return result;
 }
 
