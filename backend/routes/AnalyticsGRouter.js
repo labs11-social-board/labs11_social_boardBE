@@ -12,7 +12,12 @@ require('dotenv').config();
 const key = require('../node_modules/app.json');
 const scopes = 'https://www.googleapis.com/auth/analytics.readonly'
 
-const gjwt = new google.auth.JWT(process.env.GCLIENT_EMAIL, null, process.env.GPRIVATE_KEY, scopes, null)
+const creds = {
+    email: process.env.GCLIENT_EMAIL,
+    key: process.env.GPRIVATE_KEY.replace(/\\n/g, '\n')
+}
+
+const gjwt = new google.auth.JWT(creds.email, null, creds.key, scopes, null)
 
 // the live pull endpoints begin with /analytics //
 
