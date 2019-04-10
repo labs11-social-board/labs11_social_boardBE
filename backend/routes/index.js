@@ -15,6 +15,7 @@ const userFollowersRouter = require('./userFollowersRouter.js');
 const teamsRouter = require('./teamsRouter');
 const userModerator = require('./userModeratorRouter.js');
 const emailRouter = require('./emailRouter.js');
+const analyticsRouter = require('./AnalyticsGRouter.js');
 
 module.exports = {
   authRouter,
@@ -33,5 +34,6 @@ module.exports = {
   userFollowersRouter,
   teamsRouter,
   userModerator,
-  emailRouter
+  emailRouter,
+  analyticsRouter,
 };
