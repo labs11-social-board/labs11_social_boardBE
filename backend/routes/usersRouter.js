@@ -646,7 +646,7 @@ router.post('/invite', requestClientIP, (req, res) => {
         .json({ error: `Failed to send e-mail: ${error}` });
     } else {
       return res.status(201).json({
-        message: `Success! An e-mail was sent to ${email} with a link to reset your password. Please check your inbox (You may also want to check your spam folder).`
+        message: `Success! An e-mail was sent to ${email}  inviting them to join Symposium).`
       });
     }
   });
