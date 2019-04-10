@@ -123,6 +123,10 @@ const pusherSecret = process.env.PUSHER_SECRET;
 const pusherCluster = process.env.PUSHER_CLUSTER;
 const GClientEmail = process.env.GCLIENT_EMAIL;
 
+const oAuthClientId = process.env.OAUTH_CLIENT_ID;
+const oAuthClientSecret = process.env.OAUTH_CLIENT_SECRET; 
+const oAuthRefreshToken = process.env.OAUTH_REFRESH_TOKEN;
+const oAuthAccessToken = process.env.OAUTH_ACCESS_TOKEN; 
 module.exports = {
   // variables
   subSilverStartIndex,
@@ -169,4 +173,10 @@ module.exports = {
   pusherSecret,
   pusherCluster,
   GClientEmail,
+
+  //oAUTH USED WITH NODEMAILER 
+  oAuthClientId,
+  oAuthClientSecret,
+  oAuthRefreshToken,
+  oAuthAccessToken, 
 };
