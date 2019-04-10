@@ -43,7 +43,8 @@ const {
   userFollowersRouter,
   teamsRouter,
   userModerator,
-  emailRouter
+  emailRouter,
+  analyticsRouter,
 } = require('./routes/index.js');
 
 //Auth Route
@@ -73,7 +74,9 @@ server.use('/team', teamsRouter);
 //Moderator Routes
 server.use('/moderators', userModerator);
 //Email Routes
-server.use('/emails', emailRouter)
+server.use('/emails', emailRouter);
+// Analytic Stuff
+server.use('/analytics', analyticsRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 
