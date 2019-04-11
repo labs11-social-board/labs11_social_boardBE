@@ -7,6 +7,7 @@ const router = express.Router();
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const {
   secureKey,
 } = require('./../config/globals');
@@ -44,54 +45,58 @@ router.delete('/:id', (req, res) => {
         })
 })
 
-function authEmail (req, res, next) {
-    const token = localStorage.getItem('symposium_token');
 
-    if (token) {
-        jwt.verify(token, secureKey, async (err, decoded) =>{
-            if (err) {return res.status(403).json({err, message:'failed to email auth'})}
-            else {
-                req.decoded = decoded;
-                let email = req.decoded.email;
-                res.locals.email = email;
-                next()
-            }
-        })
-    }
-}
 
 
 // Check If Email Is In The Accepted_Email Database
 router.get('/is-accepted-email', (req, res) => {
-    const checkEmail = req.body.email;
-    //const checkEmail = res.locals.email
+    const token = req.get('Email')
+    let checkEmail = '';
+    
+    //console.log(req.headers.email);
 
-    console.log(checkEmail)
+    if (token) {
+        
+        jwt.verify(token, secureKey, async (err, decoded) =>{
+            if(err) {
+                return (
+                    res.send('not getting anywhere...')
+                )
+            }
+            else {
+                console.log('getting to ELSE!', decoded)
+                req.decoded = decoded;
+                checkEmail = req.decoded.email;
+                
+            }
+        })
+    }
+
+    //console.log('check email:', checkEmail)
 
     return emailDB
         .getEmails()
         .then(emails => {
-            const pulledEmail = emails.filter(email => {
-                if (email.email === checkEmail) {
-                    return email.email
-                }
-            })
+            const emaily = emails.filter(email => email.email === `${checkEmail}`);
 
-            if (pulledEmail.length !== 1) {
-                res.status(401).json({
-                    message: {
-                        topMessage: 'Account Not Allowed',
-                        bottomMessage: 'You are not logged in or are attempting to access a board or discussion that this account is not authorized to see.  Please log in with your company email or contact your administrator.'
-                    }
-                })
-            } else {
-                res.status(201).json(checkEmail)
+            console.log(emaily);
+
+            if(emaily.length != 0) {
+                return (
+                    res.send(true)
+                )
+            }
+            else {
+                return(
+                    res.send(false)
+                )
             }
         })
         .catch(err => {
-            res.status(500).json(err)
+            res.status(501).json(err)
         })
-
+        
+  
 })
 
 
