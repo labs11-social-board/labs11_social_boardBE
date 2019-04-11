@@ -91,7 +91,6 @@ router.get('/is-accepted-email', (req, res) => {
                     res.send(false)
                 )
             }
-            
         })
         .catch(err => {
             res.status(501).json(err)
