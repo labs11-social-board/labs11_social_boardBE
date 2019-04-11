@@ -91,51 +91,13 @@ router.get('/is-accepted-email', (req, res) => {
                     res.send(false)
                 )
             }
-            // console.log('First:', emails)
-            // emails.includes({email: checkEmail})
-            // emails.filter(email => {
-            //     console.log('inneremail:',email)
-            //     if (email.email === `${checkEmail}`) {
-            //         return (
-            //             res.send('yay')
-            //         )
-            //     }
-            //     if (email.email != `${checkEmail}`) {
-            //         return (
-            //             res.send('yayNOOO')
-            //         )
-            //     }
-                
-            // })
+            
         })
         .catch(err => {
             res.status(501).json(err)
         })
         
-    // return emailDB
-    //     .getEmails()
-    //     .then(emails => {
-    //         const pulledEmail = emails.filter(email => {
-    //             if (email.email === checkEmail) {
-    //                 return email.email
-    //             }
-    //         })
-
-    //         if (pulledEmail.length !== 1) {
-    //             res.status(401).json({
-    //                 message: {
-    //                     topMessage: 'Account Not Allowed',
-    //                     bottomMessage: 'You are not logged in or are attempting to access a board or discussion that this account is not authorized to see.  Please log in with your company email or contact your administrator.'
-    //                 }
-    //             })
-    //         } else {
-    //             res.status(201).json(checkEmail)
-    //         }
-    //     })
-    //     .catch(err => {
-    //         res.status(500).json(err)
-    //     })
-
+  
 })
 
 

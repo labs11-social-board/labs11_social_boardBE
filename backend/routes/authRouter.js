@@ -358,7 +358,7 @@ router.post('/auth0-login', async (req, res) => {
       // if the user already exists in the DB, return the user
       if (user) {
         // refresh token (if needed)
-        token = await generateToken(user.id, user.username);
+        token = await generateToken(user.id, user.username, '2d', user.email);
 
         // update user settings
         userSettings.user_id = user.id;
