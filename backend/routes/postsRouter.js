@@ -105,9 +105,8 @@ router.delete('/:user_id/:post_id', authenticate, (req, res) => {
   if (!post_id) return res.status(400).json({ error: 'Post ID is required.' });
   return postsDB
     .remove(post_id)
-    .then((post) => {
-      console.log(post)
-      res.status(201).json({ post, message: 'Post removal successful.' })
+    .then(() => {
+      res.status(201).json({ message: 'Post removal successful.' })
     })
     .catch(err =>
       res.status(500).json({ error: `Failed to remove(): ${err}` })

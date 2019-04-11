@@ -102,10 +102,11 @@ router.post('/', (req, res) => {
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
-            if (!email.email || !email.first_name || !email.last_name) {
+            console.log('email:', email.email)
+            if (email.email === '') {
                 res.status(400).json({ message: 'There was a problem adding email.' })
             } else {
-                res.status(201).json(email)
+                res.status(202).json(email)
             }
 
         })
