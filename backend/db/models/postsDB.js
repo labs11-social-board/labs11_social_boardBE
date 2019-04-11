@@ -55,7 +55,7 @@ const remove = (id) => {
 const addImage = async post_image => {
   const [id] = await db('post_images').insert(post_image, 'id');
 
-  return db('post_images')  
+  return db('post_images')
     .where({ id })
     .first();
 };
