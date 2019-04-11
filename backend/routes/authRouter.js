@@ -247,7 +247,7 @@ router.post('/login', async (req, res) => {
       // If user object was obtained AND...
       // the client password matches the db hash password
       if (user && bcrypt.compareSync(userCreds.password, user.password)) {
-        const token = await generateToken(user.id, user.username);
+        const token = await generateToken(user.id, user.username, '2d', user.email);
         return db
           .findById(user.id)
           .then(async foundUser => {
@@ -308,7 +308,7 @@ router.post('/log-back-in/:user_id', authenticate, async (req, res) => {
       // if the user already exists in the DB
       // you will get back an array with an object with user info inside it
       if (user.length === 1) {
-        const token = await generateToken(user[0].id, user[0].username);
+        const token = await generateToken(user[0].id, user[0].username, '2d', user[0].email);
         const lastLogin = user[0].last_login;
         let newNotifications = false;
         if (user[0].notifications.length) {
