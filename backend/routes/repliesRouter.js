@@ -69,11 +69,11 @@ router.put('/:user_id', authenticate, (req, res) => {
 });
 
 //Delete Reply with Given Reply ID
-router.delete('/:user_id', authenticate, (req, res) => {
-  const reply_id = req.get('reply_id');
-  if (!reply_id) return res.status(400).json({ error: 'Reply ID required.' });
+router.delete('/:user_id/:id', authenticate, (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: 'Reply ID required.' });
   return repliesDB
-    .remove(reply_id)
+    .remove(id)
     .then(() => res.status(201).json({ message: 'Reply deleted.' }))
     .catch(err =>
       res.status(500).json({ error: `Failed to remove(): ${err}` })
