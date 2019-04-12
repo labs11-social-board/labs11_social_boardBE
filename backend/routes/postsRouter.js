@@ -102,9 +102,11 @@ router.put('/:user_id', authenticate, (req, res) => {
 // remove post with given post id
 router.delete('/:user_id/:post_id', authenticate, (req, res) => {
   const { post_id } = req.params;
+  const post = req.body;
+  console.log('post', post)
   if (!post_id) return res.status(400).json({ error: 'Post ID is required.' });
   return postsDB
-    .remove(post_id)
+    .remove(post_id, post)
     .then(() => {
       res.status(201).json({ message: 'Post removal successful.' })
     })
@@ -200,10 +202,15 @@ router.delete('/images/:user_id/:image_id', async (req, res) => {
 });
 
 // Get Deleted Post 
-router.get('/get-deleted-post', (req, res) => {
+router.post('/get-deleted-post/:user_id', (req, res) => {
+  const id = req.params.id
+  const post = req.body
+
   return postsDB
-    .getDeletedPost()
-    .then()
+    .insertDeletedPost(id, post)
+    .then(post => {
+      res.status(200).json(post)
+    })
     .catch(err => {
       res.status(500).json(err)
     })

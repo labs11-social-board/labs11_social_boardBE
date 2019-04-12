@@ -49,20 +49,19 @@ const update = (id, post) => {
 
 // remove post with given post id
 const remove = (id) => {
-  insertDeletedPost()
+  // insertDeletedPost(id, post)
   return db('posts').where({ id }).del();
 };
 
-const insertDeletedPost = async (post, user) => {
-  await db('deleted_post as dp').insert(post, user)
+const insertDeletedPost = (id, post) => {
+  return db('deleted_post').insert({ "post": post, 'post_id': id })
 }
 
 const getDeletedPost = () => {
   return db('deleted_post as dp')
-    .where({ id })
-    .select('dp.post', 'dp.post_id', 'u.username')
-    .join('users as u', 'dp.post_id', 'u.id')
-    .leftJoin('post as p')
+  // .select('dp.post', 'dp.post_id', 'u.username')
+  // .join('users as u', 'dp.post_id', 'u.id')
+  // .leftJoin('post as p')
 }
 
 const addImage = async post_image => {
@@ -114,5 +113,6 @@ module.exports = {
   updateImageWithPost,
   updateImageWithReply,
   updateImageWithDiscussion,
-  getDeletedPost
+  getDeletedPost,
+  insertDeletedPost
 };

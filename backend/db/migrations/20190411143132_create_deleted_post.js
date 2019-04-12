@@ -12,7 +12,6 @@ exports.up = function (knex, Promise) {
             .integer('post_id')
             .references('id')
             .inTable('users')
-            .notNullable()
 
     })
 };
