@@ -52,8 +52,8 @@ router.post('/:user_id', authenticate, checkRole, (req, res) => {
   const { user_id } = req.params;
   const { discussion_id, postBody, repliedPostID } = req.body;
   const created_at = Date.now();
-  if (!postBody)
-    return res.status(400).json({ error: 'Post body must not be empty.' });
+  // if (!postBody)
+  //   return res.status(400).json({ error: 'Post body must not be empty.' });
   const newPost = { user_id, discussion_id, body: postBody, created_at };
   if (repliedPostID) newPost.reply_to = repliedPostID;
   return postsDB
@@ -102,10 +102,14 @@ router.put('/:user_id', authenticate, (req, res) => {
 // remove post with given post id
 router.delete('/:user_id/:post_id', authenticate, (req, res) => {
   const { post_id } = req.params;
+  const post = req.body;
+  console.log('post', post)
   if (!post_id) return res.status(400).json({ error: 'Post ID is required.' });
   return postsDB
-    .remove(post_id)
-    .then(() => res.status(201).json({ message: 'Post removal successful.' }))
+    .remove(post_id, post)
+    .then(() => {
+      res.status(201).json({ message: 'Post removal successful.' })
+    })
     .catch(err =>
       res.status(500).json({ error: `Failed to remove(): ${err}` })
     );
@@ -146,7 +150,6 @@ router.post('/images/:user_id', fileUpload(), async (req, res) => {
   try {
     const cImage = await Jimp.read(imageBuffer).then(image => {
       return image
-        .scaleToFit(100, 100)
         .getBase64(Jimp.AUTO, (err, convertedImage) => {
           if (err) throw err;
           return (post_image.image = convertedImage);
@@ -171,7 +174,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addReply = await postsDB.updateImageWithReply(image_id, reply_id);
 
       res.status(200).json(addReply);
-    } else if(discussion_id) {
+    } else if (discussion_id) {
       const addDiscussion = await postsDB.updateImageWithDiscussion(image_id, discussion_id);
 
       res.status(200).json(addDiscussion);
@@ -179,7 +182,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addTeam = await teamsDB.updateImageWithTeam(image_id, team_id);
 
       res.status(200).json(addTeam);
-    } 
+    }
   } catch (err) {
     res.status(500).json({ error: `Unable to updateImageWithPost():${err}` });
   }
@@ -196,5 +199,20 @@ router.delete('/images/:user_id/:image_id', async (req, res) => {
     res.status(500).json({ error: `Unable to deleteImage():${err}` });
   }
 });
+
+// Get Deleted Post 
+router.post('/get-deleted-post/:user_id', (req, res) => {
+  const id = req.params.id
+  const post = req.body
+
+  return postsDB
+    .insertDeletedPost(id, post)
+    .then(post => {
+      res.status(200).json(post)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
 
 module.exports = router;

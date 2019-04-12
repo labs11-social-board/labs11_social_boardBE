@@ -82,15 +82,18 @@ const removePost = (id) => {
 }
 
 const hidePost = (post, user_id) => {
-  db('hidden_post')
+  db('hidden_post as hp')
     .where({ user_id })
     .leftJoin('posts')
-    .join('users as u', 'u.id', 'u.user_id')
+    .join('users as u', 'u.id', 'hp.user_id')
     .insert(post, user_id)
 
   return removePost(id)
 }
 
+const getHiddenPost = () => {
+  return db('hidden_post')
+}
 
 module.exports = {
   getModerators,
@@ -98,5 +101,6 @@ module.exports = {
   changeToBasic,
   getUser,
   removePost,
-  hidePost
+  hidePost,
+  getHiddenPost
 }
