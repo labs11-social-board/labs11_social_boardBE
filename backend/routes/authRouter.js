@@ -245,7 +245,6 @@ router.post('/login', async (req, res) => {
     .then(async user => {
       // If user object was obtained AND...
       // the client password matches the db hash password
-      console.log(user)
       if (user && bcrypt.compareSync(userCreds.password, user.password)) {
         const token = await generateToken(user.id, user.username, '2d', user.email);
         return db
