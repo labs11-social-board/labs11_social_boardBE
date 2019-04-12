@@ -146,7 +146,6 @@ router.post('/images/:user_id', fileUpload(), async (req, res) => {
   try {
     const cImage = await Jimp.read(imageBuffer).then(image => {
       return image
-        .scaleToFit(100, 100)
         .getBase64(Jimp.AUTO, (err, convertedImage) => {
           if (err) throw err;
           return (post_image.image = convertedImage);
