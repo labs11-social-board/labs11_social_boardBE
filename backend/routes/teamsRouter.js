@@ -42,18 +42,19 @@ router.post('/:user_id', authenticate, async (req, res) => {
 
   if(!req.body.team_name){
     res.status(400).json({ error: 'Please enter a Team Name' });
-  }
-  try {
-    const teamBoard = await teamsDB.addTeamBoard(team);
-    const teamOwner = await teamMembersDB.addTeamMember(
-      user_id,
-      teamBoard.id,
-      role
-    );
+  } else {
+    try {
+      const teamBoard = await teamsDB.addTeamBoard(team);
+      const teamOwner = await teamMembersDB.addTeamMember(
+        user_id,
+        teamBoard.id,
+        role
+      );
 
-    res.status(201).json({ teamBoard, teamOwner });
-  } catch (err) {
-    res.status(500).json({ error: `Unable to addTeamBoard(): ${err}` });
+      res.status(201).json({ teamBoard, teamOwner });
+    } catch (err) {
+      res.status(500).json({ error: `Unable to addTeamBoard(): ${err}` });
+    }
   }
 });
 
