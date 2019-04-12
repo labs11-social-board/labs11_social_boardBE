@@ -52,8 +52,8 @@ router.post('/:user_id', authenticate, checkRole, (req, res) => {
   const { user_id } = req.params;
   const { discussion_id, postBody, repliedPostID } = req.body;
   const created_at = Date.now();
-  if (!postBody)
-    return res.status(400).json({ error: 'Post body must not be empty.' });
+  // if (!postBody)
+  //   return res.status(400).json({ error: 'Post body must not be empty.' });
   const newPost = { user_id, discussion_id, body: postBody, created_at };
   if (repliedPostID) newPost.reply_to = repliedPostID;
   return postsDB
