@@ -240,17 +240,18 @@ router.post('/login', async (req, res) => {
     username: req.body.username,
     password: req.body.password
   };
-
   return db
     .findByUsername(userCreds.username)
     .then(async user => {
       // If user object was obtained AND...
       // the client password matches the db hash password
+      console.log(user)
       if (user && bcrypt.compareSync(userCreds.password, user.password)) {
         const token = await generateToken(user.id, user.username, '2d', user.email);
         return db
           .findById(user.id)
           .then(async foundUser => {
+            console.log(foundUser)
             if (foundUser.length) {
               const lastLogin = foundUser[0].last_login;
               let newNotifications = false;

@@ -60,44 +60,44 @@ router.get('/is-accepted-email', (req, res) => {
         jwt.verify(token, secureKey, async (err, decoded) =>{
             if(err) {
                 return (
-                    res.send('not getting anywhere...')
+                    res.send(false)
                 )
             }
             else {
                 console.log('getting to ELSE!', decoded)
                 req.decoded = decoded;
                 checkEmail = req.decoded.email;
-                
+
+                return emailDB
+                    .getEmails()
+                    .then(emails => {
+                        const emaily = emails.filter(email => email.email === `${checkEmail}`);
+
+                        console.log(emaily);
+
+                        if(emaily.length != 0) {
+                            return (
+                                res.send(true)
+                            )
+                        }
+                        else {
+                            return(
+                                res.send(false)
+                            )
+                        }
+                    })
+                    .catch(err => {
+                        res.status(501).json(err)
+                    })
             }
         })
+    } else {
+        return res.send(false);
     }
 
     //console.log('check email:', checkEmail)
-
-    return emailDB
-        .getEmails()
-        .then(emails => {
-            const emaily = emails.filter(email => email.email === `${checkEmail}`);
-
-            console.log(emaily);
-
-            if(emaily.length != 0) {
-                return (
-                    res.send(true)
-                )
-            }
-            else {
-                return(
-                    res.send(false)
-                )
-            }
-        })
-        .catch(err => {
-            res.status(501).json(err)
-        })
-        
   
-})
+});
 
 
 // Add A New Email Route
