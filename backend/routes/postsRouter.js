@@ -199,4 +199,14 @@ router.delete('/images/:user_id/:image_id', async (req, res) => {
   }
 });
 
+// Get Deleted Post 
+router.get('/get-deleted-post', (req, res) => {
+  return postsDB
+    .getDeletedPost()
+    .then()
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
+
 module.exports = router;

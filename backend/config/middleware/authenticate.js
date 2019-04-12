@@ -15,6 +15,7 @@ const generateToken = async (id, username, expiration, email) => {
   let payload = {
     id,
     username,
+    email,
     total_hours: totalHours
   };
 
