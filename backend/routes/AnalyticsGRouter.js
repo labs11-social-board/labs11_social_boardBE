@@ -34,7 +34,7 @@ router.get('/pageviews', async (req, res) => {
     })
     
     .then(stuff =>{
-        res.send(stuff)
+        res.send(stuff.payload.data)
         // res.status(200).json({message: 'just keep swimming'})
     })
     .catch(e => {
