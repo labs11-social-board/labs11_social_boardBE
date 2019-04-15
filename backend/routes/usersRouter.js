@@ -64,8 +64,10 @@ router.get('/discussions/:user_id', (req, res, next) => {
 //Gets a list of teams a user is in
 router.get('/teams/:user_id', authenticate, (req, res) => {
   const { user_id } = req.params;
+  const order = req.get('order');
+  const orderType = req.get('orderType');
   return usersDB
-    .getUserTeams(user_id)
+    .getUserTeams(user_id, order, orderType)
     .then(user_teams => res.status(200).json(user_teams))
     .catch(err =>
       res.status(500).json({ error: `Failed to getUserTeams(): ${err}` })
