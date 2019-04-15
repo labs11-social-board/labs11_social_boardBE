@@ -250,7 +250,6 @@ router.post('/login', async (req, res) => {
         return db
           .findById(user.id)
           .then(async foundUser => {
-            console.log(foundUser)
             if (foundUser.length) {
               const lastLogin = foundUser[0].last_login;
               let newNotifications = false;
