@@ -197,7 +197,8 @@ const getUserType = user_id => {
 };
 
 //get all teams a user is in with a given id
-const getUserTeams = async user_id => {
+const getUserTeams = async (user_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
   const postsQuery = db('posts')
   .select('discussion_id')
   .count('id as post_count')
@@ -234,7 +235,8 @@ const userTeams = db('team_members as tm')
     .leftOuterJoin(discussonCount.as('dc'), function() {
       this.on('dc.team_id', '=', 't.id')
     })
-    .where('tm.user_id', user_id);
+    .where('tm.user_id', user_id)
+    .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
 
   return userTeams;
 };
