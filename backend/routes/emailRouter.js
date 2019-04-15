@@ -109,7 +109,7 @@ router.post('/', (req, res) => {
         .then(email => {
 
             res.status(201).json({
-                error: 'Successfully added!'
+                message: 'Successfully added!'
             })
         })
         .catch(err => {
