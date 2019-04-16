@@ -502,22 +502,6 @@ router.put('/avatar-url/:user_id', authenticate, async (req, res) => {
 });
 
 // Update the users Bio for their profile page
-// router.put('/bio/:user_id', authenticate, async (req, res) => {
-//   const { user_id } = req.params;
-//   const { bio } = req.body;
-
-//   if (!bio) {
-//     res.status(400).json({ error: 'Please provided a Bio for the User' });
-//   } else {
-//     try {
-//       const userBio = await usersDB.updateBio(user_id, bio);
-
-//       res.status(200).json(userBio);
-//     } catch (err) {
-//       res.status(500).json({ error: `Failed to updateBio(): ${err}` });
-//     }
-//   }
-// });
 router.put('/bio/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { bio } = req.body;
@@ -531,26 +515,6 @@ router.put('/bio/:user_id', authenticate, async (req, res) => {
 });
 
 // Update the users Github information
-// router.put('/github/:user_id', authenticate, async (req, res) => {
-//   const { user_id } = req.params;
-//   const { github } = req.body;
-
-//   if (!github) {
-//     res
-//       .status(400)
-//       .json({ error: 'Please provided a Github link for the User' });
-//   } else if (!isUrl(github, true)) {
-//     res.status(400).json({ error: 'The request body must be a URL ' });
-//   } else {
-//     try {
-//       const userGithub = await usersDB.updateGithub(user_id, github);
-
-//       res.status(200).json(userGithub);
-//     } catch (err) {
-//       res.status(500).json({ error: `Failed to updateGithub(): ${err}` });
-//     }
-//   }
-// });
 router.put('/github/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { github } = req.body;
@@ -568,27 +532,6 @@ router.put('/github/:user_id', authenticate, async (req, res) => {
   }
 });
 
-// //Update the users twitter information
-// router.put('/twitter/:user_id', authenticate, async (req, res) => {
-//   const { user_id } = req.params;
-//   const { twitter } = req.body;
-
-//   if (!twitter) {
-//     res
-//       .status(400)
-//       .json({ error: 'Please provided a Twitter link for the User' });
-//   } else if (!isUrl(twitter,true)) {
-//     res.status(400).json({ error: 'The request body must be a URL ' });
-//   } else {
-//     try {
-//       const userTwitter = await usersDB.updateTwitter(user_id, twitter);
-
-//       res.status(200).json(userTwitter);
-//     } catch (err) {
-//       res.status(500).json({ error: `Failed to updateTwitter(): ${err}` });
-//     }
-//   }
-// });
 //Update the users twitter information
 router.put('/twitter/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
@@ -608,26 +551,6 @@ router.put('/twitter/:user_id', authenticate, async (req, res) => {
 });
 
 //Update the users linkedin information
-// router.put('/linkedin/:user_id', authenticate, async (req, res) => {
-//   const { user_id } = req.params;
-//   const { linkedin } = req.body;
-
-//   if (!linkedin) {
-//     res
-//       .status(400)
-//       .json({ error: 'Please provided a Linkedin link for the User' });
-//   } else if (!isUrl(linkedin,true)) {
-//     res.status(400).json({ error: 'The request body must be a URL ' });
-//   } else {
-//     try {
-//       const userLinkedin = await usersDB.updateLinkedin(user_id, linkedin);
-
-//       res.status(200).json(userLinkedin);
-//     } catch (err) {
-//       res.status(500).json({ error: `Failed to updateLinkedin(): ${err}` });
-//     }
-//   }
-// });
 router.put('/linkedin/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { linkedin } = req.body;
@@ -646,21 +569,6 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
 });
 
 //Update the users location 
-// router.put('/location/:user_id', authenticate, async (req, res) => {
-//   const {user_id} = req.params; 
-//   const { location } = req.body; 
-
-//   if(!location){
-//     res
-//       .status(400)
-//       .json({ error : "Please provide a location for the User"})
-//   }else {
-//     return usersDB 
-//       .updateLocation(user_id, location)
-//       .then(response => res.status(201).json(response))
-//       .catch(error =>  res.status(500).json({error : `Failed to update location ${error}`}))
-//   }
-// })
 router.put('/location/:user_id', authenticate, async (req, res) => {
   const {user_id} = req.params; 
   const { location } = req.body; 
