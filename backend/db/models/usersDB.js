@@ -198,11 +198,48 @@ const getUserType = user_id => {
 };
 
 //get all teams a user is in with a given id
-const getUserTeams = user_id => {
-  return db('team_members as tm')
-    .select('tm.team_id', 't.team_name')
+const getUserTeams = async (user_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
+  const postsQuery = db('posts')
+  .select('discussion_id')
+  .count('id as post_count')
+  .groupBy('discussion_id');
+
+const postCountQuery = db('discussions as d')
+  .select('d.team_id')
+  .sum('p.post_count as post_count')
+  .join(postsQuery.as('p'), function() {
+    this.on('p.discussion_id', '=', 'd.id');
+  })
+  .groupBy('d.team_id')
+  .orderBy('d.team_id');
+
+const discussonCount = db('discussions as d')
+  .select('d.team_id')
+  .count('d.id as discussion_count')
+  .groupBy('d.team_id');
+
+const userTeams = db('team_members as tm')
+  .select(
+    'tm.team_id', 
+    't.team_name', 
+    't.created_at', 
+    'pi.image as logo',
+    'pc.post_count',
+    'dc.discussion_count',
+    )
     .join('teams as t', 't.id', 'tm.team_id')
-    .where('tm.user_id', user_id);
+    .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
+    .leftOuterJoin(postCountQuery.as('pc'), function () {
+      this.on('pc.team_id', '=', 't.id');
+    })
+    .leftOuterJoin(discussonCount.as('dc'), function() {
+      this.on('dc.team_id', '=', 't.id')
+    })
+    .where('tm.user_id', user_id)
+    .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
+
+  return userTeams;
 };
 
 // change user_type in user_settings for matching user ID
