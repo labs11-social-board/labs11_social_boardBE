@@ -35,9 +35,17 @@ const deleteTeamMember = async (user_id, team_id) => {
   return getTeamMembers(team_id);
 }
 
+const updateRole = async (user_id, team_id, role) => {
+  const update = await db('team_members').where({team_id, user_id }).update('role', role, ['role']);
+
+  return getTeamMembers(team_id);
+
+}
+
 module.exports = {
   getTeamMembers,
   getTeamMember,
   addTeamMember,
   deleteTeamMember,
+  updateRole, 
 };
