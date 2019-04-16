@@ -68,6 +68,56 @@ router.get('/users', async (req, res) => {
 
 })
 
+router.get('/usersAt30', async (req, res) => {
+    const view_id = '193170741'
+    
+    const response = await gjwt.authorize()
+    const result = await google.analytics('v3').data.ga.get({
+        'auth': gjwt,
+        'ids': 'ga:' + view_id,
+        'start-date': '30daysAgo',
+        'end-date': 'today',
+        'dimensions': 'ga:date',
+        'metrics': 'ga:users'
+    })
+    
+    .then(stuff =>{
+        res.send(stuff)
+    })
+    .catch(e => {
+        res.send(e)
+    })
+
+})
+
+
+router.get('/pageviewsAt30', async (req, res) => {
+    const view_id = '193170741'
+    
+    const response = await gjwt.authorize()
+    const result = await google.analytics('v3').data.ga.get({
+        'auth': gjwt,
+        'ids': 'ga:' + view_id,
+        'start-date': '30daysAgo',
+        'end-date': 'today',
+        'dimensions': 'ga:date',
+        'metrics': 'ga:pageviews'
+    })
+    
+    .then(stuff =>{
+        res.send(stuff)
+        // res.status(200).json({message: 'just keep swimming'})
+    })
+    .catch(e => {
+        res.send(e)
+    })
+
+    // let bob = await getGData;
+    // return (
+    
+    // //res.send({ bob })
+})
+
 
 
 module.exports = router;
