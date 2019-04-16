@@ -144,9 +144,6 @@ const generateSeeds = () => {
       )
     )
   });
-<<<<<<< HEAD
-
-=======
   arr.push({
     user_id: 412,
     user_type: admin,
@@ -158,7 +155,6 @@ const generateSeeds = () => {
       )
     )
   });
->>>>>>> 7fbc3861a40a5b5395d41cc0cf6e95fc413770cf
   return arr;
 };
 
