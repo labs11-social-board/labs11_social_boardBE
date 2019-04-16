@@ -288,9 +288,9 @@ router.put('/user/:user_id', async (req, res) => {
 
   if (bio) newUser.bio = bio;
 
-  if (isUrl(github)) newUser.github = github;
-  if (isUrl(twitter)) newUser.twitter = twitter;
-  if (isUrl(linkedin)) newUser.linkedin = linkedin;
+  if (isUrl(github, true)) newUser.github = github;
+  if (isUrl(twitter, true)) newUser.twitter = twitter;
+  if (isUrl(linkedin, true)) newUser.linkedin = linkedin;
 
   if (oldPassword && (!newPassword || newPassword === '')) {
     return res.status(400).json({ error: 'New password must not be empty.' });
@@ -505,10 +505,6 @@ router.put('/avatar-url/:user_id', authenticate, async (req, res) => {
 router.put('/bio/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { bio } = req.body;
-
-  if (!bio) {
-    res.status(400).json({ error: 'Please provided a Bio for the User' });
-  } else {
     try {
       const userBio = await usersDB.updateBio(user_id, bio);
 
@@ -516,7 +512,6 @@ router.put('/bio/:user_id', authenticate, async (req, res) => {
     } catch (err) {
       res.status(500).json({ error: `Failed to updateBio(): ${err}` });
     }
-  }
 });
 
 // Update the users Github information
@@ -524,11 +519,7 @@ router.put('/github/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { github } = req.body;
 
-  if (!github) {
-    res
-      .status(400)
-      .json({ error: 'Please provided a Github link for the User' });
-  } else if (!isUrl(github)) {
+  if (!isUrl(github, true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
@@ -546,11 +537,7 @@ router.put('/twitter/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { twitter } = req.body;
 
-  if (!twitter) {
-    res
-      .status(400)
-      .json({ error: 'Please provided a Twitter link for the User' });
-  } else if (!isUrl(twitter)) {
+  if (!isUrl(twitter,true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
@@ -568,11 +555,7 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
   const { user_id } = req.params;
   const { linkedin } = req.body;
 
-  if (!linkedin) {
-    res
-      .status(400)
-      .json({ error: 'Please provided a Linkedin link for the User' });
-  } else if (!isUrl(linkedin)) {
+  if (!isUrl(linkedin,true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
@@ -590,16 +573,11 @@ router.put('/location/:user_id', authenticate, async (req, res) => {
   const {user_id} = req.params; 
   const { location } = req.body; 
 
-  if(!location){
-    res
-      .status(400)
-      .json({ error : "Please provide a location for the User"})
-  }else {
     return usersDB 
       .updateLocation(user_id, location)
       .then(response => res.status(201).json(response))
       .catch(error =>  res.status(500).json({error : `Failed to update location ${error}`}))
-  }
+  
 })
 
 // Update last login
