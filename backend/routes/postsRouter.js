@@ -200,13 +200,34 @@ router.delete('/images/:user_id/:image_id', async (req, res) => {
   }
 });
 
-// Get Deleted Post 
-router.post('/get-deleted-post/:user_id', (req, res) => {
-  const id = req.params.id
-  const post = req.body
+// Insert Deleted Post and Moderator Who Deleted The Post
+router.post('/insert-deleted-post/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
+  const { post } = req.body;
+
+  const postBody = post.map(p => {
+    return p.body
+  })
+
+  const post_id = post.map(p => {
+    return p.id
+  })
 
   return postsDB
-    .insertDeletedPost(id, post)
+    .insertDeletedPost(user_id, postBody, post_id)
+    .then(post => {
+      res.status(200).json(post)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
+
+// Get Deleted Post 
+router.get('/get-deleted-post', (req, res) => {
+
+  return postsDB
+    .getDeletedPost()
     .then(post => {
       res.status(200).json(post)
     })
