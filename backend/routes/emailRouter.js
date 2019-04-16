@@ -112,10 +112,13 @@ router.post('/', (req, res) => {
                 res.status(202).json(email)
             }
 
+            res.status(201).json({
+                message: 'Successfully added!'
+            })
         })
         .catch(err => {
             res.status(500).json({
-                error: 'Could not add email'
+                error: 'Could not add an email'
             })
         })
 })
