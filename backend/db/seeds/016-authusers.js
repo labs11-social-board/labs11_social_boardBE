@@ -10,7 +10,7 @@ exports.seed = function(knex, Promise) {
         {id: 3, email: 'imonovbude@gmail.com', first_name: 'imon', last_name: 'imon', },
         {id: 4, email: 'trai@example.com', first_name: 'trai', last_name: 'trai', },
         {id: 5, email: 'modesto@example.com', first_name: 'modesto', last_name: 'modesto', },
-        {id: 6, email: 'jonathan@example.com', first_name: 'jonathan', last_name: 'jonathan', },
+        {id: 6, email: 'jonathanjholloway@gmail.com', first_name: 'jonathan', last_name: 'jonathan', },
         {id: 7, email: 'marcoguzman16@gmail.com', first_name: 'marco', last_name: 'guzman', },
         {id: 8, email: 'itsmejeffery@gmail.com', first_name: 'jeffery', last_name: 'jeffery', },
         {id: 9, email: 'kevintrandeveloper@gmail.com', first_name: 'kevin', last_name: 'jeffery', },
