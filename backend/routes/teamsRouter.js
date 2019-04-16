@@ -86,7 +86,6 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   const { team_id, user_id } = req.params;
   const { team_name, isPrivate, image, wiki } = req.body;
   const changes = { wiki, team_name, isPrivate };
-
   try {
     const updated = await teamsDB.updateTeamBoard(team_id, changes);
 
@@ -95,21 +94,20 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
         error: 'Only the Team Owner can update the Teams information'
       });
     } else {
-      res.status(200).json(updated);
-    }
-
-    if(image){
-      const isImageAlready = await teamsDB.checkIfTeamHasImage(team_id);
-      if(!isImageAlready) {
-        const newImage = await teamsDB.updateImageWithTeam(image.id, team_id);
-
-        res.status(200).json(newImage);
-      } else {
-        const updated = await teamsDB.updateTeamLogo(team_id, image.image);
-
-        res.status(200).json(updated);
+      if(image){
+        const isImageAlready = await teamsDB.checkIfTeamHasImage(team_id);
+        if(!isImageAlready) {
+          const newImage = await teamsDB.updateImageWithTeam(image.id, team_id);
+  
+          res.status(200).json(newImage);
+        } else {
+          const updated = await teamsDB.updateTeamLogo(team_id, image.image);
+  
+          res.status(200).json(updated);
+        }
       }
     }
+
   } catch (err) {
     res
       .status(500)
