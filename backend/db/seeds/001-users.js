@@ -213,7 +213,7 @@ const generateSeeds = () => {
   arr.push({
     username: 'jonathan',
     password: bcrypt.hashSync('jonathan', numOfHashes),
-    email: 'jonathan@example.com',
+    email: 'jonathanjholloway@gmail.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
