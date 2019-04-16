@@ -6,6 +6,7 @@ const csv = require('fast-csv');
 // Get all emails from the table
 const getEmails = () => {
     return db('approved_emails')
+
 };
 
 // Add email to the table

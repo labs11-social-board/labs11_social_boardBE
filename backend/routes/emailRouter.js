@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const {
-  secureKey,
+    secureKey,
 } = require('./../config/globals');
 
 // Get All Emails Route
@@ -52,12 +52,12 @@ router.delete('/:id', (req, res) => {
 router.get('/is-accepted-email', (req, res) => {
     const token = req.get('Email')
     let checkEmail = '';
-    
+
     //console.log(req.headers.email);
 
     if (token) {
-        jwt.verify(token, secureKey, async (err, decoded) =>{
-            if(err) {
+        jwt.verify(token, secureKey, async (err, decoded) => {
+            if (err) {
                 return (
                     res.send(false)
                 )
@@ -73,13 +73,13 @@ router.get('/is-accepted-email', (req, res) => {
 
                         // console.log(emaily);
 
-                        if(emaily.length != 0) {
+                        if (emaily.length != 0) {
                             return (
                                 res.send(true)
                             )
                         }
                         else {
-                            return(
+                            return (
                                 res.send(false)
                             )
                         }
@@ -94,23 +94,31 @@ router.get('/is-accepted-email', (req, res) => {
     }
 
     //console.log('check email:', checkEmail)
-  
+
 });
 
 
 // Add A New Email Route
 router.post('/', (req, res) => {
     const newEmail = req.body;
-    console.log(newEmail)
+    console.log('email log:', newEmail)
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
+            console.log('email:', email.email)
+            if (email.email === '') {
+                res.status(400).json({ message: 'There was a problem adding email.' })
+            } else {
+                res.status(202).json(email)
+            }
 
-            res.status(201).json(email)
+            res.status(201).json({
+                message: 'Successfully added!'
+            })
         })
         .catch(err => {
             res.status(500).json({
-                error: 'Could not add email'
+                error: 'Could not add an email'
             })
         })
 })
