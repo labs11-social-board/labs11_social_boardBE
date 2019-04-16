@@ -69,10 +69,11 @@ function authenticate(req, res, next) {
     const requestingUserID = req.params.user_id;
     const loggedInUserID = '' + req.decoded.id;
     const currentUser = await usersDB.getUserName(req.decoded.id);
-    
-    if (req.decoded.username !== currentUser.username) {
-      return res.status(401).json({ error: 'You need to delete localStorage.' });
-    }
+    if (currentUser) {
+      if (req.decoded.username !== currentUser.username) {
+        return res.status(401).json({ error: 'You need to delete localStorage.' });
+      }
+    } else return res.status(401).json({ error: 'Not authorized.' });
     if (requestingUserID !== loggedInUserID) {
       return res.status(401).json({ error: 'Not authorized.' });
     }
