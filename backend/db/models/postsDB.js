@@ -53,8 +53,9 @@ const remove = (id) => {
   return db('posts').where({ id }).del();
 };
 
-const insertDeletedPost = (id, post) => {
-  return db('deleted_post').insert({ "post": post, 'post_id': id })
+const insertDeletedPost = (user_id, postBody, post_id) => {
+  console.log('post_id:', post_id, 'user_id:', user_id, 'postBody:', postBody)
+  return db('deleted_post').insert({ "post": postBody, 'user_id': user_id, 'post_id': post_id })
 }
 
 const getDeletedPost = () => {
