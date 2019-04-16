@@ -53,15 +53,15 @@ const remove = (id) => {
   return db('posts').where({ id }).del();
 };
 
-const insertDeletedPost = (id, post) => {
-  return db('deleted_post').insert({ "post": post, 'post_id': id })
+const insertDeletedPost = (user_id, postBody, post_id) => {
+  return db('deleted_post')
+    .insert({ "post": postBody[0], 'user_id': user_id, 'post_id': post_id[0] })
 }
 
 const getDeletedPost = () => {
   return db('deleted_post as dp')
-  // .select('dp.post', 'dp.post_id', 'u.username')
-  // .join('users as u', 'dp.post_id', 'u.id')
-  // .leftJoin('post as p')
+    .select('dp.id', 'dp.post', 'dp.post_id', 'u.username')
+    .join('users as u', 'u.id', 'dp.user_id')
 }
 
 const addImage = async post_image => {

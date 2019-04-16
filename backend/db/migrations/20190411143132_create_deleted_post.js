@@ -10,6 +10,10 @@ exports.up = function (knex, Promise) {
 
         tbl
             .integer('post_id')
+
+        tbl
+            .integer('user_id')
+            .unsigned()
             .references('id')
             .inTable('users')
 
