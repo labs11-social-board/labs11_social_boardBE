@@ -56,7 +56,6 @@ router.get('/is-accepted-email', (req, res) => {
     //console.log(req.headers.email);
 
     if (token) {
-
         jwt.verify(token, secureKey, async (err, decoded) => {
             if (err) {
                 return (
@@ -64,7 +63,6 @@ router.get('/is-accepted-email', (req, res) => {
                 )
             }
             else {
-                console.log('getting to ELSE!', decoded)
                 req.decoded = decoded;
                 checkEmail = req.decoded.email;
 
@@ -73,7 +71,7 @@ router.get('/is-accepted-email', (req, res) => {
                     .then(emails => {
                         const emaily = emails.filter(email => email.email === `${checkEmail}`);
 
-                        console.log(emaily);
+                        // console.log(emaily);
 
                         if (emaily.length != 0) {
                             return (

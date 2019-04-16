@@ -144,7 +144,21 @@ const generateSeeds = () => {
       )
     )
   });
+<<<<<<< HEAD
 
+=======
+  arr.push({
+    user_id: 412,
+    user_type: admin,
+    user_permissions: moderator,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+>>>>>>> 7fbc3861a40a5b5395d41cc0cf6e95fc413770cf
   return arr;
 };
 
