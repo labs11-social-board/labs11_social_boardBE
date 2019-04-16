@@ -288,9 +288,9 @@ router.put('/user/:user_id', async (req, res) => {
 
   if (bio) newUser.bio = bio;
 
-  if (isUrl(github)) newUser.github = github;
-  if (isUrl(twitter)) newUser.twitter = twitter;
-  if (isUrl(linkedin)) newUser.linkedin = linkedin;
+  if (isUrl(github, true)) newUser.github = github;
+  if (isUrl(twitter, true)) newUser.twitter = twitter;
+  if (isUrl(linkedin, true)) newUser.linkedin = linkedin;
 
   if (oldPassword && (!newPassword || newPassword === '')) {
     return res.status(400).json({ error: 'New password must not be empty.' });
@@ -528,7 +528,7 @@ router.put('/github/:user_id', authenticate, async (req, res) => {
     res
       .status(400)
       .json({ error: 'Please provided a Github link for the User' });
-  } else if (!isUrl(github)) {
+  } else if (!isUrl(github, true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
@@ -550,7 +550,7 @@ router.put('/twitter/:user_id', authenticate, async (req, res) => {
     res
       .status(400)
       .json({ error: 'Please provided a Twitter link for the User' });
-  } else if (!isUrl(twitter)) {
+  } else if (!isUrl(twitter,true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
@@ -572,7 +572,7 @@ router.put('/linkedin/:user_id', authenticate, async (req, res) => {
     res
       .status(400)
       .json({ error: 'Please provided a Linkedin link for the User' });
-  } else if (!isUrl(linkedin)) {
+  } else if (!isUrl(linkedin,true)) {
     res.status(400).json({ error: 'The request body must be a URL ' });
   } else {
     try {
