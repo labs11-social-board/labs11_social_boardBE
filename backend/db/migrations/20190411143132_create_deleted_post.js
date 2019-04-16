@@ -10,11 +10,10 @@ exports.up = function (knex, Promise) {
 
         tbl
             .integer('post_id')
-            .references('id')
-            .inTable('posts')
 
         tbl
             .integer('user_id')
+            .unsigned()
             .references('id')
             .inTable('users')
 

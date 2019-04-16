@@ -225,8 +225,6 @@ router.post('/insert-deleted-post/:user_id', (req, res) => {
 
 // Get Deleted Post 
 router.get('/get-deleted-post', (req, res) => {
-  const id = req.params.id
-  const post = req.body
 
   return postsDB
     .getDeletedPost()
