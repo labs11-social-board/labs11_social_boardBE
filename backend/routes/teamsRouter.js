@@ -304,7 +304,7 @@ async function checkIfPrivate(req, res, next) {
 };
 
 //Change User Role 
-router.put('/update_role/:team_id/:user_id/:changing_id', checkRole, (req, res) => {
+router.put('/update_role/:team_id/:user_id/:changing_id', authenticate, checkRole, (req, res) => {
   const {changing_id, team_id} = req.params; 
   const { role } = req.body;
   console.log(role); 
