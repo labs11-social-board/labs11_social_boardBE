@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const {
-  secureKey,
+    secureKey,
 } = require('./../config/globals');
 
 // Get All Emails Route
@@ -52,19 +52,17 @@ router.delete('/:id', (req, res) => {
 router.get('/is-accepted-email', (req, res) => {
     const token = req.get('Email')
     let checkEmail = '';
-    
+
     //console.log(req.headers.email);
 
     if (token) {
-        
-        jwt.verify(token, secureKey, async (err, decoded) =>{
-            if(err) {
+        jwt.verify(token, secureKey, async (err, decoded) => {
+            if (err) {
                 return (
                     res.send(false)
                 )
             }
             else {
-                console.log('getting to ELSE!', decoded)
                 req.decoded = decoded;
                 checkEmail = req.decoded.email;
 
@@ -73,15 +71,15 @@ router.get('/is-accepted-email', (req, res) => {
                     .then(emails => {
                         const emaily = emails.filter(email => email.email === `${checkEmail}`);
 
-                        console.log(emaily);
+                        // console.log(emaily);
 
-                        if(emaily.length != 0) {
+                        if (emaily.length != 0) {
                             return (
                                 res.send(true)
                             )
                         }
                         else {
-                            return(
+                            return (
                                 res.send(false)
                             )
                         }
@@ -96,7 +94,7 @@ router.get('/is-accepted-email', (req, res) => {
     }
 
     //console.log('check email:', checkEmail)
-  
+
 });
 
 
@@ -107,6 +105,12 @@ router.post('/', (req, res) => {
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
+            console.log('email:', email.email)
+            if (email.email === '') {
+                res.status(400).json({ message: 'There was a problem adding email.' })
+            } else {
+                res.status(202).json(email)
+            }
 
             res.status(201).json({
                 message: 'Successfully added!'

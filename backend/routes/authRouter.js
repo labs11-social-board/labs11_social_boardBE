@@ -250,7 +250,6 @@ router.post('/login', async (req, res) => {
         return db
           .findById(user.id)
           .then(async foundUser => {
-            console.log(foundUser)
             if (foundUser.length) {
               const lastLogin = foundUser[0].last_login;
               let newNotifications = false;
@@ -281,6 +280,7 @@ router.post('/login', async (req, res) => {
                   last_login: foundUser[0].last_login,
                   signature: foundUser[0].signature,
                   user_type: foundUser[0].user_type,
+                  user_permissions: foundUser[0].user_permissions
                 }
               ]);
             }
@@ -336,6 +336,7 @@ router.post('/log-back-in/:user_id', authenticate, async (req, res) => {
             last_login: user[0].last_login,
             signature: user[0].signature,
             user_type: user[0].user_type,
+            user_permissions: user[0].user_permissions
           }
         ]);
       }
@@ -414,13 +415,13 @@ router.post('/auth0-login', async (req, res) => {
         status: 'active',
         uuid: uuidv4(), // for use with pusher
       };
-      
+
       const accountCreatedAt = Date.now();
 
       // user account created_at
       newUserCreds.created_at = accountCreatedAt;
       newUserCreds.last_login = accountCreatedAt;
-      
+
       return db
         .insert(newUserCreds) // [ { id: 1, username: 'username' } ]
         .then(async userAddedResults => {
@@ -431,7 +432,7 @@ router.post('/auth0-login', async (req, res) => {
             userSettings.subscribed_at = accountCreatedAt;
             await db.addUserSettings(userSettings);
           }
-          
+
           await categoryFollowsDB.addDefaultCategoryFollows(userAddedResults[0].id);
 
           return db

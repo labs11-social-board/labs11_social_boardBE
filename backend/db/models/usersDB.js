@@ -3,20 +3,20 @@ const db = require('../dbConfig.js');
 //Gets all of the users in the db
 const getUsers = () => {
   return db('users')
-  .select('id', 'username', 'email', 'status', 'us.avatar')
-  .join('user_settings as us', 'us.user_id', 'users.id');
+    .select('id', 'username', 'email', 'status', 'us.user_permissions', 'us.avatar')
+    .join('user_settings as us', 'us.user_id', 'users.id');
 };
 
 const searchUsersByName = (searchText, order, orderType) => {
   return db('users as u')
-      .select(
-        'u.id',
-        'u.username',
-        'u.email',
-        'us.avatar'
-      )
-      .join('user_settings as us', 'us.user_id', 'u.id')
-      .whereRaw('LOWER(u.username) LIKE ?', `%${searchText.toLowerCase()}%`);
+    .select(
+      'u.id',
+      'u.username',
+      'u.email',
+      'us.avatar'
+    )
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .whereRaw('LOWER(u.username) LIKE ?', `%${searchText.toLowerCase()}%`);
 }
 
 //Gets a user by their id
@@ -111,8 +111,8 @@ const findById = id => {
       'r.body as reply_body',
       'un.created_at',
       't.id as team_id',
-			't.team_name',
-			't.isPrivate'
+      't.team_name',
+      't.isPrivate'
     )
     .leftOuterJoin('categories as c', 'c.id', 'un.category_id')
     .leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
@@ -134,6 +134,7 @@ const findById = id => {
       'us.avatar',
       'us.signature',
       'us.user_type',
+      'us.user_permissions',
       'u.password',
       'u.email_confirm',
       'u.uuid',
@@ -197,11 +198,48 @@ const getUserType = user_id => {
 };
 
 //get all teams a user is in with a given id
-const getUserTeams = user_id => {
-  return db('team_members as tm')
-    .select('tm.team_id', 't.team_name')
+const getUserTeams = async (user_id, order, orderType) => {
+  if (order === 'undefined') order = undefined;
+  const postsQuery = db('posts')
+  .select('discussion_id')
+  .count('id as post_count')
+  .groupBy('discussion_id');
+
+const postCountQuery = db('discussions as d')
+  .select('d.team_id')
+  .sum('p.post_count as post_count')
+  .join(postsQuery.as('p'), function() {
+    this.on('p.discussion_id', '=', 'd.id');
+  })
+  .groupBy('d.team_id')
+  .orderBy('d.team_id');
+
+const discussonCount = db('discussions as d')
+  .select('d.team_id')
+  .count('d.id as discussion_count')
+  .groupBy('d.team_id');
+
+const userTeams = db('team_members as tm')
+  .select(
+    'tm.team_id', 
+    't.team_name', 
+    't.created_at', 
+    'pi.image as logo',
+    'pc.post_count',
+    'dc.discussion_count',
+    )
     .join('teams as t', 't.id', 'tm.team_id')
-    .where('tm.user_id', user_id);
+    .leftOuterJoin('post_images as pi', 'pi.team_id', 't.id')
+    .leftOuterJoin(postCountQuery.as('pc'), function () {
+      this.on('pc.team_id', '=', 't.id');
+    })
+    .leftOuterJoin(discussonCount.as('dc'), function() {
+      this.on('dc.team_id', '=', 't.id')
+    })
+    .where('tm.user_id', user_id)
+    .orderBy(`${order ? order : 't.team_name'}`, `${orderType ? orderType : 'asc'}`);
+
+  return userTeams;
 };
 
 // change user_type in user_settings for matching user ID
@@ -221,6 +259,7 @@ const findByUsername = username => {
       'u.password',
       'u.email',
       'u.status',
+      'us.user_permissions',
       'us.avatar'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
@@ -301,15 +340,15 @@ const searchAll = (searchText, orderType) => {
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate');
-  
-    const teamsQuery = db('teams as t')
-      .select(
-        't.id',
-        't.team_name',
-        't.created_at',
-        't.isPrivate'
-      )
-      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
+
+  const teamsQuery = db('teams as t')
+    .select(
+      't.id',
+      't.team_name',
+      't.created_at',
+      't.isPrivate'
+    )
+    .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
   const promises = [categoriesQuery, discussionsQuery, postsQuery, teamsQuery];
   return Promise.all(promises).then(results => {
@@ -324,7 +363,7 @@ const searchAll = (searchText, orderType) => {
     postsResults.forEach(post =>
       resultArr.push({ type: 'comment', result: post })
     );
-    teamsResults.forEach(team => 
+    teamsResults.forEach(team =>
       resultArr.push({ type: 'team', result: team })
     );
     resultArr.sort((a, b) => {
@@ -517,6 +556,6 @@ module.exports = {
   updateTwitter,
   updateLinkedin,
   remove,
-  updateLocation, 
+  updateLocation,
   searchUsersByName,
 };

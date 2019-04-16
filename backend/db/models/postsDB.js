@@ -22,10 +22,10 @@ const search = (searchText, order, orderType) => {
     .join('discussions as d', 'd.id', 'p.discussion_id')
     .leftOuterJoin('categories as c', 'c.id', 'd.category_id')
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
-    .whereRaw('LOWER(p.body) LIKE ?', `%${ searchText.toLowerCase() }%`)
+    .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate')
     // order by given order and orderType, else default to ordering by created_at descending
-    .orderBy(`${ order ? order : 'p.created_at' }`, `${ orderType ? orderType : 'desc' }`);
+    .orderBy(`${order ? order : 'p.created_at'}`, `${orderType ? orderType : 'desc'}`);
 };
 
 // get the user_id and discussion_id related to the post with the given id
@@ -48,14 +48,26 @@ const update = (id, post) => {
 };
 
 // remove post with given post id
-const remove = id => {
+const remove = (id) => {
+  // insertDeletedPost(id, post)
   return db('posts').where({ id }).del();
 };
+
+const insertDeletedPost = (id, post) => {
+  return db('deleted_post').insert({ "post": post, 'post_id': id })
+}
+
+const getDeletedPost = () => {
+  return db('deleted_post as dp')
+  // .select('dp.post', 'dp.post_id', 'u.username')
+  // .join('users as u', 'dp.post_id', 'u.id')
+  // .leftJoin('post as p')
+}
 
 const addImage = async post_image => {
   const [id] = await db('post_images').insert(post_image, 'id');
 
-  return db('post_images')  
+  return db('post_images')
     .where({ id })
     .first();
 };
@@ -67,7 +79,7 @@ const deleteImage = id => {
 };
 
 const getPostImagesByPostId = post_id => {
-  return db('post_images')  
+  return db('post_images')
     .where({ post_id });
 }
 
@@ -100,5 +112,7 @@ module.exports = {
   deleteImage,
   updateImageWithPost,
   updateImageWithReply,
-  updateImageWithDiscussion
+  updateImageWithDiscussion,
+  getDeletedPost,
+  insertDeletedPost
 };
