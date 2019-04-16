@@ -102,10 +102,14 @@ router.put('/:user_id', authenticate, (req, res) => {
 // remove post with given post id
 router.delete('/:user_id/:post_id', authenticate, (req, res) => {
   const { post_id } = req.params;
+  const post = req.body;
+  console.log('post', post)
   if (!post_id) return res.status(400).json({ error: 'Post ID is required.' });
   return postsDB
-    .remove(post_id)
-    .then(() => res.status(201).json({ message: 'Post removal successful.' }))
+    .remove(post_id, post)
+    .then(() => {
+      res.status(201).json({ message: 'Post removal successful.' })
+    })
     .catch(err =>
       res.status(500).json({ error: `Failed to remove(): ${err}` })
     );
@@ -170,7 +174,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addReply = await postsDB.updateImageWithReply(image_id, reply_id);
 
       res.status(200).json(addReply);
-    } else if(discussion_id) {
+    } else if (discussion_id) {
       const addDiscussion = await postsDB.updateImageWithDiscussion(image_id, discussion_id);
 
       res.status(200).json(addDiscussion);
@@ -178,7 +182,7 @@ router.put('/images/:user_id', async (req, res) => {
       const addTeam = await teamsDB.updateImageWithTeam(image_id, team_id);
 
       res.status(200).json(addTeam);
-    } 
+    }
   } catch (err) {
     res.status(500).json({ error: `Unable to updateImageWithPost():${err}` });
   }
@@ -195,5 +199,41 @@ router.delete('/images/:user_id/:image_id', async (req, res) => {
     res.status(500).json({ error: `Unable to deleteImage():${err}` });
   }
 });
+
+// Insert Deleted Post and Moderator Who Deleted The Post
+router.post('/insert-deleted-post/:user_id', (req, res) => {
+  const user_id = req.params.user_id;
+  const { post } = req.body;
+
+  const postBody = post.map(p => {
+    return p.body
+  })
+
+  const post_id = post.map(p => {
+    return p.id
+  })
+
+  return postsDB
+    .insertDeletedPost(user_id, postBody, post_id)
+    .then(post => {
+      res.status(200).json(post)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
+
+// Get Deleted Post 
+router.get('/get-deleted-post', (req, res) => {
+
+  return postsDB
+    .getDeletedPost()
+    .then(post => {
+      res.status(200).json(post)
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+})
 
 module.exports = router;

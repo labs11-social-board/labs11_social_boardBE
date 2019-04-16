@@ -3,20 +3,20 @@ const db = require('../dbConfig.js');
 //Gets all of the users in the db
 const getUsers = () => {
   return db('users')
-  .select('id', 'username', 'email', 'status', 'us.avatar')
-  .join('user_settings as us', 'us.user_id', 'users.id');
+    .select('id', 'username', 'email', 'status', 'us.user_permissions', 'us.avatar')
+    .join('user_settings as us', 'us.user_id', 'users.id');
 };
 
 const searchUsersByName = (searchText, order, orderType) => {
   return db('users as u')
-      .select(
-        'u.id',
-        'u.username',
-        'u.email',
-        'us.avatar'
-      )
-      .join('user_settings as us', 'us.user_id', 'u.id')
-      .whereRaw('LOWER(u.username) LIKE ?', `%${searchText.toLowerCase()}%`);
+    .select(
+      'u.id',
+      'u.username',
+      'u.email',
+      'us.avatar'
+    )
+    .join('user_settings as us', 'us.user_id', 'u.id')
+    .whereRaw('LOWER(u.username) LIKE ?', `%${searchText.toLowerCase()}%`);
 }
 
 //Gets a user by their id
@@ -111,8 +111,8 @@ const findById = id => {
       'r.body as reply_body',
       'un.created_at',
       't.id as team_id',
-			't.team_name',
-			't.isPrivate'
+      't.team_name',
+      't.isPrivate'
     )
     .leftOuterJoin('categories as c', 'c.id', 'un.category_id')
     .leftOuterJoin('discussions as d', 'd.id', 'un.discussion_id')
@@ -134,6 +134,7 @@ const findById = id => {
       'us.avatar',
       'us.signature',
       'us.user_type',
+      'us.user_permissions',
       'u.password',
       'u.email_confirm',
       'u.uuid',
@@ -258,6 +259,7 @@ const findByUsername = username => {
       'u.password',
       'u.email',
       'u.status',
+      'us.user_permissions',
       'us.avatar'
     )
     .leftOuterJoin('user_settings as us', 'u.id', 'us.user_id')
@@ -338,15 +340,15 @@ const searchAll = (searchText, orderType) => {
     .leftOuterJoin('teams as t', 't.id', 'd.team_id')
     .whereRaw('LOWER(p.body) LIKE ?', `%${searchText.toLowerCase()}%`)
     .groupBy('p.id', 'u.username', 'c.name', 'c.id', 'd.body', 't.id', 't.isPrivate');
-  
-    const teamsQuery = db('teams as t')
-      .select(
-        't.id',
-        't.team_name',
-        't.created_at',
-        't.isPrivate'
-      )
-      .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
+
+  const teamsQuery = db('teams as t')
+    .select(
+      't.id',
+      't.team_name',
+      't.created_at',
+      't.isPrivate'
+    )
+    .whereRaw('LOWER(t.team_name) LIKE ?', `%${searchText.toLowerCase()}%`);
 
   const promises = [categoriesQuery, discussionsQuery, postsQuery, teamsQuery];
   return Promise.all(promises).then(results => {
@@ -361,7 +363,7 @@ const searchAll = (searchText, orderType) => {
     postsResults.forEach(post =>
       resultArr.push({ type: 'comment', result: post })
     );
-    teamsResults.forEach(team => 
+    teamsResults.forEach(team =>
       resultArr.push({ type: 'team', result: team })
     );
     resultArr.sort((a, b) => {
@@ -554,6 +556,6 @@ module.exports = {
   updateTwitter,
   updateLinkedin,
   remove,
-  updateLocation, 
+  updateLocation,
   searchUsersByName,
 };
