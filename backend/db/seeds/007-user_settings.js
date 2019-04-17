@@ -1,5 +1,5 @@
 // External API containing mock data for various endpoints
-const { numOfFakeUsers, accountUserTypes, permissionTypes } = require('../../config/globals.js');
+const { numOfFakeUsers, accountUserTypes, permissionTypes, defaultAvatar  } = require('../../config/globals.js');
 const faker = require('faker');
 
 // For loop to generate numOfFakeUsers
@@ -155,6 +155,31 @@ const generateSeeds = () => {
       )
     )
   });
+  arr.push({
+    user_id: 413,
+    avatar: defaultAvatar,
+    user_type: admin,
+    user_permissions: moderator,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+  arr.push({
+    user_id: 414,
+    user_type: admin,
+    avatar: defaultAvatar,
+    user_permissions: moderator,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
+
   return arr;
 };
 
