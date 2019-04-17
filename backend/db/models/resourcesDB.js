@@ -4,7 +4,7 @@ const db = require('../dbConfig.js');
 async function getResources () {
     const query = await db('resources as r')
     .select('r.title', 'r.resource', 'u.username')
-    .join('users a u', 'u.id', 'r.user_id')
+    .join('users as u', 'u.id', 'r.user_id')
 
     return query;
 }
