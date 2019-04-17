@@ -1,8 +1,8 @@
 // External API containing mock data for various endpoints
-const faker = require('faker');
-const bcrypt = require('bcryptjs');
-const uuidv4 = require('uuid/v4');
-const { numOfFakeUsers, numOfHashes } = require('../../config/globals.js');
+const faker = require("faker");
+const bcrypt = require("bcryptjs");
+const uuidv4 = require("uuid/v4");
+const { numOfFakeUsers, numOfHashes } = require("../../config/globals.js");
 
 // For loop to generate numOfFakeUsers
 const generateSeeds = () => {
@@ -211,46 +211,59 @@ const generateSeeds = () => {
   });
 
   arr.push({
-    username: 'jonathan',
-    password: bcrypt.hashSync('jonathan', numOfHashes),
-    email: 'jonathanjholloway@gmail.com',
-    status: 'active',
+    username: "jonathan",
+    password: bcrypt.hashSync("jonathan", numOfHashes),
+    email: "jonathanjholloway@gmail.com",
+    status: "active",
     uuid: uuidv4(),
     last_login: Date.now(),
     created_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - (1000 * 60 * 60 * 24 * 10)), // from 10 days ago
-        new Date(Date.now() - (1000 * 60 * 60 * 24 * 8)) // to 8 days ago
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 10), // from 10 days ago
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 8) // to 8 days ago
       )
     )
   });
 
   arr.push({
-    username: 'jonathan2',
-    password: bcrypt.hashSync('jonathan2', numOfHashes),
-    email: 'jonathan2@example.com',
+    username: "jonathan2",
+    password: bcrypt.hashSync("jonathan2", numOfHashes),
+    email: "jonathan2@example.com",
+    status: "active",
+    uuid: uuidv4(),
+    last_login: Date.now(),
+    created_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 10), // from 10 days ago
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 8) // to 8 days ago
+      )
+    )
+  });
+
+  arr.push({
+    username: 'marco',
+    password: bcrypt.hashSync('marco', numOfHashes),
+    email: 'marco@example.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),
     created_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - (1000 * 60 * 60 * 24 * 10)), // from 10 days ago
-        new Date(Date.now() - (1000 * 60 * 60 * 24 * 8)) // to 8 days ago
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 10), // from 10 days ago
+        new Date(Date.now() - 1000 * 60 * 60 * 24 * 8) // to 8 days ago
       )
     )
   });
-  
 
   return arr;
 };
 
-
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries for users table
-  return knex('users')
+  return knex("users")
     .del()
     .then(function() {
       // Inserts seed entries
-      return knex('users').insert(generateSeeds());
+      return knex("users").insert(generateSeeds());
     });
 };
