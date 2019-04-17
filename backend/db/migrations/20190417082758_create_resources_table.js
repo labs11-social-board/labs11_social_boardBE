@@ -14,6 +14,10 @@ exports.up = function (knex, Promise) {
             .unique()
 
         tbl
+            .text('info', 2048)
+            .notNullable()
+
+        tbl
             .integer('user_id')
             .unsigned()
             .references('id')
