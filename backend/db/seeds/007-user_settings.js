@@ -29,8 +29,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     ),
     signature: "Symposium Developer\n\n-James Page"
@@ -41,8 +41,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -52,8 +52,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -63,8 +63,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -74,8 +74,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -85,8 +85,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -96,8 +96,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -107,8 +107,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -118,8 +118,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -129,8 +129,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -140,8 +140,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -151,19 +151,8 @@ const generateSeeds = () => {
     user_permissions: moderator,
     subscribed_at: Date.parse(
       faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
-      )
-    )
-  });
-  arr.push({
-    user_id: 415,
-    user_type: admin,
-    user_permissions: moderator,
-    subscribed_at: Date.parse(
-      faker.date.between(
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-        new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
       )
     )
   });
@@ -191,7 +180,17 @@ const generateSeeds = () => {
       )
     )
   });
-
+  arr.push({
+    user_id: 415,
+    user_type: admin,
+    user_permissions: moderator,
+    subscribed_at: Date.parse(
+      faker.date.between(
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 7)),
+        new Date(Date.now() - (1000 * 60 * 60 * 24 * 5))
+      )
+    )
+  });
   return arr;
 };
 
