@@ -17,5 +17,4 @@ exports.seed = function(knex, Promise) {
         {id: 10, email: 'marco@example.com', first_name: 'marco', last_name: 'guzman', },
       ]);
     });
-  
 };
