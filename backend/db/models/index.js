@@ -12,6 +12,7 @@ const repliesDB = require('./repliesDB.js');
 const teamsDB = require('./teamsDB.js');
 const userFollowersDB = require('./UserFollowersDB.js');
 const teamMembersDB = require('./teamMembersDB');
+const resourcesDB = require('./resourcesDB.js');
 
 module.exports = {
 	categoriesDB,
@@ -27,5 +28,6 @@ module.exports = {
 	userNotificationsDB,
 	teamsDB,
 	userFollowersDB,
-	teamMembersDB
+	teamMembersDB,
+	resourcesDB
 };
