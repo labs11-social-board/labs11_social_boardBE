@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 
 // POST RESOURCES ROUTE
 router.post('/insert-resources/:user_id', (req, res) => {
-    const user_id = req.params.id;
+    const user_id = req.params.user_id;
     const {resource, title, info} = req.body;
     
     return resourcesDB
