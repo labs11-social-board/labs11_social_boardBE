@@ -303,13 +303,18 @@ async function checkIfPrivate(req, res, next) {
 
 //Change User Role 
 router.put('/update_role/:team_id/:user_id/:changing_id', authenticate, checkRole, (req, res) => {
-  const {changing_id, team_id} = req.params; 
+  const {changing_id, team_id, user_id} = req.params; 
   const { role } = req.body;
   console.log(role); 
   // updateRole
+  if (user_id === changing_id) { // This error is for the backend though the front end is designed not to allow the selection of yourself as the owner to be changed. 
+    res.status(400).json({
+      error: 'Your the owner cannot change the role for yourself. Every team needs an owner'
+    });
+  } else {
   return teamMembersDB.updateRole(changing_id, team_id, role) //changing_id serves the purposes as the id that will be changed. 
     .then(results => res.status(200).json(results))
     .catch(err => res.status(500).json({error: `Failed to update user role: ${err}`}));
-
-})
+  }
+});
 module.exports = router;

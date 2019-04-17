@@ -48,6 +48,7 @@ const {
   userModerator,
   emailRouter,
   analyticsRouter,
+  resourcesRouter
 } = require('./routes/index.js');
 
 //Auth Route
@@ -80,6 +81,8 @@ server.use('/moderators', userModerator);
 server.use('/emails', emailRouter);
 // Analytic Stuff
 server.use('/analytics', analyticsRouter);
+//Resources Routes
+server.use('/resources', resourcesRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 
