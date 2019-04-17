@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
     return resourcesDB
     .getResources()
     .then(resources => {
+        console.log(resources)
         res.status(200).json(resources)
     })
     .catch(err => {
@@ -17,11 +18,11 @@ router.get('/', (req, res) => {
 
 // POST RESOURCES ROUTE
 router.post('/insert-resources/:user_id', (req, res) => {
-    const user_id = req.params.id;
-    const {resource, title} = req.body;
+    const user_id = req.params.user_id;
+    const {resource, title, info} = req.body;
     
     return resourcesDB
-    .insertResource(user_id, resource, title )
+    .insertResource(user_id, resource, title, info )
     .then(resource => {
         res.status(202).json(resource)
     })
