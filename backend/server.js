@@ -12,6 +12,9 @@ const { errorHandler } = require("./config/middleware/errorHandler.js");
  ******************************************** middleware ********************************************
  **************************************************************************************************/
 const server = express();
+var bodyParser = require('body-parser');
+server.use(bodyParser.json({limit: '50mb'}));
+server.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 server.use(helmet()); // hides your tech stack from sniffers
 server.use(express.json()); // built-in
 server.use(morgan("dev")); // logging middleware for console
@@ -45,6 +48,7 @@ const {
   userModerator,
   emailRouter,
   analyticsRouter,
+  resourcesRouter
 } = require('./routes/index.js');
 
 //Auth Route
@@ -77,6 +81,8 @@ server.use('/moderators', userModerator);
 server.use('/emails', emailRouter);
 // Analytic Stuff
 server.use('/analytics', analyticsRouter);
+//Resources Routes
+server.use('/resources', resourcesRouter);
 
 server.use(errorHandler); // This line needs to be after all routes
 
