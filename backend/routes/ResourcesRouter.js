@@ -24,7 +24,13 @@ router.post('/insert-resources/:user_id', (req, res) => {
     return resourcesDB
     .insertResource(user_id, resource, title, info )
     .then(resource => {
-        res.status(202).json(resource)
+        if (!resource || !title || !info) {
+            res.status(400).json({message: 'Missing resourse, title, or info.'})
+            res.end()
+        } else {
+            res.status(202).json(resource)
+        }
+        
     })
     .catch(err => {
         res.status(500).json({error: 'There was a problem creating resource.'})
