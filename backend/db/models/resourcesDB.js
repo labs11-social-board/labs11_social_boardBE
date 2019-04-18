@@ -9,7 +9,7 @@ async function getResources () {
     return query;
 }
 
-const insertResource = (user_id, resource, info, title) => {
+const insertResource = (user_id, resource, title, info) => {
     return db('resources')
     .insert({'title': title, 'resource': resource, 'info': info, 'user_id': user_id})
 }
