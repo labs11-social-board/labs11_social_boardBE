@@ -101,10 +101,11 @@ router.put('/:user_id/:team_id', authenticate, checkRole, async (req, res) => {
   
           res.status(200).json(newImage);
         } else {
-          const updated = await teamsDB.updateTeamLogo(team_id, image.image);
-  
-          res.status(200).json(updated);
+          const updated2 = await teamsDB.updateTeamLogo(team_id, image.image);
+          res.status(200).json(updated2);
         }
+      } else {
+        res.status(200).json(updated);
       }
     }
 
