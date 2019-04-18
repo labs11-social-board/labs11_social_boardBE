@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     return resourcesDB
     .getResources()
     .then(resources => {
-        console.log(resources)
+        //console.log(resources)
         res.status(200).json(resources)
     })
     .catch(err => {
@@ -35,6 +35,24 @@ router.post('/insert-resources/:user_id', (req, res) => {
     .catch(err => {
         res.status(500).json({error: 'There was a problem creating resource.'})
     })
+})
+
+router.delete('/delete-resources/:user_id', (req, res) => {
+    const id = req.params.user_id;
+    return resourcesDB
+        .removeResource(id)
+        .then(deleted => {
+            if (deleted !== 1) {
+                res.status(404).json({
+                    message: 'message not found'
+                })
+            } else {
+                res.status(202).json( {message: 'resource deleted'})
+            }
+        })
+        .catch(err => {
+            res.status(400).json({error: "There was a problem..."})
+        })
 })
 
 module.exports = router;
