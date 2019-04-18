@@ -101,18 +101,9 @@ router.get('/is-accepted-email', (req, res) => {
 // Add A New Email Route
 router.post('/', (req, res) => {
     const newEmail = req.body;
-    console.log('email log:', newEmail)
     return emailDB
         .insertEmail(newEmail)
         .then(email => {
-            console.log('email:', email.email)
-            if (email.email === '') {
-                res.status(400).json({ message: 'There was a problem adding email.' })
-                res.end()
-            } else {
-                res.status(202).json(email)
-            }
-
             res.status(201).json({
                 message: 'Successfully added!'
             })
