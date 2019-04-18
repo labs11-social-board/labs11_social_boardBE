@@ -135,9 +135,9 @@ const generateSeeds = () => {
   });
   // prettier-ignore
   arr.push({
-    username: 'abdul',
-    password: bcrypt.hashSync('abdul', numOfHashes),
-    email: 'abdulfatah.a.ahmad@gmx.com',
+    username: 'admin',
+    password: bcrypt.hashSync('admin', numOfHashes),
+    email: 'admin@adminsupahdemo.com',
     status: 'active',
     uuid: uuidv4(),
     last_login: Date.now(),

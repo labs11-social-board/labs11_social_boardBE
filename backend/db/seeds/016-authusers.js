@@ -15,6 +15,7 @@ exports.seed = function(knex, Promise) {
         {email: 'itsmejeffery@gmail.com', first_name: 'jeffery', last_name: 'jeffery', },
         {email: 'kevintrandeveloper@gmail.com', first_name: 'kevin', last_name: 'jeffery', },
         {email: 'marco@example.com', first_name: 'marco2', last_name: 'guzman2', },
+        {email: 'admin@adminsupahdemo.com', first_name: 'The Adminion', last_name: 'Of Adminions', },
         
       ]);
     });
