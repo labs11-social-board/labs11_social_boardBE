@@ -16,6 +16,12 @@ const insertEmail = email => {
         .insert(email)
 }
 
+const insertEmailv2 = async email => {
+    const newemail = await db('approved_emails').insert(email);
+
+    return newemail;
+}
+
 // Add csv file to approved_emails database
 const csvInsert = csvFile => {
     let counter = 0;
@@ -69,5 +75,6 @@ module.exports = {
     getEmails,
     insertEmail,
     removeEmail,
-    csvInsert
+    csvInsert,
+    insertEmailv2
 }
