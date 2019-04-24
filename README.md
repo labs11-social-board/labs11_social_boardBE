@@ -455,3 +455,41 @@ Returns
     }
 ]
 ```
+
+### Get All Approved Emails /emails
+
+- **GET**
+
+Returns 
+```javascript
+[
+  {
+        "id": 1,
+        "email": "example@example.com",
+        "created_at": "2019-04-19T20:18:57.138Z",
+        "first_name": "john",
+        "last_name": "doe"
+    }
+]
+```
+
+
+### Check If Email Is In The Approved Email Database
+
+- **GET**
+
+Expects token: 
+email: eyJhbGciOiJIUzI1NiIsIdR5cCI6IkpXVCJ9.eyJpZCI6NDA3LCJ1c2VybmFtZSI6Imltb24iLCJlbWFpbCI6Imltb25vdmJ1ZGVAZa1haWwuY29
+tIiwidG90YWxfaG91cnMijjQzMjI4MS4zNTY1OTUyNzc4LCJpYXQiOjE1NTYxMjY0ODMsImV4cCI6MTU1NjI5OTI4M30.6pNLf47NaaKGw57ErM5IZzTe-A
+5Ld-oR_DC0MLv_AkQ
+
+Returns
+```javascript
+[
+  { id: 3,
+    email: 'youremail@example.com',
+    created_at: 2019-04-19T20:18:57.138Z,
+    first_name: 'your name',
+    last_name: 'your name' }
+]
+```
