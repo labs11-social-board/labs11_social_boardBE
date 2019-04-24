@@ -356,3 +356,102 @@ Returns the new Team Members list:
   }
 ]
 ```
+
+### Get All Users With User Permissions /moderators
+
+- **GET**
+
+Returns all users list:
+```javascript
+[
+  {
+   "id": 42,
+        "username": "Aaliyah.Swaniawski",
+        "email": "Ethelyn.Runolfsson89@hotmail.com",
+        "status": "active",
+        "user_permissions": "basic" 
+  }
+]
+```
+
+### Get an Individual User From The Users Table With User permissions /moderators/:id
+
+- **GET**
+
+Expects params:id
+
+Returns the user:
+```javascript
+[
+  {
+    "id": 401,
+    "username": "james",
+    "email": "james@example.com",
+    "status": "active",
+    "user_permissions": "moderator"
+  }
+]
+```
+
+
+### Change User Permissions To Moderator /moderators/changeToMod/:user_id
+
+- **GET**
+
+Expects params:user_id
+
+Returns 1
+
+### Change User Permissions To Basic /moderators/changeToBasic/:user_id
+
+- **GET**
+
+Expects params:user_id
+
+Returns 1 
+
+### Insert Deleted Post and Moderator Who Deleted The Post /posts/insert-deleted-post/:user_id
+
+- **POST**
+
+Expects params:user_id
+Expects postBody, id:
+```javascript
+ [ 
+   { 
+     id: 46,
+     body: 'Im an old man that used to love the twilight zone, I think a modern revamp is necessary to incorporate modern pro
+  } 
+]
+```
+
+Returns
+```javascript
+Result {
+  command: 'INSERT',
+  rowCount: 1,
+  oid: 0,
+  rows: [],
+  fields: [],
+  _parsers: [],
+  RowCtor: null,
+  rowAsArray: false,
+  _getTypeParser: [Function: bound ] 
+  }
+```
+
+### Get Deleted Post /posts/get-deleted-post
+
+- **GET**
+
+Returns
+```javascript
+[
+  {
+        "id": 1,
+        "post": "Im an old man that used to love the twilight zone, I think a modern revamp is necessary to incorporate modern problems.",
+        "post_id": 46,
+        "username": "imon"
+    }
+]
+```
