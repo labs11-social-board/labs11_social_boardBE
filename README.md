@@ -493,3 +493,31 @@ Returns
     last_name: 'your name' }
 ]
 ```
+
+
+### Post A New Email /emails
+
+- **POST**
+
+Expects body
+```javascript
+{
+  email: 'example@example.com'
+}
+```
+
+Returns
+```javascript
+{
+    "message": "Successfully added!"
+}
+```
+
+
+### Delete An Email emails/:id
+
+- **DELETE**
+
+Expects params: id
+
+Returns 1
