@@ -356,3 +356,168 @@ Returns the new Team Members list:
   }
 ]
 ```
+
+### Get All Users With User Permissions /moderators
+
+- **GET**
+
+Returns all users list:
+```javascript
+[
+  {
+   "id": 42,
+        "username": "Aaliyah.Swaniawski",
+        "email": "Ethelyn.Runolfsson89@hotmail.com",
+        "status": "active",
+        "user_permissions": "basic" 
+  }
+]
+```
+
+### Get an Individual User From The Users Table With User permissions /moderators/:id
+
+- **GET**
+
+Expects params:id
+
+Returns the user:
+```javascript
+[
+  {
+    "id": 401,
+    "username": "james",
+    "email": "james@example.com",
+    "status": "active",
+    "user_permissions": "moderator"
+  }
+]
+```
+
+
+### Change User Permissions To Moderator /moderators/changeToMod/:user_id
+
+- **GET**
+
+Expects params:user_id
+
+Returns 1
+
+### Change User Permissions To Basic /moderators/changeToBasic/:user_id
+
+- **GET**
+
+Expects params:user_id
+
+Returns 1 
+
+### Insert Deleted Post and Moderator Who Deleted The Post /posts/insert-deleted-post/:user_id
+
+- **POST**
+
+Expects params:user_id
+Expects postBody, id:
+```javascript
+ [ 
+   { 
+     id: 46,
+     body: 'Im an old man that used to love the twilight zone, I think a modern revamp is necessary to incorporate modern pro
+  } 
+]
+```
+
+Returns
+```javascript
+Result {
+  command: 'INSERT',
+  rowCount: 1,
+  oid: 0,
+  rows: [],
+  fields: [],
+  _parsers: [],
+  RowCtor: null,
+  rowAsArray: false,
+  _getTypeParser: [Function: bound ] 
+  }
+```
+
+### Get Deleted Post /posts/get-deleted-post
+
+- **GET**
+
+Returns
+```javascript
+[
+  {
+        "id": 1,
+        "post": "Im an old man that used to love the twilight zone, I think a modern revamp is necessary to incorporate modern problems.",
+        "post_id": 46,
+        "username": "imon"
+    }
+]
+```
+
+### Get All Approved Emails /emails
+
+- **GET**
+
+Returns 
+```javascript
+[
+  {
+        "id": 1,
+        "email": "example@example.com",
+        "created_at": "2019-04-19T20:18:57.138Z",
+        "first_name": "john",
+        "last_name": "doe"
+    }
+]
+```
+
+
+### Check If Email Is In The Approved Email Database
+
+- **GET**
+
+Expects token: 
+email: eyJhbGciOiJIUzI1NiIsIdR5cCI6IkpXVCJ9.eyJpZCI6NDA3LCJ1c2VybmFtZSI6Imltb24iLCJlbWFpbCI6Imltb25vdmJ1ZGVAZa1haWwuY29
+tIiwidG90YWxfaG91cnMijjQzMjI4MS4zNTY1OTUyNzc4LCJpYXQiOjE1NTYxMjY0ODMsImV4cCI6MTU1NjI5OTI4M30.6pNLf47NaaKGw57ErM5IZzTe-A
+5Ld-oR_DC0MLv_AkQ
+
+Returns
+```javascript
+[
+  { id: 3,
+    email: 'youremail@example.com',
+    created_at: 2019-04-19T20:18:57.138Z,
+    first_name: 'your name',
+    last_name: 'your name' }
+]
+```
+
+
+### Post A New Email /emails
+
+- **POST**
+
+Expects body
+```javascript
+{
+  email: 'example@example.com'
+}
+```
+
+Returns
+```javascript
+{
+    "message": "Successfully added!"
+}
+```
+
+
+### Delete An Email emails/:id
+
+- **DELETE**
+
+Expects params: id
+
+Returns 1
