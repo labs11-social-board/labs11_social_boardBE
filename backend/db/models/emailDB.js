@@ -11,6 +11,7 @@ const getEmails = () => {
 
 // Add email to the table
 const insertEmail = email => {
+    console.log('insert email:', email)
     return db('approved_emails')
         .insert(email)
 }

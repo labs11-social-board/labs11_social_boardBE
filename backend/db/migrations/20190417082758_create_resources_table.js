@@ -22,6 +22,7 @@ exports.up = function (knex, Promise) {
             .unsigned()
             .references('id')
             .inTable('users')
+            .onDelete('CASCADE')
 
     })
 };

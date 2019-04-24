@@ -24,7 +24,8 @@ router.post('/insert-resources/:user_id', (req, res) => {
     return resourcesDB
     .insertResource(user_id, resource, title, info )
     .then(resource => {
-        if (!resource || !title || !info) {
+        console.log(resource)
+        if (resource === "" || title === "" || info === "") {
             res.status(400).json({message: 'Missing resourse, title, or info.'})
             res.end()
         } else {
