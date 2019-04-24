@@ -9,6 +9,7 @@ const generateSeeds = () => {
   for (let i = 1; i <= numOfFakeUsers; i++) {
     arr.push({
       user_id: i,
+      avatar: faker.image.avatar(),
       subscribed_at: Date.parse(
         faker.date.between(
           new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
